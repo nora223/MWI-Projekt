@@ -19,12 +19,7 @@ a:hover {
   text-decoration: underline;
 }
  
-#header {
-  font-family: Verdana, Arial;
-  font-size: 1em;
-  overflow: hidden;
-  color: #ffffff;
-}
+
  
 #map {
   height: 86%;
