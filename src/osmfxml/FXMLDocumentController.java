@@ -32,24 +32,35 @@ public class FXMLDocumentController implements Initializable {
     }   
     @FXML
     WebView WebViewMap;
-     
+    
+    @FXML
+    WebView WebViewEarth;
+    Scene scene;
     
     
     @FXML
         public void showMap(){
-          //Stage primaryStage = new Stage();
-          //WebView browser = new WebView();
-          //primaryStage.setTitle("Test");
-         //primaryStage.setScene(scene);
-         //primaryStage.show();
-            
+                    
             
           WebEngine webEngine = WebViewMap.getEngine();
           URL url = getClass().getResource("index.html");
           webEngine.load(url.toExternalForm());
             
-           Scene scene = new Scene(WebViewMap);
+          
           
         
     }
+        @FXML
+        public void showEarth(){
+          
+            
+          WebEngine webEngine = WebViewEarth.getEngine();
+          URL url = getClass().getResource("google.html");
+          webEngine.load(url.toExternalForm());
+            
+          
+          
+        
+    }
+    
 }

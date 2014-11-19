@@ -36,6 +36,11 @@
                         <Image url="@../pics/logo.jpg" />
                      </image>
                   </ImageView>
+                  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" layoutX="760.0" layoutY="57.0" prefHeight="25.0" prefWidth="224.0" text="DHBW Karlsruhe" textFill="#f2eaea">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
                   <MenuBar layoutY="57.0" prefHeight="25.0" prefWidth="424.0" style="-fx-background-color: grey;">
                     <menus>
                       <Menu mnemonicParsing="false" text="File">
@@ -57,11 +62,6 @@
                       </Menu>
                     </menus>
                   </MenuBar>
-                  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" layoutX="760.0" layoutY="57.0" prefHeight="25.0" prefWidth="224.0" text="DHBW Karlsruhe" textFill="#f2eaea">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
@@ -78,10 +78,10 @@
                                               
                                           </content>
                                   </Tab>
-                                  <Tab text="Earth">
-                                    <content>
-                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                    </content>
+                                  <Tab onSelectionChanged="#showEarth" text="Earth">
+                                       <content>
+                                          <WebView fx:id="WebViewEarth" prefHeight="200.0" prefWidth="200.0" />
+                                       </content>
                                   </Tab>
                                 </tabs>
                               </TabPane>
