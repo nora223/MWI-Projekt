@@ -72,10 +72,11 @@
                            <children>
                               <TabPane layoutX="7.0" layoutY="4.0" prefHeight="407.0" prefWidth="345.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <tabs>
-                                  <Tab text="Map">
+                                  <Tab onSelectionChanged="#showMap" text="Map">
                                        <content>
                                           <WebView fx:id="WebViewMap" prefHeight="200.0" prefWidth="200.0" />
-                                       </content>
+                                              
+                                          </content>
                                   </Tab>
                                   <Tab text="Earth">
                                     <content>

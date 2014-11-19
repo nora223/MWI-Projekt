@@ -10,9 +10,11 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 
 /**
  *
@@ -23,26 +25,30 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Label label;
     
-    @FXML
-    WebView WebViewMap;
-    private WebEngine webEngine;  
-    
-    
-    
+       
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        
-        
-        System.out.print("Test");
-        //webEngine = WebViewMap.getEngine();
-        
-    //webView.getId();
+    }   
+    @FXML
+    WebView WebViewMap;
+     
     
-    WebViewMap.getEngine().load("index.html");
     
-    //webView.getEngine().load(this.getClass().getResource("index.html").toExternalForm());
+    @FXML
+        public void showMap(){
+          Stage primaryStage = new Stage();
+                  
+          //WebView browser = new WebView();
+          WebEngine webEngine = WebViewMap.getEngine();
+          URL url = getClass().getResource("index.html");
+          webEngine.load(url.toExternalForm());
+            
+           Scene scene = new Scene(WebViewMap);
+           primaryStage.setTitle("Test");
+            
+           primaryStage.setScene(scene);
+           primaryStage.show();
         
-    }    
-    
+    }
 }
