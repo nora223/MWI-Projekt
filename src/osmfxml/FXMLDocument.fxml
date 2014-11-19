@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.web.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
@@ -68,6 +69,15 @@
                                           <WebView fx:id="WebViewEarth" prefHeight="200.0" prefWidth="200.0" />
                                        </content>
                                   </Tab>
+                                    <Tab onSelectionChanged="#showgoogleSatellit" text="google Satellit">
+                                      <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <WebView fx:id="WebViewSatellit" layoutX="55.0" layoutY="121.0" prefHeight="478.0" prefWidth="495.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                             </children>
+                                          </AnchorPane>
+                                      </content>
+                                    </Tab>
                                 </tabs>
                               </TabPane>
                            </children>
@@ -78,7 +88,7 @@
                                 <menus>
                                   <Menu mnemonicParsing="false" text="Alg1">
                                     <items>
-                                          <MenuItem mnemonicParsing="false" text="copy" />
+                                          <MenuItem fx:id="Alg1Copy" mnemonicParsing="false" onAction="#alg1copy" text="copy" />
                                           <MenuItem mnemonicParsing="false" text="zoom" />
                                           <MenuItem mnemonicParsing="false" text="binarize" />
                                       <MenuItem mnemonicParsing="false" text="Close" />

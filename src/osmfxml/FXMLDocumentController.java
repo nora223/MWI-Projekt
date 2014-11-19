@@ -21,46 +21,55 @@ import javafx.stage.Stage;
  * @author Tino
  */
 public class FXMLDocumentController implements Initializable {
-    
+
     @FXML
     private Label label;
-    
-       
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-    }   
+
+    }
     @FXML
     WebView WebViewMap;
-    
+
     @FXML
     WebView WebViewEarth;
     Scene scene;
-    
+
+    @FXML
+    WebView WebViewSatellit;
+
+    @FXML
+    public void showMap() {
+
+        WebEngine webEngine = WebViewMap.getEngine();
+        URL url = getClass().getResource("index.html");
+        webEngine.load(url.toExternalForm());
+
+    }
+
+    @FXML
+    public void showEarth() {
+
+        WebEngine webEngine = WebViewEarth.getEngine();
+        URL url = getClass().getResource("google.html");
+        webEngine.load(url.toExternalForm());
+
+    }
+
+    @FXML
+    public void showgoogleSatellit() {
+
+        WebEngine webEngine = WebViewSatellit.getEngine();
+        URL url = getClass().getResource("googleSatellit.html");
+        //webEngine.executeScript("document.setMapTypeSatellit");
+        webEngine.load(url.toExternalForm());
+
+    }
     
     @FXML
-        public void showMap(){
-                    
-            
-          WebEngine webEngine = WebViewMap.getEngine();
-          URL url = getClass().getResource("index.html");
-          webEngine.load(url.toExternalForm());
-            
-          
-          
-        
+    public void alg1copy(){
+        Alg1.Algorithmus1.copy();
     }
-        @FXML
-        public void showEarth(){
-          
-            
-          WebEngine webEngine = WebViewEarth.getEngine();
-          URL url = getClass().getResource("google.html");
-          webEngine.load(url.toExternalForm());
-            
-          
-          
-        
-    }
-    
+
 }
