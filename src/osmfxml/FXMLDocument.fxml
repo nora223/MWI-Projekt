@@ -14,33 +14,18 @@
    <children>
       <SplitPane dividerPositions="0.1488294314381271" layoutX="72.0" layoutY="22.0" orientation="VERTICAL" prefHeight="500.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+          <AnchorPane maxHeight="83.0" minHeight="83.0" minWidth="0.0" prefHeight="83.0" prefWidth="160.0">
                <children>
-                  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" layoutX="361.0" prefHeight="83.0" prefWidth="698.0" style="-fx-background-color: grey;" text="OSM Tracker  " AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" layoutX="14.0" maxHeight="83.0" minHeight="83.0" prefHeight="83.0" prefWidth="698.0" style="-fx-background-color: grey;" text="OSM Tracker  " textFill="#f0eded" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="0.0">
                      <font>
-                        <Font name="System Bold Italic" size="38.0" />
+                        <Font name="System Bold Italic" size="48.0" />
                      </font>
-                     <textFill>
-                        <LinearGradient endX="1.0" endY="1.0">
-                           <stops>
-                              <Stop color="BLACK" />
-                              <Stop color="BLACK" offset="0.6563573883161511" />
-                              <Stop color="BLACK" offset="0.8109965635738832" />
-                              <Stop color="BLACK" offset="1.0" />
-                           </stops>
-                        </LinearGradient>
-                     </textFill>
                   </Label>
                   <ImageView fitHeight="55.0" fitWidth="451.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../pics/logo.jpg" />
                      </image>
                   </ImageView>
-                  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" layoutX="760.0" layoutY="57.0" prefHeight="25.0" prefWidth="224.0" text="DHBW Karlsruhe" textFill="#f2eaea">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
                   <MenuBar layoutY="57.0" prefHeight="25.0" prefWidth="424.0" style="-fx-background-color: grey;">
                     <menus>
                       <Menu mnemonicParsing="false" text="File">
@@ -72,13 +57,13 @@
                            <children>
                               <TabPane layoutX="7.0" layoutY="4.0" prefHeight="407.0" prefWidth="345.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <tabs>
-                                  <Tab onSelectionChanged="#showMap" text="Map">
+                                  <Tab onSelectionChanged="#showMap" text="OSM Map">
                                        <content>
                                           <WebView fx:id="WebViewMap" prefHeight="-1.0" prefWidth="-1.0" />
                                               
                                           </content>
                                   </Tab>
-                                  <Tab onSelectionChanged="#showEarth" text="Earth">
+                                  <Tab onSelectionChanged="#showEarth" text="google Map">
                                        <content>
                                           <WebView fx:id="WebViewEarth" prefHeight="200.0" prefWidth="200.0" />
                                        </content>
