@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="osmfxml.FXMLDocumentController">
+   <children>
+      <SplitPane dividerPositions="0.1488294314381271" layoutX="72.0" layoutY="22.0" orientation="VERTICAL" prefHeight="500.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" layoutX="361.0" prefHeight="83.0" prefWidth="698.0" style="-fx-background-color: grey;" text="OSM Tracker  " AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold Italic" size="38.0" />
+                     </font>
+                     <textFill>
+                        <LinearGradient endX="1.0" endY="1.0">
+                           <stops>
+                              <Stop color="BLACK" />
+                              <Stop color="BLACK" offset="0.6563573883161511" />
+                              <Stop color="BLACK" offset="0.8109965635738832" />
+                              <Stop color="BLACK" offset="1.0" />
+                           </stops>
+                        </LinearGradient>
+                     </textFill>
+                  </Label>
+                  <ImageView fitHeight="55.0" fitWidth="451.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../pics/logo.jpg" />
+                     </image>
+                  </ImageView>
+                  <MenuBar layoutY="57.0" prefHeight="25.0" prefWidth="424.0" style="-fx-background-color: grey;">
+                    <menus>
+                      <Menu mnemonicParsing="false" text="File">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="kml read" />
+                              <MenuItem mnemonicParsing="false" text="kml save" />
+                              <MenuItem mnemonicParsing="false" text="SUR read" />
+                           </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Edit">
+                        <items>
+                          <MenuItem mnemonicParsing="false" text="Delete" />
+                        </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Help">
+                        <items>
+                          <MenuItem mnemonicParsing="false" text="About" />
+                        </items>
+                      </Menu>
+                    </menus>
+                  </MenuBar>
+                  <Label alignment="BOTTOM_RIGHT" layoutX="760.0" layoutY="57.0" prefHeight="25.0" prefWidth="224.0" text="DHBW Karlsruhe" textFill="#f2eaea">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <SplitPane dividerPositions="0.5" prefHeight="409.0" prefWidth="698.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="407.0" prefWidth="344.0">
+                           <children>
+                              <TabPane layoutX="7.0" layoutY="4.0" prefHeight="407.0" prefWidth="345.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <tabs>
+                                  <Tab text="Map">
+                                       <content>
+                                          <WebView fx:id="WebViewMap" prefHeight="200.0" prefWidth="200.0" />
+                                       </content>
+                                  </Tab>
+                                  <Tab text="Earth">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    </content>
+                                  </Tab>
+                                </tabs>
+                              </TabPane>
+                           </children>
+                        </AnchorPane>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                           <children>
+                              <MenuBar layoutY="2.0">
+                                <menus>
+                                  <Menu mnemonicParsing="false" text="Alg1">
+                                    <items>
+                                          <MenuItem mnemonicParsing="false" text="copy" />
+                                          <MenuItem mnemonicParsing="false" text="zoom" />
+                                          <MenuItem mnemonicParsing="false" text="binarize" />
+                                      <MenuItem mnemonicParsing="false" text="Close" />
+                                    </items>
+                                  </Menu>
+                                  <Menu mnemonicParsing="false" text="Alg2">
+                                    <items>
+                                      <MenuItem mnemonicParsing="false" text="Delete" />
+                                    </items>
+                                  </Menu>
+                                  <Menu mnemonicParsing="false" text="Alg3">
+                                    <items>
+                                      <MenuItem mnemonicParsing="false" text="About" />
+                                    </items>
+                                  </Menu>
+                                </menus>
+                              </MenuBar>
+                           </children>
+                        </AnchorPane>
+                    </items>
+                  </SplitPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
