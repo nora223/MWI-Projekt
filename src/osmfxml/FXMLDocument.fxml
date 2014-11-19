@@ -57,7 +57,7 @@
                       </Menu>
                     </menus>
                   </MenuBar>
-                  <Label alignment="BOTTOM_RIGHT" layoutX="760.0" layoutY="57.0" prefHeight="25.0" prefWidth="224.0" text="DHBW Karlsruhe" textFill="#f2eaea">
+                  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" layoutX="760.0" layoutY="57.0" prefHeight="25.0" prefWidth="224.0" text="DHBW Karlsruhe" textFill="#f2eaea">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -74,7 +74,7 @@
                                 <tabs>
                                   <Tab onSelectionChanged="#showMap" text="Map">
                                        <content>
-                                          <WebView fx:id="WebViewMap" prefHeight="200.0" prefWidth="200.0" />
+                                          <WebView fx:id="WebViewMap" prefHeight="-1.0" prefWidth="-1.0" />
                                               
                                           </content>
                                   </Tab>
