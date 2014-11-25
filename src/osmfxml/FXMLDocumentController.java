@@ -38,6 +38,9 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     WebView WebViewSatellit;
+    
+    @FXML
+    WebView WebViewAlg;
 
     @FXML
     public void showMap() {
@@ -66,10 +69,19 @@ public class FXMLDocumentController implements Initializable {
         webEngine.load(url.toExternalForm());
 
     }
+    @FXML
+    public void showAlgMap() {
+
+        WebEngine webEngine = WebViewAlg.getEngine();
+        URL url = getClass().getResource("algMap.html");
+        //webEngine.executeScript("document.setMapTypeSatellit");
+        webEngine.load(url.toExternalForm());
+
+    }
     
     @FXML
     public void alg1copy(){
-        Alg1.Algorithmus1.copy();
+        showAlgMap();
     }
 
 }
