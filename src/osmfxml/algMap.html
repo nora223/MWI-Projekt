@@ -21,10 +21,11 @@ var map;
 var layer_mapnik;
 var layer_tah;
 var layer_markers;
+var layer_polygon;
 
 function drawmap() {
-    // Popup und Popuptext mit evtl. Grafik
-    var popuptext="<font color=\"black\"><b>DHBW Karlsruhe<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
+       window.alert();
+       
 
     OpenLayers.Lang.setCode('de');
     
@@ -49,29 +50,52 @@ function drawmap() {
     });
 
     layer_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
-    layer_markers = new OpenLayers.Layer.Markers("Address", { projection: new OpenLayers.Projection("EPSG:4326"), 
-    	                                          visibility: true, displayInLayerSwitcher: false });
+    layer_polygon = new OpenLayers.Layer.OSM.Mapnik("draw Polygon");
 
-    map.addLayers([layer_mapnik, layer_markers]);
+
+    map.addLayers([layer_mapnik, layer_polygon]);
     jumpTo(lon, lat, zoom);
  
-    // Position des Markers
-    addMarker(layer_markers, 8.38573, 49.02640, popuptext);
+  jumpTo(8.34567,45.34567,zoom);
+              var point1 = new OpenLayers.LonLat(8.34567, 45.34567);
+              var point2 = new OpenLayers.LonLat(8.34567, 45.34567);
+              var point3 = new OpenLayers.LonLat(8.34567, 45.34567);
+              
+              var  polygon = new OpenLayers.Geometry.Polygon(point1, point2, point3);
+              
+              polygon.getGeodesicArea();
+              
+             var a=  OpenLayers.Geometry.Polygon.createRegularPolygon(point1,50000,40,0);
+             var aPoint = new OpenLayers.Geometry.Point(point1);
+             var aCirclePoint = new OpenLayers.Geometry.Collection([a, aPoint]);
+             var b = new OpenLayers.Feature.Vector(aCirclePoint);
 
 }
 
 //]]>
     </script>
-
+ 
   </head>
   <body onload="drawmap();">
 
- 
+      
+          
+      
+      <button onclick="drawPolygonHTML()">draw Button</button>
   
+       <script>
+       function drawPolygonHTML(){
+          
+              
+          }
+          </script>
   <div id="map">
   </div>
+      
+   
   
 </body>
+    
 </html>
 
 
