@@ -5,6 +5,7 @@
  */
 package osmfxml;
 
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -83,5 +84,22 @@ public class FXMLDocumentController implements Initializable {
     public void alg1copy(){
         showAlgMap();
     }
-
+    
+   @FXML
+   public void readKML()throws FileNotFoundException{
+       menu.Menu.readKML();
+   }
+   
+   public void readSUR() throws FileNotFoundException {
+       try{
+           menu.Menu.readSUR();
+       }catch (Exception e){
+           javax.swing.JOptionPane.showMessageDialog(null, "Datei könnte nicht gelesen werden. " + e);
+       }
+   }
+   
+   public void saveKML(){
+       menu.Menu.saveKML();
+   }
+   
 }

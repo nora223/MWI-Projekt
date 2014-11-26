@@ -1,9 +1,12 @@
-package menu;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package osmfxml;
 
-import java.applet.*;
 import java.io.BufferedReader;
 import java.io.File;
-import static java.io.FileDescriptor.in;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -11,18 +14,12 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import javax.swing.JFileChooser;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 
 /**
  *
  * @author CaReich
  */
-public class Menu{
+public class Menu2 {
 
     private static String[][] daten = new String[10][4];
 
@@ -152,7 +149,9 @@ public class Menu{
     }
     
     public String getLongitude(){
-        String lon = daten[0][1];
+        //String lon = daten[0][1];
+        String lon = "test";
         return lon;
     }
-}
+}  
+
