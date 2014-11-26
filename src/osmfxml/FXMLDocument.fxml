@@ -84,25 +84,25 @@
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                            <children>
-                              <WebView fx:id="WebViewAlg" onDragDetected="#showAlgMap" prefHeight="507.0" prefWidth="495.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <WebView fx:id="WebViewAlg" layoutX="-14.0" layoutY="-14.0" prefHeight="507.0" prefWidth="495.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="-14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="-14.0" />
                               <MenuBar layoutY="2.0">
                                 <menus>
                                   <Menu mnemonicParsing="false" text="Alg1">
                                     <items>
                                           <MenuItem fx:id="Alg1Copy" mnemonicParsing="false" onAction="#alg1copy" text="copy" />
-                                          <MenuItem mnemonicParsing="false" text="zoom" />
+                                          <MenuItem mnemonicParsing="false" onAction="#drawPolygon" text="draw Polygon on Map" />
                                           <MenuItem mnemonicParsing="false" text="binarize" />
                                       <MenuItem mnemonicParsing="false" text="Close" />
                                     </items>
                                   </Menu>
                                   <Menu mnemonicParsing="false" text="Alg2">
                                     <items>
-                                      <MenuItem mnemonicParsing="false" text="Delete" />
+                                      <MenuItem mnemonicParsing="false" onAction="#showAlg2Map" text="copy" />
                                     </items>
                                   </Menu>
                                   <Menu mnemonicParsing="false" text="Alg3">
                                     <items>
-                                      <MenuItem mnemonicParsing="false" text="About" />
+                                      <MenuItem mnemonicParsing="false" onAction="#showAlg3Map" text="copy" />
                                     </items>
                                   </Menu>
                                 </menus>

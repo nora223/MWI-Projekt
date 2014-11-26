@@ -16,6 +16,10 @@ import javafx.scene.control.Label;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 /**
  *
@@ -79,11 +83,30 @@ public class FXMLDocumentController implements Initializable {
         webEngine.load(url.toExternalForm());
 
     }
+    @FXML
+    public void showAlg2Map() {
+
+        WebEngine webEngine = WebViewAlg.getEngine();
+        URL url = getClass().getResource("alg2Map.html");
+        //webEngine.executeScript("document.setMapTypeSatellit");
+        webEngine.load(url.toExternalForm());
+
+    }
+    @FXML
+    public void showAlg3Map() {
+
+        WebEngine webEngine = WebViewAlg.getEngine();
+        URL url = getClass().getResource("alg3Map.html");
+        //webEngine.executeScript("document.setMapTypeSatellit");
+        webEngine.load(url.toExternalForm());
+
+    }
     
     @FXML
     public void alg1copy(){
         showAlgMap();
     }
+
     
    @FXML
    public void readKML()throws FileNotFoundException{
@@ -102,4 +125,18 @@ public class FXMLDocumentController implements Initializable {
        menu.Menu.saveKML();
    }
    
+
+    @FXML
+    public void drawPolygon() throws ScriptException, NoSuchMethodException{
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("osmfxml.algMap.html");
+        String st = "drawPolygonHTML";
+        engine.eval(st);
+        Invocable inv = (Invocable)engine;
+        inv.invokeFunction("drawPolygonHTML");
+        
+        
+    }
+
+
 }

@@ -1,0 +1,118 @@
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <title></title>
+<script type="text/javascript"  src="http://openlayers.org/api/OpenLayers.js"></script>
+<script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+<script type="text/javascript">    
+
+var map;
+var lineLayer;
+var points;
+var style;
+
+var polygonFeature;
+
+function pintarZonas(){ 
+
+//lng and lat for both areas
+var zonaALng = [-3.841867446899414, -3.838176727294922, -3.838348388671875,    -3.843669891357422];
+var zonaALat = [46.466002139041116, 43.466002139041116, 43.46432016607394, 43.46276274196949];
+var zonaBLng = [-3.832254409790039, -3.8265037536621094, -3.8254737854003906, -3.829936981201172,-3.832683563232422];
+var zonaBLat = [43.462513550389424, 43.46375949801845, 43.461641371770504, 43.46002157809642,43.461142978339005];
+
+//I keep all areas here
+var vectorZonas = [zonaALng, zonaALat, zonaBLng, zonaBLat];
+
+
+  lineLayerZona1 = new OpenLayers.Layer.Vector("zona1");
+  style1 = { strokeColor: '#0000ff',
+     strokeOpacity: 1,
+     strokeWidth: 5
+  };
+
+  lineLayerZona2 = new OpenLayers.Layer.Vector("zona2");
+  style2 = { strokeColor: '#00ff00',
+     strokeOpacity: 1,
+     strokeWidth: 5
+
+  };
+
+var vectorStyle = [style1, style2];  
+var vectorLineLayer = [lineLayerZona1, lineLayerZona2];
+
+pointZona1 = new Array(); 
+pointZona2 = new Array();
+vectorPoint = [pointZona1, pointZona2];
+//Here I keep all points to both areas
+var vectorCapas = [lineLayerZona1, lineLayerZona2];  
+var i = 0;
+var x = 0;
+var zonaLat, zonaLng;
+    var ww = 0;
+for(i = 0; i < vectorZonas.length/2; i ++){
+    zonaLng = vectorZonas[ww];
+    zonaLat = vectorZonas[ww+1];
+    point = vectorPoint[i];
+    ww = i;
+    ww +=2;
+    for(x = 0; x < zonaLng.length; x ++){
+        point[x] =new OpenLayers.LonLat(zonaLng[x],zonaLat[x] ).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+
+        point[x] = new OpenLayers.Geometry.Point(point[x].lon, point[x].lat);   
+    }
+    //No hace falta añadir un punto de final porque se cierra solo el poligono
+}
+
+
+ //Añadimos las capas al mapa
+ for(z = 0; z < vectorPoint.length; z++){
+    linear_ring = new OpenLayers.Geometry.LinearRing(vectorPoint[z]);
+    polygonFeature = new OpenLayers.Feature.Vector(
+new OpenLayers.Geometry.Polygon([linear_ring]), null, vectorStyle[z]);
+
+    vectorLineLayer[z].addFeatures([polygonFeature]);
+    map.addLayer(vectorLineLayer[z]); 
+
+}
+
+
+}
+
+function initialize() 
+{    
+  map = new OpenLayers.Map ("map_canvas", {
+        controls:[
+            new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.PanZoomBar(),
+            new OpenLayers.Control.LayerSwitcher(),
+            new OpenLayers.Control.Attribution()],
+        maxExtent: new     OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+        maxResolution: 156543.0399,
+        numZoomLevels: 19,
+        units: 'm',
+        projection: new OpenLayers.Projection("EPSG:900913"),
+        displayProjection: new OpenLayers.Projection("EPSG:4326")
+      });
+
+    // Define the map layer
+    // Here we use a predefined layer that will be kept up to date with URL changes
+    layerMapnik = new OpenLayers.Layer.OSM.Mapnik("MapaCiudad");
+    map.addLayer(layerMapnik);
+  var lonLat = new     OpenLayers.LonLat(-3.8343143463134766,43.451610413300685).transform(new     OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+  //map.setCenter(new OpenLayers.LonLat(-3.862788677215576, 43.4669443349282) //     Center of the map
+    map.zoomTo(13);
+    map.setCenter(lonLat, 19);  
+
+ pintarZonas();
+}
+
+</script>
+</head>
+
+<body onload="initialize()" >
+
+<div id="map_canvas" style="width: 828px; height: 698px"></div>  
+</body>
+
+</html>
