@@ -73,6 +73,9 @@ public class Menu {
         int intAnzahl = 0;
         String anzahlSUR = null;
         List<String> Koordinaten = new ArrayList<String>();
+        String [][] daten = new String [1][4];
+        String lon; //longitude = Längengrad
+        String lat; //latitude = Breitengrad
 
         try {
             JFileChooser sc = new JFileChooser();
@@ -92,7 +95,7 @@ public class Menu {
                 //System.out.println("______________________");
                 for (int j = 1; j <= intAnzahl; j++) {
                     zeile = in.readLine();
-                    String [][] daten = cutSnip(zeile, j);
+                    daten = cutSnip(zeile, j);
                     //System.out.println("______________________");
                     //Koordinaten.add(zeile);
 
@@ -101,12 +104,30 @@ public class Menu {
                     }
                     //System.out.println(zeile);
                 }
-
-                // Test Array List Inhaltausgaben
-                //               System.out.println("______________________");
-                //               for(String current: Koordinaten){
-                //                   System.out.println(current);
-                //               }
+                
+                //Überprüfung ob alle Koordinaten in den Feldern gleich sind
+                
+                for (int i=0; i<intAnzahl; i++){
+                    String helpLon = null;
+                    String helpLat = null;
+                    
+                    lon = daten [i][1];
+                    lat = daten [i][2];
+                    
+                    if (helpLon != null && helpLat != null){
+                        if(lon == helpLon && lat == helpLat){
+                            continue;
+                        }else{
+                            javax.swing.JOptionPane.showMessageDialog(null, "Die angegebenen Koordinaten sind inkompatibel! ");
+                        }
+                    }else{
+                        javax.swing.JOptionPane.showMessageDialog(null, "Die angegebenen Koordinaten sind nicht kompatibel! ");
+                    }
+              
+                    helpLon = lon;
+                    helpLat = lat;
+                }
+                
             }
 
         } catch (Exception e) {
