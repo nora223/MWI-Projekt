@@ -18,8 +18,8 @@ function pintarZonas(){
 //lng and lat for both areas
 var zonaALng = [-3.841867446899414, -3.838176727294922, -3.838348388671875,    -3.843669891357422];
 var zonaALat = [46.466002139041116, 43.466002139041116, 43.46432016607394, 43.46276274196949];
-var zonaBLng = [-3.832254409790039, -3.8265037536621094, -3.8254737854003906, -3.829936981201172,-3.832683563232422];
-var zonaBLat = [43.462513550389424, 43.46375949801845, 43.461641371770504, 43.46002157809642,43.461142978339005];
+var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602,8.38495284,8.38554829, 8.38559657,8.38500649, 8.38505477,8.38586479,8.38556439];
+var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842,49.02636174, 49.02651651, 49.02648133, 49.02670293,49.0267557, 49.02694212,49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442,49.02590798];
 
 //I keep all areas here
 var vectorZonas = [zonaALng, zonaALat, zonaBLng, zonaBLat];
@@ -32,9 +32,11 @@ var vectorZonas = [zonaALng, zonaALat, zonaBLng, zonaBLat];
   };
 
   lineLayerZona2 = new OpenLayers.Layer.Vector("zona2");
-  style2 = { strokeColor: '#00ff00',
+  style2 = { strokeColor: '#ff0000',
      strokeOpacity: 1,
-     strokeWidth: 5
+     fillColor: '#ff0000',
+     strokeWidth: 2,
+     fillOpacity: 0.1
 
   };
 
@@ -99,9 +101,9 @@ function initialize()
     // Here we use a predefined layer that will be kept up to date with URL changes
     layerMapnik = new OpenLayers.Layer.OSM.Mapnik("MapaCiudad");
     map.addLayer(layerMapnik);
-  var lonLat = new     OpenLayers.LonLat(-3.8343143463134766,43.451610413300685).transform(new     OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+  var lonLat = new     OpenLayers.LonLat(8.38551611,49.02639339).transform(new     OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
   //map.setCenter(new OpenLayers.LonLat(-3.862788677215576, 43.4669443349282) //     Center of the map
-    map.zoomTo(13);
+    map.zoomTo(15);
     map.setCenter(lonLat, 19);  
 
  pintarZonas();
