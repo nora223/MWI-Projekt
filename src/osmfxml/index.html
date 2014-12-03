@@ -24,9 +24,7 @@
             var layer_markers;
             var getLon = null;
 
-            function timedRefresh(timeoutPeriod) {
-                setTimeout("location.reload(true);", timeoutPeriod);
-            }
+           
             function drawmap() {
                 // Popup und Popuptext mit evtl. Grafik
                 var popuptext = "<font color=\"black\"><b>DHBW Karlsruhe<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
@@ -62,7 +60,7 @@
                 //coordinates[1] = showcoordinate.getLatitude();
 
                 if (getLon != null) {
-                    popuptext = getLon + "<font color=\"black\"><b>WOOOP WOOP<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
+                    popuptext = getLon + "<font color=\"black\"><b><br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
                     map.addLayers([layer_mapnik, layer_markers]);
                     jumpTo(lon, lat, zoom);
                     // Position des Markers
@@ -83,7 +81,7 @@
         </script>
 
     </head>
-    <body onload="drawmap();JavaScript:timedRefresh(8000);"><!-- Refresh der Seite -->
+    <body onload="drawmap();"><!-- Refresh der Seite -->
 
 
 

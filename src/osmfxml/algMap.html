@@ -13,15 +13,13 @@
         <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
         <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
         <script type="text/javascript" src="tom.js"></script>
-
+        <script>
 var map;
 var layer_mapnik;
 var layer_tah;
 var layer_markers;
 var layer_polygon;
 
-function drawmap() {
-       window.alert();
        
 
             function drawmap() {
@@ -70,27 +68,18 @@ function drawmap() {
              var aPoint = new OpenLayers.Geometry.Point(point1);
              var aCirclePoint = new OpenLayers.Geometry.Collection([a, aPoint]);
              var b = new OpenLayers.Feature.Vector(aCirclePoint);
-
+            }
         //]]>
         </script>
 
-//]]>
-    </script>
+
+   
  
   </head>
   <body onload="drawmap();">
 
       
-          
-      
-      <button onclick="drawPolygonHTML()">draw Button</button>
   
-       <script>
-       function drawPolygonHTML(){
-          
-              
-          }
-          </script>
   <div id="map">
   </div>
       
