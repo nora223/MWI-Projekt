@@ -25,6 +25,7 @@ import org.w3c.dom.Node;
 public class Menu{
 
     private static String[][] daten = new String[10][4];
+    private static int NumberSUR = 0;
 
     public static void readKML() throws FileNotFoundException {
         File f = null;
@@ -61,7 +62,7 @@ public class Menu{
         }
     }
 
-    public static void readSUR() throws FileNotFoundException {
+    public static String[][] readSUR() throws FileNotFoundException {
         File s = null;
         String txtname = null;
         String inhalt = null;
@@ -85,6 +86,7 @@ public class Menu{
                 for (int i = 1; i <= 1; i++) {
                     anzahlSUR = in.readLine();
                     intAnzahl = Integer.parseInt(anzahlSUR);
+                    NumberSUR = intAnzahl;
                     System.out.println(intAnzahl);
                 }
                 for (int j = 1; j <= intAnzahl; j++) {
@@ -97,11 +99,11 @@ public class Menu{
                     lat = daten[i][2];
                     
                     if (helpLon != null && helpLat != null) {
-                        System.out.println("test " + lon + lat);
-                        System.out.println("test " + helpLon + helpLat);
+                        //System.out.println("test " + lon + lat);
+                        //System.out.println("test " + helpLon + helpLat);
 
                         if (lon.equals(helpLon) && lat.equals(helpLat)) {
-                            System.out.println("läuft er rein?");
+                            //System.out.println("läuft er rein?");
                             helpLon = lon;
                             helpLat = lat;
                             continue;
@@ -118,7 +120,7 @@ public class Menu{
         } catch (Exception e) {
             javax.swing.JOptionPane.showMessageDialog(null, "Datei könnte nicht gelesen werden. " + e);
         }
-
+        return daten;
     }
 
     private static boolean containsString(String s, String subString) {
@@ -142,6 +144,15 @@ public class Menu{
 
     }
 
+    //Methode dient zur Rückgabe der Anzahl von SUR
+    public static int getAnzahlSUR(){
+        int Anzahl = 0;
+        
+        Anzahl = NumberSUR;
+        //System.out.println("NumberSUR: " + Anzahl);
+        return Anzahl;
+    }
+    
     public String[] getCoordinates() {
         String[] coordinates = new String[2];
 
