@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.awt.Graphics;
 
 /**
  *
@@ -20,7 +21,7 @@ public class OSMFXML extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
-        
+       
         Scene scene = new Scene(root);
         
         stage.setScene(scene);
@@ -33,5 +34,13 @@ public class OSMFXML extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    
+      public void paint(Graphics g) {
+    int xpoints[] = {25, 145, 25, 145, 25};
+    int ypoints[] = {25, 25, 145, 145, 25};
+    int npoints = 5;
+    
+    g.drawPolygon(xpoints, ypoints, npoints);
+  }
     
 }

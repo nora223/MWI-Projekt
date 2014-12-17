@@ -105,6 +105,11 @@
                                       <MenuItem mnemonicParsing="false" onAction="#showAlg3Map" text="copy" />
                                     </items>
                                   </Menu>
+                                    <Menu mnemonicParsing="false" text="Alg4">
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" onAction="#showAlg4Map" text="copy" />
+                                       </items>
+                                    </Menu>
                                 </menus>
                               </MenuBar>
                            </children>

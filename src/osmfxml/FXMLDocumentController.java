@@ -102,6 +102,16 @@ public class FXMLDocumentController implements Initializable {
 
     }
     
+      @FXML
+    public void showAlg4Map() {
+
+        WebEngine webEngine = WebViewAlg.getEngine();
+        URL url = getClass().getResource("alg4Map.html");
+        //webEngine.executeScript("document.setMapTypeSatellit");
+        webEngine.load(url.toExternalForm());
+
+    }
+    
     @FXML
     public void alg1copy(){
         showAlgMap();

@@ -1,168 +1,139 @@
-<!DOCTYPE html>
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>OpenLayers Regular Polygon Example</title>
-<link rel="stylesheet" href="../theme/default/style.css" type="text/css">
-<link rel="stylesheet" href="style.css" type="text/css">
-<style type="text/css">
-p {
-width: 512px;
+    <title></title>
+<script type="text/javascript"  src="http://openlayers.org/api/OpenLayers.js"></script>
+<script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+<script type="text/javascript">    
+
+var map;
+var lineLayer;
+var points;
+var style;
+var ol;
+
+var polygonFeature;
+
+function pintarZonas(){ 
+    
+    var startpointlon = 8.38573 - 0.003 ;
+    var startpointlat = 49.02640 + 0.0015;
+    var endpointlon = 8.38573 + 0.003 ;
+    var endpointlat = 49.02640 - 0.0015;
+    var greyPoint = new Array();
+    
+
+    for(var i = startpointlon; endpointlon; i= i + 0.00001){
+        for (var j = startpointlat; endpointlat; i = i + 0.00001){
+            
+                
+        }
+    } 
+
+//lng and lat for both areas
+var zonaALng = [-3.841867446899414, -3.838176727294922, -3.838348388671875,    -3.843669891357422];
+var zonaALat = [46.466002139041116, 43.466002139041116, 43.46432016607394, 43.46276274196949];
+var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602,8.38495284,8.38554829, 8.38559657,8.38500649, 8.38505477,8.38586479,8.38556439];
+var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842,49.02636174, 49.02651651, 49.02648133, 49.02670293,49.0267557, 49.02694212,49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442,49.02590798];
+
+//I keep all areas here
+var vectorZonas = [zonaALng, zonaALat, zonaBLng, zonaBLat];
+
+
+  lineLayerZona1 = new OpenLayers.Layer.Vector("zona1");
+  style1 = { strokeColor: '#0000ff',
+     strokeOpacity: 1,
+     strokeWidth: 5
+  };
+
+  lineLayerZona2 = new OpenLayers.Layer.Vector("zona2");
+  style2 = { strokeColor: '#ff0000',
+     strokeOpacity: 1,
+     fillColor: '#ff0000',
+     strokeWidth: 2,
+     fillOpacity: 0.1
+
+  };
+  
+
+var vectorStyle = [style1, style2];  
+var vectorLineLayer = [lineLayerZona1, lineLayerZona2];
+
+pointZona1 = new Array(); 
+pointZona2 = new Array();
+vectorPoint = [pointZona1, pointZona2];
+//Here I keep all points to both areas
+var vectorCapas = [lineLayerZona1, lineLayerZona2];  
+var i = 0;
+var x = 0;
+var zonaLat, zonaLng;
+    var ww = 0;
+for(i = 0; i < vectorZonas.length/2; i ++){
+    zonaLng = vectorZonas[ww];
+    zonaLat = vectorZonas[ww+1];
+    point = vectorPoint[i];
+    ww = i;
+    ww +=2;
+    for(x = 0; x < zonaLng.length; x ++){
+        point[x] =new OpenLayers.LonLat(zonaLng[x],zonaLat[x] ).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+
+        point[x] = new OpenLayers.Geometry.Point(point[x].lon, point[x].lat);   
+    }
+ }
+
+
+
+ for(z = 0; z < vectorPoint.length; z++){
+    linear_ring = new OpenLayers.Geometry.LinearRing(vectorPoint[z]);
+    polygonFeature = new OpenLayers.Feature.Vector(
+new OpenLayers.Geometry.Polygon([linear_ring]), null, vectorStyle[z]);
+
+    vectorLineLayer[z].addFeatures([polygonFeature]);
+    map.addLayer(vectorLineLayer[z]); 
+
 }
-#config {
-margin-top: 1em;
-width: 512px;
-position: relative;
-height: 8em;
+
+
 }
-#controls {
-padding-left: 2em;
-margin-left: 0;
-width: 12em;
+
+function initialize() 
+{    
+  map = new OpenLayers.Map ("map_canvas", {
+        controls:[
+            new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.PanZoomBar(),
+            new OpenLayers.Control.LayerSwitcher(),
+            new OpenLayers.Control.Attribution()],
+        maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+        maxResolution: 156543.0399,
+        numZoomLevels: 19,
+        units: 'm',
+        projection: new OpenLayers.Projection("EPSG:900913"),
+        displayProjection: new OpenLayers.Projection("EPSG:4326")
+      });
+
+    // Define the map layer
+    // Here we use a predefined layer that will be kept up to date with URL changes
+    layerMapnik = new OpenLayers.Layer.OSM.Mapnik("MapaCiudad");
+    map.addLayer(layerMapnik);
+  var lonLat = new OpenLayers.LonLat(8.38551611,49.02639339).transform(new     OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+  //map.setCenter(new OpenLayers.LonLat(-3.862788677215576, 43.4669443349282) //     Center of the map
+    map.zoomTo(15);
+    map.setCenter(lonLat, 19);  
+
+   
+
+ pintarZonas();
 }
-#controls li {
-padding-top: 0.5em;
-list-style: none;
-}
-#options {
-font-size: 1em;
-top: 0;
-margin-left: 15em;
-position: absolute;
-}
-/* avoid pink tiles */
-.olImageLoadError {
-background-color: transparent !important;
-}
-</style>
-<script src="../lib/OpenLayers.js"></script>
-<script type="text/javascript">
-var map, polygonControl;
-function init(){
-map = new OpenLayers.Map('map');
-var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-"http://vmap0.tiles.osgeo.org/wms/vmap0?", {layers: 'basic'});
-var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
-map.addLayers([wmsLayer, polygonLayer]);
-map.addControl(new OpenLayers.Control.LayerSwitcher());
-map.addControl(new OpenLayers.Control.MousePosition());
-polyOptions = {sides: 4};
-polygonControl = new OpenLayers.Control.DrawFeature(polygonLayer,
-OpenLayers.Handler.RegularPolygon,
-{handlerOptions: polyOptions});
-map.addControl(polygonControl);
-map.setCenter(new OpenLayers.LonLat(0, 0), 3);
-document.getElementById('noneToggle').checked = true;
-document.getElementById('irregularToggle').checked = false;
-}
-function setOptions(options) {
-polygonControl.handler.setOptions(options);
-}
-function setSize(fraction) {
-var radius = fraction * map.getExtent().getHeight();
-polygonControl.handler.setOptions({radius: radius,
-angle: 0});
-}
+
+
+
 </script>
 </head>
-<body onload="init()">
-<h1 id="title">OpenLayers Regular Polygon Example</h1>
-<div id="tags">
-vector, feature, regularpolygon, drawing, draw, advanced
-</div>
-<p id="shortdesc">
-Shows how to use the RegularPolygon handler to draw features with
-different numbers of sides.
-</p>
-<div id="map" class="smallmap"></div>
-<div id="config">
-<ul id="controls"><b>Map Controls</b>
-<li>
-<input type="radio" name="type"
-value="none" id="noneToggle"
-onclick="polygonControl.deactivate()"
-checked="checked" />
-<label for="noneToggle">navigate</label>
-</li>
-<li>
-<input type="radio" name="type"
-value="polygon" id="polygonToggle"
-onclick="polygonControl.activate()" />
-<label for="polygonToggle">draw polygon</label>
-</li>
-</ul>
-<table id="options">
-<tbody>
-<tr>
-<th>Draw Option</th>
-<th>Value</th>
-</tr>
-<tr>
-<td>
-shape
-</td>
-<td>
-<select name="sides"
-onchange="setOptions({sides: parseInt(this.value)})">
-<option value="3">triangle</option>
-<option value="4" selected="selected">square</option>
-<option value="5">pentagon</option>
-<option value="6">hexagon</option>
-<option value="40">circle</option>
-</select>
-</td>
-</tr>
-<tr>
-<td>
-snap angle
-</td>
-<td>
-<select name="angle"
-onchange="setOptions({snapAngle: parseFloat(this.value)})">
-<option value="" selected="selected">no snap</option>
-<option value="15">15&deg;</option>
-<option value="45">45&deg;</option>
-<option value="90">90&deg;</option>
-</select>
-</td>
-</tr>
-<tr>
-<td>
-size
-</td>
-<td>
-<select name="size"
-onchange="setSize(parseFloat(this.value))">
-<option value="" selected="selected">variable</option>
-<option value="0.1">small</option>
-<option value="0.2">medium</option>
-<option value="0.4">large</option>
-</select>
-</td>
-</tr>
-<tr>
-<td>
-irregular
-</td>
-<td>
-<input id="irregularToggle" name="irregular"
-type="checkbox"
-onchange="setOptions({irregular: this.checked})") />
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>
-Regular polygons can be drawn by pointing a DrawFeature control to the
-RegularPolygon handler class. The options above demonstrate how the
-handler can be configured. Note if you are in angle snapping mode (if
-the snap angle is non-null) and you hold down the <b>Shift</b> key, you
-will toggle to non-snapping mode.
-</p>
-<p>
-The <i>irregular</i> option allows drawing of irregular polygons. With this option, the fixed radius option is ignored.
+
+<body onload="initialize()" >
+
+<div id="map_canvas" style="width: 828px; height: 698px"></div>  
 </body>
+
 </html>
