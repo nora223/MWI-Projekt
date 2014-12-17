@@ -15,7 +15,10 @@
     <h2>My Map</h2>
     <div id="map" class="map"></div>
     <script type="text/javascript">
-      var map = new ol.Map({
+    var lat = 8.38573;
+      var long = 49.02640;  
+    console.log("Schinken");
+    var map = new ol.Map({
         target: 'map',
         layers: [
           new ol.layer.Tile({
@@ -23,10 +26,20 @@
           })
         ],
         view: new ol.View({
-          center: ol.proj.transform([8.38573, 49.02640], 'EPSG:4326', 'EPSG:4326'),
+          center: [0, 0], 
           zoom: 7
         })
       });
+      
+      CenterMap(lat, long);
+      
+      
+      function CenterMap(lat, long){
+          console.log("Lat: "+ lat + "Long: "+ long);
+          map.getView().setCenter(ol.proj.transform([lat, long], 'EPSG:4326', 'EPSG:3857'));
+             map.getView().setZoom(5);
+          
+      }
     </script>
   </body>
 </html>
