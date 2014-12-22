@@ -22,6 +22,8 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.awt.Image;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -265,6 +267,16 @@ public class FXMLDocumentController implements Initializable {
         inv.invokeFunction("drawPolygonHTML");
         
         
+    }
+    
+    @FXML
+    public void showImage(){
+       Image image = null; try {
+    URL url = new URL(
+        "http://www.personal.psu.edu/acr117/blogs/audrey/images/image-2.jpg");
+    image = ImageIO.read(url);
+    } catch (IOException e) {
+    }
     }
 
 
