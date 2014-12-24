@@ -5,6 +5,7 @@
  */
 package osmfxml;
 
+import com.sun.webpane.platform.ContextMenu;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,6 +23,13 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.io.File;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.ImageView;
+import javax.imageio.ImageIO;
+import javafx.scene.image.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 
 /**
  *
@@ -192,6 +200,19 @@ public class FXMLDocumentController implements Initializable {
         Invocable inv = (Invocable)engine;
         inv.invokeFunction("drawPolygonHTML");
         
+        
+    }
+    
+    @FXML
+    ImageView imageView;
+    
+    @FXML
+    public void showImage(){
+      //Image img = new Image("file:/C:/Users/Tino/Documents/dhbw.jpg");
+      Image img = WebViewMap.snapshot(null, null);
+      imageView.setImage(img);
+      
+      
         
     }
 

@@ -37,9 +37,27 @@
       function CenterMap(lat, long){
           console.log("Lat: "+ lat + "Long: "+ long);
           map.getView().setCenter(ol.proj.transform([lat, long], 'EPSG:4326', 'EPSG:3857'));
-             map.getView().setZoom(5);
+             map.getView().setZoom(17);
           
       }
+      
+    var startpointlon = lat - 0.003 ;
+    var startpointlat = long + 0.0015;
+    var endpointlon = lat + 0.003 ;
+    var endpointlat = long - 0.0015;
+    
+    
+
+    for(var i = startpointlon; endpointlon; i= i + 0.00001){
+        for (var j = startpointlat; endpointlat; i = i + 0.00001){
+            
+            ol.proj.transform([i, j], 'EPSG:4326', 'EPSG:3857').Color("red");
+            ol.proj.transform([lat, long], 'EPSG:4326', 'EPSG:3857').color("red");
+            ol.coordinate[i,y] = "red";
+            
+        }
+    } 
+
     </script>
   </body>
 </html>
