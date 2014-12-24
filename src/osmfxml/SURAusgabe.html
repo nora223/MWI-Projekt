@@ -22,20 +22,19 @@
             var layer_mapnik;
             var layer_tah;
             var layer_markers;
-            var getLon = null;
 
 //            function timedRefresh(timeoutPeriod) {
 //                setTimeout("location.reload(true);", timeoutPeriod);
 //            }
             function drawmap() {
                 // Popup und Popuptext mit evtl. Grafik
-                var popuptext = "<font color=\"black\"><b>DHBW Karlsruhe<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
+                var popuptext = "<font color=\"black\"><b>Woop Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
 
                 OpenLayers.Lang.setCode('de');
 
                 // Position und Zoomstufe der Karte
-                var lon = 8.38573;
-                var lat = 49.02640;
+                var lon =  05.39449440;
+                var lat =  50.92540920;
                 var zoom = 15;
                 
                 map = new OpenLayers.Map('map', {
@@ -57,27 +56,11 @@
                 layer_markers = new OpenLayers.Layer.Markers("Address", {projection: new OpenLayers.Projection("EPSG:4326"),
                     visibility: true, displayInLayerSwitcher: false});
 
-                //getLon = getLongitude();
-                //getLat = coordinates[1];
-                //coordinates[1] = showcoordinate.getLatitude();
-
-                //if (getLon != null) {
-                //popuptext = getLon + "<font color=\"black\"><b>WOOOP WOOP<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
-                map.addLayers([layer_mapnik, layer_markers]);
+map.addLayers([layer_mapnik, layer_markers]);
                 jumpTo(lon, lat, zoom);
                 // Position des Markers
-                addMarker(layer_markers, 8.38573, 49.02640, popuptext);
+                addMarker(layer_markers, lon, lat, popuptext);
 
-
-                //} else {
-                //    popuptext = "<font color=\"black\"><b>Test<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
-                //    map.addLayers([layer_mapnik, layer_markers]);
-                //    jumpTo(lon, lat, zoom);
-
-                // Position des Markers
-                //    addMarker(layer_markers, 8.38573, 49.02640, popuptext);
-
-                //}
             }
 
             //]]>
@@ -86,9 +69,8 @@
     </head>
     <body onload="drawmap();"><!-- Refresh der Seite -->
 
-        <div id="map">
+        <div id="map" id="box">
         </div>
 
     </body>
 </html>
-
