@@ -29,7 +29,7 @@
 //            }
             function drawmap() {
                 // Popup und Popuptext mit evtl. Grafik
-                var popuptext = "<font color=\"black\"><b>DHBW Karlsruhe<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
+                //var popuptext = "<font color=\"black\"><b>DHBW Karlsruhe<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
 
                 OpenLayers.Lang.setCode('de');
 
@@ -43,8 +43,7 @@
                     displayProjection: new OpenLayers.Projection("EPSG:4326"),
                     controls: [
                         new OpenLayers.Control.Navigation(),
-                        new OpenLayers.Control.LayerSwitcher(),
-                        new OpenLayers.Control.PanZoomBar()],
+                        ],
                     maxExtent:
                             new OpenLayers.Bounds(-20037508.34, -20037508.34,
                                     20037508.34, 20037508.34),

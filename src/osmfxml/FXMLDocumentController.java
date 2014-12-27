@@ -5,6 +5,7 @@
  */
 package osmfxml;
 
+import com.sun.prism.BufferedImageTools;
 import com.sun.webpane.platform.ContextMenu;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,6 +31,8 @@ import javax.imageio.ImageIO;
 import javafx.scene.image.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.paint.Color;
+import javax.imageio.ImageWriter;
 
 /**
  *
@@ -209,11 +212,27 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     public void showImage(){
       //Image img = new Image("file:/C:/Users/Tino/Documents/dhbw.jpg");
-      Image img = WebViewMap.snapshot(null, null);
+      Image img;  
+        img = WebViewMap.snapshot(null, null);
       imageView.setImage(img);
       
+     /* int width = (int)img.getWidth();
+    int height = (int)img.getHeight();
       
-        
+        PixelReader reader = img.getPixelReader();
+        WritableImage dest = new WritableImage(width, height);
+        PixelWriter writer = dest.getPixelWriter();
+  
+      for(int i  = 0; i<=img.getHeight(); i++){
+          for(int j = 0; j<= img.getWidth(); j++){         
+              if(reader.getColor(i, j).equals(Color.GREY)){
+                  
+                        
+              }
+          }
+      }      
+  
+        */
     }
 
 
