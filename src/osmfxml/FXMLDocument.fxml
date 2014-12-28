@@ -132,6 +132,20 @@
                                           <ImageView fx:id="imageViewSelectColor" fitHeight="480.0" fitWidth="496.0" pickOnBounds="true" preserveRatio="true" />
                                        </content>
                                     </Tab>
+                                    <Tab onSelectionChanged="#changeColor" text="change Color">
+                                      <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <ImageView fx:id="imageViewChangeColor" fitHeight="477.0" fitWidth="495.0" pickOnBounds="true" preserveRatio="true" />
+                                             </children>
+                                          </AnchorPane>
+                                      </content>
+                                    </Tab>
+                                    <Tab onSelectionChanged="#showChangeColor" text="show change Color">
+                                       <content>
+                                          <ImageView fx:id="imageViewShowChangeColor" fitHeight="478.0" fitWidth="494.0" pickOnBounds="true" preserveRatio="true" />
+                                       </content>
+                                    </Tab>
                                 </tabs>
                               </TabPane>
                            </children>

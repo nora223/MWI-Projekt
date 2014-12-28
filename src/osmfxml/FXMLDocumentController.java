@@ -32,6 +32,7 @@ import javax.imageio.ImageIO;
 import javafx.scene.image.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javax.imageio.ImageWriter;
 
@@ -252,9 +253,57 @@ public class FXMLDocumentController implements Initializable {
                 System.out.println("Saturation = " + color.getSaturation());
             }
         }
-          
-         
-       
-  
+    
+    }
+    @FXML
+    ImageView imageViewChangeColor;
+    
+    public Image changeColor(){
+        
+        Image image;  
+        image = WebViewMap.snapshot(null, null);
+        
+        
+        // Obtain PixelReader
+        PixelReader pixelReader = image.getPixelReader();
+        System.out.println("Image Width: "+image.getWidth());
+        System.out.println("Image Height: "+image.getHeight());
+        System.out.println("Pixel Format: "+pixelReader.getPixelFormat());
+        
+        // Create WritableImage
+         WritableImage wImage = new WritableImage(
+                 (int)image.getWidth(),
+                 (int)image.getHeight());
+         PixelWriter pixelWriter = wImage.getPixelWriter();
+         for(int readY=0;readY<image.getHeight();readY++){
+            for(int readX=0; readX<image.getWidth();readX++){
+                Color color = pixelReader.getColor(readX,readY);
+                
+                
+                Color red = pixelReader.getColor(readX,readY);
+                red = Color.RED;
+                Color transparent = Color.TRANSPARENT;
+                if(color.toString().equals("0xfefefeff")){
+                    pixelWriter.setColor(readX, readY, red);
+                    System.out.println("Rot");
+                }
+                else{
+                    pixelWriter.setColor(readX, readY, transparent);
+                    System.out.println("Transparent");
+                }
+                
+            }
+         }
+        imageViewChangeColor.setImage(wImage);
+        return image;
+    }
+    @FXML
+    ImageView imageViewShowChangeColor;
+    
+    @FXML
+    public void showChangeColor(){
+        Image image = changeColor();
+        imageViewShowChangeColor.setImage(image);
+        
     }
 }
