@@ -243,14 +243,14 @@ public class FXMLDocumentController implements Initializable {
         for (int readY = 0; readY < image.getHeight(); readY++) {
             for (int readX = 0; readX < image.getWidth(); readX++) {
                 Color color = pixelReader.getColor(readX, readY);
-                System.out.println("\nPixel color at coordinates ("
+                System.out.println(/*"\nPixel color at coordinates ("
                         + readX + "," + readY + ") "
-                        + color.toString());
-                System.out.println("R = " + color.getRed());
+                        + */color.toString());
+                /*System.out.println("R = " + color.getRed());
                 System.out.println("G = " + color.getGreen());
                 System.out.println("B = " + color.getBlue());
                 System.out.println("Opacity = " + color.getOpacity());
-                System.out.println("Saturation = " + color.getSaturation());
+                System.out.println("Saturation = " + color.getSaturation()); */
             }
         }
     
@@ -283,7 +283,10 @@ public class FXMLDocumentController implements Initializable {
                 Color red = pixelReader.getColor(readX,readY);
                 red = Color.RED;
                 Color transparent = Color.TRANSPARENT;
-                if(color.toString().equals("0xfefefeff")){
+                if(color.toString().equals("0xc0b0aeff") || 
+                        color.toString().equals("0xbeadadff")|| 
+                        color.toString().equals("0xc1b0afff")|| 
+                        color.toString().equals("0xc1b0adff")){
                     pixelWriter.setColor(readX, readY, red);
                     System.out.println("Rot");
                 }
