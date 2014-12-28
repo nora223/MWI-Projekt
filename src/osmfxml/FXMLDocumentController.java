@@ -5,6 +5,7 @@
  */
 package osmfxml;
 
+import com.sun.org.apache.bcel.internal.generic.TargetLostException;
 import com.sun.prism.BufferedImageTools;
 import com.sun.webpane.platform.ContextMenu;
 import java.io.FileNotFoundException;
@@ -211,29 +212,49 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     public void showImage(){
-      //Image img = new Image("file:/C:/Users/Tino/Documents/dhbw.jpg");
-      Image img;  
-        img = WebViewMap.snapshot(null, null);
-      imageView.setImage(img);
       
-     /* int width = (int)img.getWidth();
-    int height = (int)img.getHeight();
+      Image image;  
+      image = WebViewMap.snapshot(null, null);
+      imageView.setImage(image);
       
-        PixelReader reader = img.getPixelReader();
-        WritableImage dest = new WritableImage(width, height);
-        PixelWriter writer = dest.getPixelWriter();
-  
-      for(int i  = 0; i<=img.getHeight(); i++){
-          for(int j = 0; j<= img.getWidth(); j++){         
-              if(reader.getColor(i, j).equals(Color.GREY)){
-                  
-                        
-              }
-          }
-      }      
-  
-        */
+     
+        
     }
-
-
+    @FXML
+    ImageView imageViewSelectColor;
+    
+    
+    //Gibt die Farbwerte auf der Konsole für jeden Pixel aus, VORSICHT!!! Dauert lang
+    @FXML
+    public void selectColor(){
+        
+        Image image;  
+        image = WebViewMap.snapshot(null, null);
+        imageViewSelectColor.setImage(image);
+        
+        // Obtain PixelReader
+        PixelReader pixelReader = image.getPixelReader();
+        System.out.println("Image Width: "+image.getWidth());
+        System.out.println("Image Height: "+image.getHeight());
+        System.out.println("Pixel Format: "+pixelReader.getPixelFormat());
+        
+        // Determine the color of each pixel in the image
+        for (int readY = 0; readY < image.getHeight(); readY++) {
+            for (int readX = 0; readX < image.getWidth(); readX++) {
+                Color color = pixelReader.getColor(readX, readY);
+                System.out.println("\nPixel color at coordinates ("
+                        + readX + "," + readY + ") "
+                        + color.toString());
+                System.out.println("R = " + color.getRed());
+                System.out.println("G = " + color.getGreen());
+                System.out.println("B = " + color.getBlue());
+                System.out.println("Opacity = " + color.getOpacity());
+                System.out.println("Saturation = " + color.getSaturation());
+            }
+        }
+          
+         
+       
+  
+    }
 }

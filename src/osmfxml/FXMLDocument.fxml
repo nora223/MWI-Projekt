@@ -56,20 +56,20 @@
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="407.0" prefWidth="344.0">
                            <children>
-                              <TabPane layoutX="7.0" layoutY="4.0" prefHeight="407.0" prefWidth="345.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TabPane fx:id="tabPane" layoutX="7.0" layoutY="4.0" prefHeight="407.0" prefWidth="345.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <tabs>
-                                  <Tab onSelectionChanged="#showMap" text="OSM Map">
+                                  <Tab fx:id="OSMMap" onSelectionChanged="#showMap" text="OSM Map">
                                        <content>
                                           <WebView fx:id="WebViewMap" prefHeight="-1.0" prefWidth="-1.0" />
                                               
                                           </content>
                                   </Tab>
-                                  <Tab onSelectionChanged="#showEarth" text="google Map">
+                                  <Tab fx:id="googleMap" onSelectionChanged="#showEarth" text="google Map">
                                        <content>
                                           <WebView fx:id="WebViewEarth" prefHeight="200.0" prefWidth="200.0" />
                                        </content>
                                   </Tab>
-                                    <Tab onSelectionChanged="#showgoogleSatellit" text="google Satellit">
+                                    <Tab fx:id="googleSatellit" onSelectionChanged="#showgoogleSatellit" text="google Satellit">
                                       <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                              <children>
@@ -122,11 +122,16 @@
                                           </AnchorPane>
                                     </content>
                                   </Tab>
-                                  <Tab onSelectionChanged="#showImage" text="Untitled Tab 2">
+                                  <Tab onSelectionChanged="#showImage" text="copy Map">
                                        <content>
                                           <ImageView fx:id="imageView" fitHeight="471.0" fitWidth="493.0" pickOnBounds="true" preserveRatio="true" />
                                        </content>
                                   </Tab>
+                                    <Tab onSelectionChanged="#selectColor" text="select Color">
+                                       <content>
+                                          <ImageView fx:id="imageViewSelectColor" fitHeight="480.0" fitWidth="496.0" pickOnBounds="true" preserveRatio="true" />
+                                       </content>
+                                    </Tab>
                                 </tabs>
                               </TabPane>
                            </children>
