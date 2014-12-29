@@ -288,25 +288,29 @@ public class FXMLDocumentController implements Initializable {
                         color.toString().equals("0xc1b0afff")|| 
                         color.toString().equals("0xc1b0adff")){
                     pixelWriter.setColor(readX, readY, red);
-                    System.out.println("Rot");
+                    //System.out.println("Rot");
                 }
                 else{
                     pixelWriter.setColor(readX, readY, transparent);
-                    System.out.println("Transparent");
+                    //System.out.println("Transparent");
                 }
                 
             }
          }
         imageViewChangeColor.setImage(wImage);
-        return image;
+        return wImage;
     }
+    
+    
     @FXML
-    ImageView imageViewShowChangeColor;
+    WebView webViewShowChangeColor;
     
     @FXML
     public void showChangeColor(){
-        Image image = changeColor();
-        imageViewShowChangeColor.setImage(image);
+        //Image image = changeColor();
         
+        WebEngine webEngine = webViewShowChangeColor.getEngine();
+        URL url = getClass().getResource("showChangeColor.html");
+        webEngine.load(url.toExternalForm());
     }
 }
