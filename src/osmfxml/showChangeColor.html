@@ -62,7 +62,14 @@
 
                 //if (getLon != null) {
                 //popuptext = getLon + "<font color=\"black\"><b>WOOOP WOOP<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
-                map.addLayers([layer_mapnik, layer_markers]);
+                //var img = changeColor();
+                var graphic = new OpenLayers.Layer.Image('Image', FXMLDocumentController.changeColor(), new OpenLayers.Bounds(-20037508.34, -20037508.34,
+                                    20037508.34, 20037508.3),
+                                            new OpenLayers.Size(418, 382));
+                 
+                 map.addControl(new OpenLayers.Control.LayerSwitcher());
+                
+                map.addLayers([layer_mapnik, layer_markers, graphic]);
                 jumpTo(lon, lat, zoom);
                 // Position des Markers
                 addMarker(layer_markers, 8.38573, 49.02640, popuptext);

@@ -8,6 +8,9 @@ package osmfxml;
 import com.sun.org.apache.bcel.internal.generic.TargetLostException;
 import com.sun.prism.BufferedImageTools;
 import com.sun.webpane.platform.ContextMenu;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,6 +29,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.File;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javax.imageio.ImageIO;
@@ -258,7 +262,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     ImageView imageViewChangeColor;
     
-    public Image changeColor(){
+    public Image changeColor() throws IOException{
         
         Image image;  
         image = WebViewMap.snapshot(null, null);
@@ -288,7 +292,7 @@ public class FXMLDocumentController implements Initializable {
                         color.toString().equals("0xc1b0afff")|| 
                         color.toString().equals("0xc1b0adff")){
                     pixelWriter.setColor(readX, readY, red);
-                    //System.out.println("Rot");
+                    
                 }
                 else{
                     pixelWriter.setColor(readX, readY, transparent);
@@ -297,7 +301,139 @@ public class FXMLDocumentController implements Initializable {
                 
             }
          }
+        
+        double middleY = wImage.getHeight()/2;
+        double middleX = wImage.getWidth()/2;
+        double[] zentralPixel = {middleX, middleY};
+        int[] nearestPixel= {0,0};
+        double distance = 100000;
+        double helpDistance;
+        double[] helpPixel;
+        
+        
+        
+        for(int y = 0; y<wImage.getHeight();y++){
+            for(int x = 0; x<wImage.getWidth(); x++){
+                Color color = pixelReader.getColor(x,y);
+                //System.out.println(color.toString());
+                if(color.toString().equals("0xbeadadff")){
+                helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0]-y),2)+ Math.pow(Math.abs(zentralPixel[1]-x),2));
+                //System.out.println("Berechnung Distance");
+                if(helpDistance<distance){
+                    distance = helpDistance;
+                    nearestPixel[0] = x;
+                    nearestPixel[1] = y;
+                }
+            }
+        
+            
+        }
+        
+        
+        
+        //WebEngine webEngine = webViewShowChangeColor.getEngine();
+        //URL url = getClass().getResource("showChangeColor.html");
+        //webEngine.load(url.toExternalForm());
+        }
+        System.out.println(nearestPixel[0]+" "+nearestPixel[1]);
+        
+        int lengthX;
+        int lengthY;
+        double lengthXY;
+        int getY;
+        int getX;
+        int getNextX;
+        int getNextY;
+        double helpGetNextX;
+        double helpGetNextY;
+        
+        
+        
+        for(getY = 0; getY<wImage.getHeight();getY++){
+            for(getX = 0; getX<wImage.getWidth(); getX++){
+                System.out.println("x="+getX+", y= "+getY);
+             
+                Color color = pixelReader.getColor(getX,getY);
+                System.out.println(color.toString());
+                
+                //Color green = pixelReader.getColor(getX,getY);
+                Color green = Color.GREEN;
+                System.out.println("Zeile360");
+                if(color.toString().equals("0xbeadadff")){
+                    System.out.println("Zeile 362");
+                    lengthX = nearestPixel[0] - getX;
+                    lengthY = nearestPixel[1] - getY;
+                    Color colorNextpixel;
+                    if(lengthX>0 && lengthY>0){
+                        int counter = 0;
+                        if(lengthX>lengthY){
+                            lengthXY = lengthX / lengthY;
+                            for(int i = 1; i<=lengthY; i++){
+                                
+                                helpGetNextX = (i*lengthXY)+getX;
+                                getNextX = (int) Math.round(helpGetNextX);
+                                getNextY = i+getY;
+                                colorNextpixel = pixelReader.getColor(getNextX,getNextY);
+                                
+                                if(!colorNextpixel.toString().equals("0xbeadadff")){
+                                    counter = counter+1;
+                                    if(counter>10){
+                                        
+                                        pixelWriter.setColor(getX, getY, green);
+                                        
+                                    }
+                                    
+                                }
+                                
+                            }
+                                   
+                        }
+                        else{
+                            System.out.println("Zeile 391");
+                            lengthXY = lengthY / lengthX;
+                            for (int i = 1; i <= lengthX; i++){
+                                
+                                helpGetNextY = (i*lengthXY)+getY;
+                                getNextY = (int) Math.round(helpGetNextY);
+                                getNextX = i+getX;
+                                colorNextpixel = pixelReader.getColor(getNextX, getNextY);
+                                
+                                if(!colorNextpixel.toString().equals("0xbeadadff")){
+                                    counter=counter+1;
+                                    
+                                    if(counter>10){
+                                        
+                                        pixelWriter.setColor(getX, getY, green);
+                                        
+                                    }
+                                    
+                                }
+                                
+                                
+                            }
+                        }
+                    }
+                    
+                    
+                }
+                
+            }
+        }
+        
+        
+        
         imageViewChangeColor.setImage(wImage);
+        
+        //int pictureCounter = 0;
+        //pictureCounter =pictureCounter+1;
+        
+        /*BufferedImage image1 = SwingFXUtils.fromFXImage(wImage, null); // Get buffered image.
+        BufferedImage imageRGB = new BufferedImage(image1.getWidth(), image1.getHeight(), BufferedImage.OPAQUE); // Remove alpha-channel from buffered image.
+        Graphics2D graphics = imageRGB.createGraphics();
+        graphics.drawImage(image1, 0, 0, null);
+        ImageIO.write(imageRGB, "png", new File("C:/Users/Tino/Documents/osm/"+pictureCounter+".png"));
+        graphics.dispose(); */
+        
         return wImage;
     }
     
@@ -307,10 +443,9 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     public void showChangeColor(){
-        //Image image = changeColor();
         
-        WebEngine webEngine = webViewShowChangeColor.getEngine();
-        URL url = getClass().getResource("showChangeColor.html");
-        webEngine.load(url.toExternalForm());
+       
     }
 }
+
+
