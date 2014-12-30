@@ -10,24 +10,17 @@
         <!--[if IE]>
         <link rel="stylesheet" type="text/css" href="ie_map.css"></link>
         <![endif]-->
-         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-         <script type="text/javascript" src="//maps.google.com/maps/api/js?sensor=true"></script>
-         <script type="text/javascript" src="../gmaps.js"></script>        <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
+        <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
         <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
         <script type="text/javascript" src="tom.js"></script>
-        <script type="text/javascript" src="test.js"></script>
         <script type="text/javascript" src="menu/showCoordinate.js"></script>
         <script type="text/javascript">
-            //<![CDATA[
 
             var map;
             var layer_mapnik;
             var layer_tah;
-            var layer_markers;
+            var layer_polygon;
 
-//            function timedRefresh(timeoutPeriod) {
-//                setTimeout("location.reload(true);", timeoutPeriod);
-//            }
             function drawmap() {
                 // Popup und Popuptext mit evtl. Grafik
                 var popuptext = "<font color=\"black\"><b>Woop Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
@@ -35,9 +28,9 @@
                 OpenLayers.Lang.setCode('de');
 
                 // Position und Zoomstufe der Karte
-                var lon = 5.33674460 ;
-                var lat = 50.93041450 ;
-                var zoom = 15;
+                var lon = 5.34109800 ;
+                var lat = 50.93274000 ;
+                var zoom = 18;
                 
                 map = new OpenLayers.Map('map', {
                     projection: new OpenLayers.Projection("EPSG:900913"),
@@ -55,21 +48,21 @@
                 });
 
                 layer_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
-                layer_markers = new OpenLayers.Layer.Markers("Address", {projection: new OpenLayers.Projection("EPSG:4326"),
-                visibility: true, displayInLayerSwitcher: false});
+                Layer_polygon = new OpenLayers.Layer.OSM.Mapnik("draw Polygon");
 
-                map.addLayers([layer_mapnik, layer_markers]);
-                jumpTo(lon, lat, zoom);
-                // Position des Markers
-                addMarker(layer_markers, lon, lat, popuptext);
-                 var path =  [[5.33674460,50.93041450], [5.33656140,50.93043350], [5.33658170,50.93050940]];                 polygon = map.drawPolygon({
-                 paths: path, 
-                 strokeColor: '#BBD8E9',
-                 strokeOpacity: 1,
-                 strokeWeight: 3,
-                 fillColor: '#BBD8E9',
-                 fillOpacity: 0.6
-                 });
+                jumpTo(5.34109800, 50.93274000, zoom);
+                // Position des Polygons
+                var point1 = new OpenLayers.LonLat(5.34109800, 50.93274000);
+                var point2 = new OpenLayers.LonLat(5.34114700, 50.93278900);
+                var point3 = new OpenLayers.LonLat(5.34116100, 50.93278200);
+                var  polygon = new OpenLayers.Geometry.Polygon(point1, point2, point3);
+                polygon.getGeodesicArea();
+
+                var a=  OpenLayers.Geometry.Polygon.createRegularPolygon(point1,50000,40,0);
+                var aPoint = new OpenLayers.Geometry.Point(point1);
+                var aCirclePoint = new OpenLayers.Geometry.Collection([a, aPoint]);
+                var b = new OpenLayers.Feature.Vector(aCirclePoint);
+
             }
 
         </script>
