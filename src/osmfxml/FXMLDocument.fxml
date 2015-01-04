@@ -143,7 +143,7 @@
                                     </Tab>
                                     <Tab onSelectionChanged="#showChangeColor" text="show change Color">
                                        <content>
-                                          <WebView fx:id="webViewShowChangeColor" prefHeight="382.0" prefWidth="418.0" />
+                                          <ImageView fx:id="imageViewShowChangeColor" fitHeight="477.0" fitWidth="494.0" pickOnBounds="true" preserveRatio="true" />
                                        </content>
                                     </Tab>
                                 </tabs>
