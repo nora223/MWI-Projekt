@@ -14,6 +14,34 @@ public class HTML_text {
     public static String generatekmlHTML(String x[]) {
 
         String[] koordinaten = x;
+        //erste Koordinate = Längengrad und zweite Koordinate = Breitengrad
+        String[] AllLon = new String[100]; //alle Längengrad Angaben
+        String[] AllLat = new String[100];  //alle Breitengrad Angaben
+        String firstLon = null; //Längengrad
+        String firstLat = null; //Breitengrad
+        
+        for (int i = 1; i<x.length; i++){
+            //Zeile 0 des Array koordinaten ist immer leer
+            //System.out.println("zeile " + i + ":" + koordinaten[i]);
+            
+            if (i==1){
+                //In der schleife werden die ersten koordinaten abgespeichert in firstLon und Lat um die Karte zu zentrieren
+                //und in AllLon und -Lat 
+                String[] firstLine = koordinaten[i].split(",");
+                //System.out.println(firstLine[0] +"    " + firstLine[1]);
+                firstLon = firstLine[0];
+                firstLat = firstLine[1];
+                AllLon[i] = firstLon;
+                AllLat[i] = firstLat;
+            } 
+            
+            String[] helpLine = koordinaten[i].split(",");
+            //System.out.println(helpLine[0] + "     " + helpLine[1]);
+            AllLon[i] = helpLine[0];
+            AllLat[i] = helpLine[1];
+            //System.out.println("Längengrad: " + AllLon[i] + " Breitengrad: " + AllLat[i]);
+            
+        }
 
         String Polygon
                 = " <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n"
@@ -33,10 +61,12 @@ public class HTML_text {
                 + "\n"
                 + "function pintarZonas(){ \n"
                 + "\n"
-                + "var zonaBLng = [5.34229670, 5.34218760, 5.34210930, 5.34210930, 5.34229670];\n"
-                + "var zonaBLat = [50.93224890, 50.93220450, 50.93228090, 50.93232530, 50.93224890];\n"
+                + "var zonaALng = [];\n"
+                + "var zonaALat = [];\n"
+                + "var zonaBLng = [];\n"
+                + "var zonaBLat = [];\n"
                 + "\n"
-                + "var vectorZonas = [ zonaBLng, zonaBLat];\n"
+                + "var vectorZonas = [zonaALng, zonaALat, zonaBLng, zonaBLat];\n"
                 + "\n"
                 + "\n"
                 + "  lineLayerZona1 = new OpenLayers.Layer.Vector(\"zona1\");\n"
@@ -54,7 +84,7 @@ public class HTML_text {
                 + "\n"
                 + "  };\n"
                 + "\n"
-                + "var vectorStyle = [style2];  \n"
+                + "var vectorStyle = [style1, style2];  \n"
                 + "var vectorLineLayer = [lineLayerZona1, lineLayerZona2];\n"
                 + "\n"
                 + "pointZona1 = new Array(); \n"
@@ -85,7 +115,7 @@ public class HTML_text {
                 + " for(z = 0; z < vectorPoint.length; z++){\n"
                 + "    linear_ring = new OpenLayers.Geometry.LinearRing(vectorPoint[z]);\n"
                 + "    polygonFeature = new OpenLayers.Feature.Vector(\n"
-                + "new OpenLayers.Geometry.Polygon([linear_ring]), null, vectorStyle[z]);\n"
+                + "    new OpenLayers.Geometry.Polygon([linear_ring]), null, vectorStyle[z]);\n"
                 + "\n"
                 + "    vectorLineLayer[z].addFeatures([polygonFeature]);\n"
                 + "    map.addLayer(vectorLineLayer[z]); \n"
@@ -115,8 +145,8 @@ public class HTML_text {
                 + "    // Here we use a predefined layer that will be kept up to date with URL changes\n"
                 + "    layerMapnik = new OpenLayers.Layer.OSM.Mapnik(\"MapaCiudad\");\n"
                 + "    map.addLayer(layerMapnik);\n"
-                + "    // Nagivation zu dem Polygon"
-                + "    var lonLat = new OpenLayers.LonLat(5.34229670, 50.93224890).transform(new OpenLayers.Projection(\"EPSG:4326\"), map.getProjectionObject());\n"
+                + "    //Angabe eines Längen- und Breitengrades\n"
+                + "    var lonLat = new OpenLayers.LonLat(" + firstLon + "," + firstLat + ").transform(new OpenLayers.Projection(\"EPSG:4326\"), map.getProjectionObject());\n"
                 + "    map.zoomTo(15);\n"
                 + "    map.setCenter(lonLat, 19);  \n"
                 + "\n"
