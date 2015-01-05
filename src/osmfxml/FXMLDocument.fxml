@@ -143,7 +143,7 @@
                                     </Tab>
                                     <Tab onSelectionChanged="#showChangeColor" text="show change Color">
                                        <content>
-                                          <ImageView fx:id="imageViewShowChangeColor" fitHeight="477.0" fitWidth="494.0" pickOnBounds="true" preserveRatio="true" />
+                                          <ImageView fx:id="imageViewShowChangeColor" fitHeight="478.0" fitWidth="495.0" pickOnBounds="true" preserveRatio="true" />
                                        </content>
                                     </Tab>
                                 </tabs>

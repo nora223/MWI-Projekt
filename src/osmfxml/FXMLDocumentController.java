@@ -527,10 +527,22 @@ public class FXMLDocumentController implements Initializable {
         for(int i = 0; i<pixelCounter; i++){
             System.out.println("Pixel"+i+": "+pixelArray[i][0]+"; "+pixelArray[i][1]);
         }
+        //Bestimmt den zentralen Pixel der index.html
         WebEngine webEngineTest = WebViewMap.getEngine();
         Object i;
-        i = webEngineTest.executeScript("test(234, 285)");
+        i = webEngineTest.executeScript("test()");
         System.out.println(i);
+        
+        
+        //gibt die Koordinaten aus
+        for(int count = 0; count<pixelCounter; count++){
+        int x = pixelArray[count][0];
+        int y = pixelArray[count][1];
+        Object[] coordinate =new Object[pixelCounter];
+        coordinate[count] = webEngineTest.executeScript("getCoordinate("+x+", "+y+")");
+        System.out.println(coordinate[count]);
+        
+        }
         
         
         return wImage;

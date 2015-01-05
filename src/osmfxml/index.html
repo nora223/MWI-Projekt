@@ -78,19 +78,26 @@
 
                 //}
             }
-                function test(x, y){
-                    //var lon = 7.96966776;
-                    //var lat = 50.56001016;
+                function test(){
+                    var lon = 7.96966776;
+                    var lat = 50.56001016;
                  //var pixel = new map.getPixelFromLonLat(7.96966776, 50.56001016);
                  //var lonlat = map.getLonLatFromViewPortPx(pixel);
                  
-                 
+                 var newPx = map.getLayerPxFromViewPortPx(map.getPixelFromLonLat(new OpenLayers.LonLat(lon, lat).transform(map.displayProjection, map.projection)));
                 //funktionier mit falschen Koordinaten
-                var pixel = new OpenLayers.Pixel(x,y);
-                var lonlat = map.getLonLatFromPixel(pixel);
+                //var pixel = new OpenLayers.Pixel();
+                //var lonlat = map.getLonLatFromPixel(pixel);
                 
                 
-                return lonlat;
+                return newPx;
+                }
+                function getCoordinate(x, y){
+                    var pixel = new OpenLayers.Pixel(x, y);
+                    var coordinate = map.getLonLatFromPixel(pixel);
+                    coordinate.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
+                    return coordinate;
+                    
                 }
             //]]>
         </script>

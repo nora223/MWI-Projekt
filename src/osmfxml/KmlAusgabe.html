@@ -15,10 +15,12 @@ var polygonFeature;
 
 function pintarZonas(){ 
 
-var zonaBLng = [5.34229670, 5.34218760, 5.34210930, 5.34210930, 5.34229670];
-var zonaBLat = [50.93224890, 50.93220450, 50.93228090, 50.93232530, 50.93224890];
+var zonaALng = [];
+var zonaALat = [];
+var zonaBLng = [];
+var zonaBLat = [];
 
-var vectorZonas = [ zonaBLng, zonaBLat];
+var vectorZonas = [zonaALng, zonaALat, zonaBLng, zonaBLat];
 
 
   lineLayerZona1 = new OpenLayers.Layer.Vector("zona1");
@@ -36,7 +38,7 @@ var vectorZonas = [ zonaBLng, zonaBLat];
 
   };
 
-var vectorStyle = [style2];  
+var vectorStyle = [style1, style2];  
 var vectorLineLayer = [lineLayerZona1, lineLayerZona2];
 
 pointZona1 = new Array(); 
@@ -67,7 +69,7 @@ for(i = 0; i < vectorZonas.length/2; i ++){
  for(z = 0; z < vectorPoint.length; z++){
     linear_ring = new OpenLayers.Geometry.LinearRing(vectorPoint[z]);
     polygonFeature = new OpenLayers.Feature.Vector(
-new OpenLayers.Geometry.Polygon([linear_ring]), null, vectorStyle[z]);
+    new OpenLayers.Geometry.Polygon([linear_ring]), null, vectorStyle[z]);
 
     vectorLineLayer[z].addFeatures([polygonFeature]);
     map.addLayer(vectorLineLayer[z]); 
@@ -97,7 +99,8 @@ function initialize()
     // Here we use a predefined layer that will be kept up to date with URL changes
     layerMapnik = new OpenLayers.Layer.OSM.Mapnik("MapaCiudad");
     map.addLayer(layerMapnik);
-    // Nagivation zu dem Polygon    var lonLat = new OpenLayers.LonLat(5.34229670, 50.93224890).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+    //Angabe eines Längen- und Breitengrades
+    var lonLat = new OpenLayers.LonLat(5.33897540,50.93030430).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
     map.zoomTo(15);
     map.setCenter(lonLat, 19);  
 
