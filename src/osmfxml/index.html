@@ -78,7 +78,20 @@
 
                 //}
             }
-
+                function test(x, y){
+                    //var lon = 7.96966776;
+                    //var lat = 50.56001016;
+                 //var pixel = new map.getPixelFromLonLat(7.96966776, 50.56001016);
+                 //var lonlat = map.getLonLatFromViewPortPx(pixel);
+                 
+                 
+                //funktionier mit falschen Koordinaten
+                var pixel = new OpenLayers.Pixel(x,y);
+                var lonlat = map.getLonLatFromPixel(pixel);
+                
+                
+                return lonlat;
+                }
             //]]>
         </script>
 

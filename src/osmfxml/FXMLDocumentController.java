@@ -62,6 +62,7 @@ public class FXMLDocumentController implements Initializable {
         WebEngine webEngine = WebViewMap.getEngine();
         URL url = getClass().getResource("index.html");
         webEngine.load(url.toExternalForm());
+        
     }
 
     @FXML
@@ -267,7 +268,7 @@ public class FXMLDocumentController implements Initializable {
                 Color color = wPixelReader.getColor(x, y);
                 //System.out.println("Color Pixel:"+ color.toString());
                 
-                if (color.toString().equals("0xff0000ff")) {
+                if (color.toString().equals(Color.RED.toString())) {
                     helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0] - y), 2) + Math.pow(Math.abs(zentralPixel[1] - x), 2));
                     //System.out.println("Berechnung Distance");
                     if (helpDistance < distance) {
@@ -526,7 +527,12 @@ public class FXMLDocumentController implements Initializable {
         for(int i = 0; i<pixelCounter; i++){
             System.out.println("Pixel"+i+": "+pixelArray[i][0]+"; "+pixelArray[i][1]);
         }
-
+        WebEngine webEngineTest = WebViewMap.getEngine();
+        Object i;
+        i = webEngineTest.executeScript("test(234, 285)");
+        System.out.println(i);
+        
+        
         return wImage;
     }
     @FXML
