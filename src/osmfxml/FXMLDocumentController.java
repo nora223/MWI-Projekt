@@ -236,20 +236,24 @@ public class FXMLDocumentController implements Initializable {
         for (int readY = 0; readY < image.getHeight(); readY++) {
             for (int readX = 0; readX < image.getWidth(); readX++) {
                 Color color = pixelReader.getColor(readX, readY);
-                Color red = pixelReader.getColor(readX, readY);
-                red = Color.RED;
+                
+                Color red = Color.RED;
+                //System.out.println("Color red: "+red.toString());
                 Color transparent = Color.TRANSPARENT;
                 if (color.toString().equals("0xc0b0aeff")
                         || color.toString().equals("0xbeadadff")
                         || color.toString().equals("0xc1b0afff")
+                        ||color.toString().equals("0xd5d0c8ff")
                         || color.toString().equals("0xc1b0adff")) {
                     pixelWriter.setColor(readX, readY, red);
+                    //System.out.println("Rot");
                 } else {
                     pixelWriter.setColor(readX, readY, transparent);
-//System.out.println("Transparent");
+                    //System.out.println("Transparent");
                 }
             }
         }
+        //System.out.println("Farbe Rot: "+Color.RED.toString());
         double middleY = wImage.getHeight() / 2;
         double middleX = wImage.getWidth() / 2;
         double[] zentralPixel = {middleX, middleY};
@@ -257,13 +261,15 @@ public class FXMLDocumentController implements Initializable {
         double distance = 100000;
         double helpDistance;
         double[] helpPixel;
+        PixelReader wPixelReader = wImage.getPixelReader();
         for (int y = 0; y < wImage.getHeight(); y++) {
             for (int x = 0; x < wImage.getWidth(); x++) {
-                Color color = pixelReader.getColor(x, y);
-//System.out.println(color.toString());
-                if (color.toString().equals("0xbeadadff")) {
+                Color color = wPixelReader.getColor(x, y);
+                //System.out.println("Color Pixel:"+ color.toString());
+                
+                if (color.toString().equals("0xff0000ff")) {
                     helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0] - y), 2) + Math.pow(Math.abs(zentralPixel[1] - x), 2));
-//System.out.println("Berechnung Distance");
+                    //System.out.println("Berechnung Distance");
                     if (helpDistance < distance) {
                         distance = helpDistance;
                         nearestPixel[0] = x;
@@ -356,6 +362,10 @@ public class FXMLDocumentController implements Initializable {
 
         int zähler = 0;
         Color blue = Color.BLUE;
+        int[][] pixelArray = new int[1000][2];
+        
+        int pixelCounter = 0;
+        
         //while schleife die solange offen bleibt, bis der boolean redpixel auf false ist, dieser wird false, wenn kein RAndpixel mehr gefunden wird
         while (redpixel) {
             //zähler für momentane prüfung, damit while schleife abbricht, da code für blau nicht gefunden
@@ -364,9 +374,9 @@ public class FXMLDocumentController implements Initializable {
             //setze redpixel auf false damit nur weiter durch dei schleife gelaufen wird wenn in einer if schleife gegangen wird
             redpixel = false;
             //erste if schleife prüft, ob der nächste pixel rot oder blau ist (blau noch nciht implementiert da farbcode nicht vorhanden, momentaner farbcode leider nicht richtig)
-            if (!(pixelReader.getColor(checkX + 1, checkY).toString().equals("0xbeadadff")) && !(pixelReader.getColor(checkX + 1, checkY).toString().equals("0x0000ffff"))) {
+            if (!(wPixelReader.getColor(checkX + 1, checkY).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX + 1, checkY).toString().equals("0x0000ffff"))) {
                 //Prüfung ob danach ein Roter Pixel kommt, weil dann ist dieser Pixel ein RandPixel
-                if (pixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0xbeadadff")) {
+                if (wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0xff0000ff")) {
                     //wie ebenbeschrieben wird boolean auf true gesetzt
                     redpixel = true;
                     feld = 1;
@@ -376,12 +386,16 @@ public class FXMLDocumentController implements Initializable {
                     //neuer Randpunkt wird als neuer Startpunkt gewählt
                     checkX = checkX + 1;
                     checkY = checkY + 1;
+                    pixelArray[pixelCounter][0]=checkX;
+                    pixelArray[pixelCounter][1]=checkY;
+                    pixelCounter = pixelCounter + 1;
+                    
 
                 }
             }
                 //diese Schleifen wieder holen sich 8 mal wo immer ein Pixel weiter gegangen wird //Start punkt für den Rundgang um den Pixel ist der 3 Uhr Pixel
-            if (!(pixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0xbeadadff")) && !(pixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0x0000ffff"))) {
-                if (pixelReader.getColor(checkX, checkY + 1).toString().equals("0xbeadadff")) {
+            if (!(wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX, checkY + 1).toString().equals("0xff0000ff")) {
 
                     redpixel = true;
                     feld = 2;
@@ -390,11 +404,14 @@ public class FXMLDocumentController implements Initializable {
                     pixelWriter.setColor(checkX, checkY + 1, blue);
 
                     checkY = checkY + 1;
+                    pixelArray[pixelCounter][0]=checkX;
+                    pixelArray[pixelCounter][1]=checkY;
+                    pixelCounter = pixelCounter + 1;
 
                 }
             }
-            if (!(pixelReader.getColor(checkX, checkY + 1).toString().equals("0xbeadadff")) && !(pixelReader.getColor(checkX, checkY + 1).toString().equals("0x0000ffff"))) {
-                if (pixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0xbeadadff")) {
+            if (!(wPixelReader.getColor(checkX, checkY + 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX, checkY + 1).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0xff0000ff")) {
 
                     redpixel = true;
                     feld = 3;
@@ -402,10 +419,14 @@ public class FXMLDocumentController implements Initializable {
                     pixelWriter.setColor(checkX - 1, checkY + 1, blue);
                     checkX = checkX - 1;
                     checkY = checkY + 1;
+                    
+                    pixelArray[pixelCounter][0]=checkX;
+                    pixelArray[pixelCounter][1]=checkY;
+                    pixelCounter = pixelCounter + 1;
                 }
             }
-            if (!(pixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0xbeadadff")) && !(pixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0x0000ffff"))) {
-                if (pixelReader.getColor(checkX - 1, checkY).toString().equals("0xbeadadff")) {
+            if (!(wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX - 1, checkY).toString().equals("0xff0000ff")) {
 
                     redpixel = true;
                     feld = 4;
@@ -413,11 +434,15 @@ public class FXMLDocumentController implements Initializable {
 
                     pixelWriter.setColor(checkX - 1, checkY, blue);
                     checkX = checkX - 1;
+                    
+                    pixelArray[pixelCounter][0]=checkX;
+                    pixelArray[pixelCounter][1]=checkY;
+                    pixelCounter = pixelCounter + 1;
 
                 }
             }
-            if (!(pixelReader.getColor(checkX - 1, checkY).toString().equals("0xbeadadff")) && !(pixelReader.getColor(checkX - 1, checkY).toString().equals("0x0000ffff"))) {
-                if (pixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xbeadadff")) {
+            if (!(wPixelReader.getColor(checkX - 1, checkY).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xff0000ff")) {
 
                     redpixel = true;
                     feld = 5;
@@ -426,11 +451,15 @@ public class FXMLDocumentController implements Initializable {
                     pixelWriter.setColor(checkX - 1, checkY - 1, blue);
                     checkX = checkX - 1;
                     checkY = checkY - 1;
+                    
+                    pixelArray[pixelCounter][0]=checkX;
+                    pixelArray[pixelCounter][1]=checkY;
+                    pixelCounter = pixelCounter + 1;
                 }
             }
 
-            if (!(pixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xbeadadff")) && !(pixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff"))) {
-                if (pixelReader.getColor(checkX, checkY - 1).toString().equals("0xbeadadff")) {
+            if (!(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) {
 
                     redpixel = true;
                     feld = 6;
@@ -438,12 +467,16 @@ public class FXMLDocumentController implements Initializable {
 
                     pixelWriter.setColor(checkX, checkY - 1, blue);
                     checkY = checkY - 1;
+                    
+                    pixelArray[pixelCounter][0]=checkX;
+                    pixelArray[pixelCounter][1]=checkY;
+                    pixelCounter = pixelCounter + 1;
                 }
 
             }
 
-            if (!(pixelReader.getColor(checkX, checkY - 1).toString().equals("0xbeadadff")) && !(pixelReader.getColor(checkX, checkY - 1).toString().equals("0x0000ffff"))) {
-                if (pixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xbeadadff")) {
+            if (!(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xff0000ff")) {
 
                     redpixel = true;
                     feld = 7;
@@ -452,10 +485,14 @@ public class FXMLDocumentController implements Initializable {
                     pixelWriter.setColor(checkX + 1, checkY - 1, blue);
                     checkX = checkX + 1;
                     checkY = checkY - 1;
+                    
+                    pixelArray[pixelCounter][0]=checkX;
+                    pixelArray[pixelCounter][1]=checkY;
+                    pixelCounter = pixelCounter + 1;
                 }
             }
-            if (!(pixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xbeadadff")) && !(pixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0x0000ffff"))) {
-                if (pixelReader.getColor(checkX + 1, checkY).toString().equals("0xbeadadff")) {
+            if (!(wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX + 1, checkY).toString().equals("0xff0000ff")) {
 
                     redpixel = true;
                     feld = 8;
@@ -464,6 +501,10 @@ public class FXMLDocumentController implements Initializable {
                     pixelWriter.setColor(checkX + 1, checkY, blue);
 
                     checkX = checkX + 1;
+                    
+                    pixelArray[pixelCounter][0]=checkX;
+                    pixelArray[pixelCounter][1]=checkY;
+                    pixelCounter = pixelCounter + 1;
 
                 }
             }
@@ -479,8 +520,12 @@ public class FXMLDocumentController implements Initializable {
             }
 
         }
-
+        System.out.println("Farbe Blau:"+blue.toString());
         imageViewChangeColor.setImage(wImage);
+        
+        for(int i = 0; i<pixelCounter; i++){
+            System.out.println("Pixel"+i+": "+pixelArray[i][0]+"; "+pixelArray[i][1]);
+        }
 
         return wImage;
     }
@@ -507,31 +552,34 @@ public class FXMLDocumentController implements Initializable {
                  (int)image.getWidth(),
                  (int)image.getHeight());
          PixelWriter pixelWriter = wImage.getPixelWriter();
+         
          for(int readY=0;readY<image.getHeight();readY++){
             for(int readX=0; readX<image.getWidth();readX++){
                 Color color = pixelReader.getColor(readX,readY);
                 
+                Color red = pixelReader.getColor(readX,readY);
+                red = Color.RED;
+                //System.out.println("Farbe Rot:"+red.toString());
                 
-                //Color red = pixelReader.getColor(readX,readY);
-                Color red = Color.RED;
                 Color transparent = Color.TRANSPARENT;
                 if(color.toString().equals("0xc0b0aeff") || 
                         color.toString().equals("0xbeadadff")|| 
-                        color.toString().equals("0xc1b0afff")|| 
+                        color.toString().equals("0xc1b0afff")||
+                        color.toString().equals("0xd5d0c8ff")||
                         color.toString().equals("0xc1b0adff")){
                     pixelWriter.setColor(readX, readY, red);
-                    System.out.println("Red");
+                    //System.out.println("Red");
                     
                 }
                 else{
                     pixelWriter.setColor(readX, readY, transparent);
-                    System.out.println("Transparent");
+                    //System.out.println("Transparent");
                 }
                 
             }
          }
         
-        /*double middleY = wImage.getHeight()/2;
+        double middleY = wImage.getHeight()/2;
         double middleX = wImage.getWidth()/2;
         double[] zentralPixel = {middleX, middleY};
         int[] nearestPixel= {0,0};
@@ -540,14 +588,14 @@ public class FXMLDocumentController implements Initializable {
         double[] helpPixel;
         
         
-        
+        PixelReader wPixelReader = wImage.getPixelReader();
         for(int y = 0; y<wImage.getHeight();y++){
             for(int x = 0; x<wImage.getWidth(); x++){
-                Color color = pixelReader.getColor(x,y);
-                //System.out.println(color.toString());
-                if(color.toString().equals("0xbeadadff")){
+                Color color = wPixelReader.getColor(x,y);
+                System.out.println(color.toString());
+                if(color.toString().equals("0xff0000ff")){
                 helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0]-y),2)+ Math.pow(Math.abs(zentralPixel[1]-x),2));
-                //System.out.println("Berechnung Distance");
+                System.out.println("Berechnung Distance");
                 if(helpDistance<distance){
                     distance = helpDistance;
                     nearestPixel[0] = x;
@@ -566,7 +614,7 @@ public class FXMLDocumentController implements Initializable {
         }
         System.out.println(nearestPixel[0]+" "+nearestPixel[1]);
         
-        int lengthX;
+        /*int lengthX;
         int lengthY;
         double lengthXY;
         int getY;
