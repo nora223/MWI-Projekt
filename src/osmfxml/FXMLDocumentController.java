@@ -24,6 +24,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.File;
+import java.util.regex.Pattern;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
@@ -539,8 +540,14 @@ public class FXMLDocumentController implements Initializable {
         Object i;
         i = webEngineTest.executeScript("test()");
         System.out.println(i);
-        
-        
+        String test;
+        Object[] lon = new Object[pixelCounter];
+        String[] lat = new String[pixelCounter];
+        String lonText = "lon=";
+        String empty = "";
+        String help="";
+        String help2="";
+        String[][] longlat = new String[pixelCounter][2];
         //gibt die Koordinaten aus
         for(int count = 0; count<pixelCounter; count++){
         int x = pixelArray[count][0];
@@ -548,9 +555,23 @@ public class FXMLDocumentController implements Initializable {
         Object[] coordinate =new Object[pixelCounter];
         coordinate[count] = webEngineTest.executeScript("getCoordinate("+x+", "+y+")");
         System.out.println(coordinate[count]);
+        test = coordinate[count].toString();
+        
+        help = test.replaceAll(lonText, empty);
+        help2 = help.replaceAll("lat=", empty);
+        //System.out.println(help2);
+        longlat[count]= help2.split(Pattern.quote(","));
+        System.out.println(longlat[count][0]);
+        System.out.println(longlat[count][1]);
         
         }
-        webEngineTest.executeScript("goTo()");
+        
+        
+        
+        
+        webEngineTest.executeScript("pintarZonas()");
+                
+                
         
         return wImage;
     }

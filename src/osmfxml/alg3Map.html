@@ -13,16 +13,23 @@ var style;
 
 var polygonFeature;
 
-function pintarZonas(){ 
+function pintarZonas(lonlat){
+    var zonaBLng;
+    var zonaBLat;
+    
+    for(var i = 0; i<lonlat.length; i++){
+        zonaBLng[i] = lonlat[i][0];
+        zonaBLat[i] = lonlat[i][1];
+        
+    }
 
 //lng and lat for both areas
-var zonaALng = [-3.841867446899414, -3.838176727294922, -3.838348388671875,    -3.843669891357422];
-var zonaALat = [46.466002139041116, 43.466002139041116, 43.46432016607394, 43.46276274196949];
-var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602,8.38495284,8.38554829, 8.38559657,8.38500649, 8.38505477,8.38586479,8.38556439];
-var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842,49.02636174, 49.02651651, 49.02648133, 49.02670293,49.0267557, 49.02694212,49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442,49.02590798];
+
+//var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602,8.38495284,8.38554829, 8.38559657,8.38500649, 8.38505477,8.38586479,8.38556439];
+//var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842,49.02636174, 49.02651651, 49.02648133, 49.02670293,49.0267557, 49.02694212,49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442,49.02590798];
 
 //I keep all areas here
-var vectorZonas = [zonaALng, zonaALat, zonaBLng, zonaBLat];
+var vectorZonas = [zonaBLng, zonaBLat];
 
 
   lineLayerZona1 = new OpenLayers.Layer.Vector("zona1");
@@ -81,8 +88,11 @@ new OpenLayers.Geometry.Polygon([linear_ring]), null, vectorStyle[z]);
 
 }
 
-function initialize() 
-{    
+function initialize(lonlat)
+    
+{   
+    
+    var lonlat = lonlat;
   map = new OpenLayers.Map ("map_canvas", {
         controls:[
             new OpenLayers.Control.Navigation(),
@@ -106,7 +116,7 @@ function initialize()
     map.zoomTo(15);
     map.setCenter(lonLat, 19);  
 
- pintarZonas();
+ pintarZonas(lonlat);
 }
 
 </script>
