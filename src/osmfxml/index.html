@@ -36,7 +36,7 @@
                 // Position und Zoomstufe der Karte
                 var lon = 7.96966776;
                 var lat = 50.56001016;
-                var zoom = 18;
+                var zoom = 16;
                 
                 map = new OpenLayers.Map('map', {
                     projection: new OpenLayers.Projection("EPSG:900913"),
@@ -99,6 +99,14 @@
                     return coordinate;
                     
                 }
+                function goTo(newLon, newLat){
+                    lon = newLon;
+                    lat = newLat;
+                    zoom = 16;
+                    jumpTo(lon, lat, zoom)
+                }
+                
+                
             //]]>
         </script>
 

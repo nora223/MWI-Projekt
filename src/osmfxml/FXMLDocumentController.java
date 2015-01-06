@@ -26,6 +26,7 @@ import javax.script.ScriptException;
 import java.io.File;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javax.imageio.ImageIO;
 import javafx.scene.image.*;
@@ -516,7 +517,7 @@ public class FXMLDocumentController implements Initializable {
                 redpixel = false;
             }
             // Zähler damit momentan beendet wird, da farbcode für blau nicht vorhanden, so wird nach 10000 Pixeln abgebrochen
-            if (zähler == 10000) {
+            if (zähler == 20000) {
                 break;
             }
 
@@ -543,7 +544,7 @@ public class FXMLDocumentController implements Initializable {
         System.out.println(coordinate[count]);
         
         }
-        
+        webEngineTest.executeScript("goTo()");
         
         return wImage;
     }
@@ -731,5 +732,21 @@ public class FXMLDocumentController implements Initializable {
         
        
     }
+    
+    @FXML
+    TextField lonText;
+    
+    @FXML
+    TextField latText;
+    
+    public void goToCoordinate(){
+        String lon = lonText.textProperty().get();
+        String lat = latText.textProperty().get();
+        WebEngine webEngineGoToCoordinate = WebViewMap.getEngine();
+        webEngineGoToCoordinate.executeScript("goTo("+lon+","+lat+")");
+        
+        
+    }
+    
     
 }
