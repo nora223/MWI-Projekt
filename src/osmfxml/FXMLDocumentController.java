@@ -541,7 +541,7 @@ public class FXMLDocumentController implements Initializable {
         i = webEngineTest.executeScript("test()");
         System.out.println(i);
         String test;
-        Object[] lon = new Object[pixelCounter];
+        String[] lon = new String[pixelCounter];
         String[] lat = new String[pixelCounter];
         String lonText = "lon=";
         String empty = "";
@@ -563,13 +563,26 @@ public class FXMLDocumentController implements Initializable {
         longlat[count]= help2.split(Pattern.quote(","));
         System.out.println(longlat[count][0]);
         System.out.println(longlat[count][1]);
+        lon[count]= longlat[count][0];
+        lat[count]= longlat[count][1];
         
         }
         
         
         
         
+        webEngineTest.executeScript("createArrayLonLat("+pixelCounter+")");
+        Object helpLongtitude;
+        Object helpLatitude;
+        for(int count = 0; count<pixelCounter; count++){
+            helpLongtitude = lon[count];
+            helpLatitude = lat[count];
+            helpLatitude = webEngineTest.executeScript("setLonLatArrays("+helpLongtitude+","+helpLatitude+","+count+")");
+            System.out.println(helpLatitude.toString());
+            
+        }
         webEngineTest.executeScript("pintarZonas()");
+        
                 
                 
         
