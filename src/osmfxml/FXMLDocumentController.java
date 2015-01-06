@@ -520,6 +520,12 @@ public class FXMLDocumentController implements Initializable {
             if (zähler == 20000) {
                 break;
             }
+            
+            if (zähler < 2 && redpixel == false) {
+                while (wPixelReader.getColor(checkX, checkY).toString().equals("0xff0000ff")) {
+                    checkX++;
+                }
+            }
 
         }
         System.out.println("Farbe Blau:"+blue.toString());
