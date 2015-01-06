@@ -537,9 +537,9 @@ public class FXMLDocumentController implements Initializable {
         }
         //Bestimmt den zentralen Pixel der index.html
         WebEngine webEngineTest = WebViewMap.getEngine();
-        Object i;
-        i = webEngineTest.executeScript("test()");
-        System.out.println(i);
+        Object centerWebView;
+        centerWebView = webEngineTest.executeScript("test()");
+        System.out.println(centerWebView);
         String test;
         String[] lon = new String[pixelCounter];
         String[] lat = new String[pixelCounter];
@@ -550,8 +550,11 @@ public class FXMLDocumentController implements Initializable {
         String[][] longlat = new String[pixelCounter][2];
         //gibt die Koordinaten aus
         for(int count = 0; count<pixelCounter; count++){
-        int x = pixelArray[count][0];
-        int y = pixelArray[count][1];
+            //*********************************************
+            //für -10 die Variable aus Höhe/Breite zentralger Pixel Image - Höhe/Breite WebView ersetzen
+            //***********************************************
+        int x = pixelArray[count][0]-9;
+        int y = pixelArray[count][1]-10;
         Object[] coordinate =new Object[pixelCounter];
         coordinate[count] = webEngineTest.executeScript("getCoordinate("+x+", "+y+")");
         System.out.println(coordinate[count]);
