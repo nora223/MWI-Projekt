@@ -126,21 +126,21 @@ public class FXMLDocumentController implements Initializable {
         try {
             String[] koordinaten = menu.Menu.readKML();
             int counter = koordinaten.length;
-            System.out.println("Länge Koordinaten: " + koordinaten.length);
-            for (int j = 0; j < koordinaten.length; j++){
-             System.out.println("Inhalt: " + koordinaten[j]);
-            }
-            int zaehler = 0;
+            System.out.println("Counter " + counter);
+            //System.out.println("Länge Koordinaten: " + koordinaten.length);
+            //for (int j = 0; j < koordinaten.length; j++){
+            //    System.out.println("Inhalt: " + koordinaten[j]);
+            //}
             //erste Koordinate = Längengrad und zweite Koordinate = Breitengrad
             String[] AllLon = new String[counter]; //alle Längengrad Angaben
             String[] AllLat = new String[counter];  //alle Breitengrad Angaben
             String firstLon = null; //Längengrad
             String firstLat = null; //Breitengrad
 
-            for (int i = 1; i < koordinaten.length; i++) {
+            for (int i = 0; i < koordinaten.length; i++) {
                 //Zeile 0 des Array koordinaten ist immer leer
                 //System.out.println("zeile " + i + ":" + koordinaten[i]);
-                if (i == 1) {
+                if (i == 0) {
                     //In der schleife werden die ersten koordinaten abgespeichert in firstLon und Lat um die Karte zu zentrieren
                     //und in AllLon und -Lat 
                     String[] firstLine = koordinaten[i].split(",");
@@ -153,40 +153,32 @@ public class FXMLDocumentController implements Initializable {
                 String[] helpLine = koordinaten[i].split(",");
             //System.out.println(helpLine[0] + "     " + helpLine[1]);
 
-                zaehler++;
                 AllLon[i] = helpLine[0];
                 AllLat[i] = helpLine[1];
-                System.out.println("Längengrad: " + AllLon[i] + " Breitengrad: " + AllLat[i]);
+                //System.out.println("Längengrad: " + AllLon[i] + " Breitengrad: " + AllLat[i]);
             }
+           
+            /*AllLon[0] = firstLon;
+            AllLat[0] = firstLat;*/
             
-            webEngineTest.executeScript("createArrayLonLat(" + (counter - 1) + ")");
-            webEngineTest.executeScript("getfirstCoordinate(" + firstLon + "," + firstLat + ")");
-            String helpLongtitude;
-            String helpLatitude;
-            Object temp;
+            webEngineTest.executeScript("createArrayLonLat(" + (counter) + ")"); 
+
+            Object helpLongtitude = null;
+            Object helpLatitude = null;
+            Object temp = null;
             //String[] lon = new String[counter];
             //String[] lat = new String[counter];
-            for (int count = 1; count < counter; count++) {
+            for (int count = 0; count < counter; count++) { 
                 helpLongtitude = AllLon[count];
                 helpLatitude = AllLat[count];
-                System.out.println("test" + helpLatitude);
+                //System.out.println("test" + helpLatitude);
                 temp = webEngineTest.executeScript("setLonLatArrays(" + helpLongtitude + "," + helpLatitude + "," + count + ")");
-                
+                //System.out.println(temp);
             }
+            //System.out.println("Latitude" + temp);
+            webEngineTest.executeScript("goTo(" + firstLon + "," + firstLat+ ")");
             webEngineTest.executeScript("pintarZonas()");
 
-            /*String Ausgabe = menu.HTML_text.generatekmlHTML(koordinaten);
-            String dateiName = "src\\osmfxml\\KmlAusgabe.html";
-            FileOutputStream schreibeStrom = new FileOutputStream(dateiName);
-            for (int i = 0; i < Ausgabe.length(); i++) {
-                schreibeStrom.write((byte) Ausgabe.charAt(i));
-            }
-            schreibeStrom.close();
-            System.out.println("Datei ist geschrieben!");
-
-            URL url = getClass().getResource("KmlAusgabe.html");
-
-            webEngineTest.load(url.toExternalForm());*/
         } catch (Exception e) {
             javax.swing.JOptionPane.showMessageDialog(null, "Datei könnte nicht gelesen werden. " + e);
         }
@@ -221,9 +213,9 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
-    public void saveKML() {
-        menu.Menu.saveKML();
-    }
+    //public void saveKML() {
+    //    menu.Menu.saveKML();
+    //}
 
     @FXML
     public void drawPolygon() throws ScriptException, NoSuchMethodException {
@@ -612,7 +604,6 @@ public class FXMLDocumentController implements Initializable {
             System.out.println(longlat[count][1]);
             lon[count] = longlat[count][0];
             lat[count] = longlat[count][1];
-
         }
 
         webEngineTest.executeScript("createArrayLonLat(" + pixelCounter + ")");
