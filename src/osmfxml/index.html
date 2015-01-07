@@ -16,20 +16,20 @@
         <script type="text/javascript" src="test.js"></script>
         <script type="text/javascript" src="menu/showCoordinate.js"></script>
         <script type="text/javascript">
-        //<![CDATA[
+            //<![CDATA[
             var map;
             var layer_mapnik;
             var layer_tah;
             var layer_markers;
             var getLon = null;
-        // function timedRefresh(timeoutPeriod) {
-        // setTimeout("location.reload(true);", timeoutPeriod);
-        // }
+            // function timedRefresh(timeoutPeriod) {
+            // setTimeout("location.reload(true);", timeoutPeriod);
+            // }
             function drawmap() {
-        // Popup und Popuptext mit evtl. Grafik
-        //var popuptext = "<font color=\"black\"><b>DHBW Karlsruhe<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
+                // Popup und Popuptext mit evtl. Grafik
+                //var popuptext = "<font color=\"black\"><b>DHBW Karlsruhe<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
                 OpenLayers.Lang.setCode('de');
-        // Position und Zoomstufe der Karte
+                // Position und Zoomstufe der Karte
                 var lon = 7.96966776;
                 var lat = 50.56001016;
                 var zoom = 18;
@@ -49,32 +49,32 @@
                 layer_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
                 layer_markers = new OpenLayers.Layer.Markers("Address", {projection: new OpenLayers.Projection("EPSG:4326"),
                     visibility: true, displayInLayerSwitcher: false});
-        //getLon = getLongitude();
-        //getLat = coordinates[1];
-        //coordinates[1] = showcoordinate.getLatitude();
-        //if (getLon != null) {
-        //popuptext = getLon + "<font color=\"black\"><b>WOOOP WOOP<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
+                //getLon = getLongitude();
+                //getLat = coordinates[1];
+                //coordinates[1] = showcoordinate.getLatitude();
+                //if (getLon != null) {
+                //popuptext = getLon + "<font color=\"black\"><b>WOOOP WOOP<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
                 map.addLayers([layer_mapnik, layer_markers]);
                 jumpTo(lon, lat, zoom);
-        // Position des Markers
+                // Position des Markers
                 addMarker(layer_markers, 8.38573, 49.02640, popuptext);
-        //} else {
-        // popuptext = "<font color=\"black\"><b>Test<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
-        // map.addLayers([layer_mapnik, layer_markers]);
-        // jumpTo(lon, lat, zoom);
-        // Position des Markers
-        // addMarker(layer_markers, 8.38573, 49.02640, popuptext);
-        //}
+                //} else {
+                // popuptext = "<font color=\"black\"><b>Test<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
+                // map.addLayers([layer_mapnik, layer_markers]);
+                // jumpTo(lon, lat, zoom);
+                // Position des Markers
+                // addMarker(layer_markers, 8.38573, 49.02640, popuptext);
+                //}
             }
             function test() {
                 var lon = 7.96966776;
                 var lat = 50.56001016;
-        //var pixel = new map.getPixelFromLonLat(7.96966776, 50.56001016);
-        //var lonlat = map.getLonLatFromViewPortPx(pixel);
+                //var pixel = new map.getPixelFromLonLat(7.96966776, 50.56001016);
+                //var lonlat = map.getLonLatFromViewPortPx(pixel);
                 var newPx = map.getLayerPxFromViewPortPx(map.getPixelFromLonLat(new OpenLayers.LonLat(lon, lat).transform(map.displayProjection, map.projection)));
-        //funktionier mit falschen Koordinaten
-        //var pixel = new OpenLayers.Pixel();
-        //var lonlat = map.getLonLatFromPixel(pixel);
+                //funktionier mit falschen Koordinaten
+                //var pixel = new OpenLayers.Pixel();
+                //var lonlat = map.getLonLatFromPixel(pixel);
                 return newPx;
             }
             function getCoordinate(x, y) {
@@ -92,16 +92,16 @@
             function createArrayLonLat(pixelCounter) {
                 lonArray = new Array(pixelCounter);
                 latArray = new Array(pixelCounter);
-        //zonaBLng = new Array(pixelCounter);
-        //zonaBLat = new Array(pixelCounter);
+                //zonaBLng = new Array(pixelCounter);
+                //zonaBLat = new Array(pixelCounter);
             }
             counter = 0;
             function setLonLatArrays(lon, lat, i) {
                 counter = i;
                 lonArray[i] = lon;
                 latArray[i] = lat;
-        //zonaBLng[i]=lon;
-        //zonaBLat[i]=lat;
+                //zonaBLng[i]=lon;
+                //zonaBLat[i]=lat;
                 return lonArray;
             }
             function pintarZonas() {
@@ -117,17 +117,17 @@
                  //zonaBLat[i] = helpLat;
                  //helpLat = helpLat + 1;
                  }*/
-        //var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602, 8.38495284, 8.38554829, 8.38559657, 8.38500649, 8.38505477, 8.38586479, 8.38556439];
-        //var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842, 49.02636174, 49.02651651, 49.02648133, 49.02670293, 49.0267557, 49.02694212, 49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442, 49.02590798];
+                //var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602, 8.38495284, 8.38554829, 8.38559657, 8.38500649, 8.38505477, 8.38586479, 8.38556439];
+                //var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842, 49.02636174, 49.02651651, 49.02648133, 49.02670293, 49.0267557, 49.02694212, 49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442, 49.02590798];
                 var zonaBLng = lonArray;
                 var zonaBLat = latArray;
-        //lng and lat for both areas
-        //var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602,8.38495284,8.38554829, 8.38559657,8.38500649, 8.38505477,8.38586479,8.38556439];
-        //var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842,49.02636174, 49.02651651, 49.02648133, 49.02670293,49.0267557, 49.02694212,49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442,49.02590798];
-        //I keep all areas here
+                //lng and lat for both areas
+                //var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602,8.38495284,8.38554829, 8.38559657,8.38500649, 8.38505477,8.38586479,8.38556439];
+                //var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842,49.02636174, 49.02651651, 49.02648133, 49.02670293,49.0267557, 49.02694212,49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442,49.02590798];
+                //I keep all areas here
                 var vectorZonas = [zonaBLng, zonaBLat];
                 lineLayerZona1 = new OpenLayers.Layer.Vector("zona1");
-                style1 = {strokeColor: '#ffOOO',
+                style1 = {strokeColor: '#ff0000',
                     strokeOpacity: 1,
                     fillColor: '#ff0000',
                     strokeWidth: 2,
@@ -145,7 +145,7 @@
                 pointZona1 = new Array();
                 pointZona2 = new Array();
                 vectorPoint = [pointZona1, pointZona2];
-        //Here I keep all points to both areas
+                //Here I keep all points to both areas
                 var vectorCapas = [lineLayerZona1, lineLayerZona2];
                 var i = 0;
                 var x = 0;
@@ -161,9 +161,9 @@
                         point[x] = new OpenLayers.LonLat(zonaLng[x], zonaLat[x]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
                         point[x] = new OpenLayers.Geometry.Point(point[x].lon, point[x].lat);
                     }
-        //No hace falta añadir un punto de final porque se cierra solo el poligono
+                    //No hace falta añadir un punto de final porque se cierra solo el poligono
                 }
-        //Añadimos las capas al mapa
+                //Añadimos las capas al mapa
                 for (z = 0; z < vectorPoint.length; z++) {
                     linear_ring = new OpenLayers.Geometry.LinearRing(vectorPoint[z]);
                     polygonFeature = new OpenLayers.Feature.Vector(
@@ -172,7 +172,8 @@
                     map.addLayer(vectorLineLayer[z]);
                 }
             }
-        //]]>
+
+            //]]>
         </script>
     </head>
     <body onload="drawmap();"><!-- Refresh der Seite -->

@@ -22,53 +22,26 @@ import org.w3c.dom.Node;
  *
  * @author CaReich
  */
-public class Menu{
+public class Menu {
 
     private static String[][] daten = new String[70][4];
     private static int NumberSUR = 0;
 
     public static String[] readKML() throws FileNotFoundException {
-        /*File f = null;
-        String help = null;
-        String name = "name";
-        String pic = "src";
-        String koordinaten = "coordinates";
-        String filename = null;
-
-        try {
-            JFileChooser fc = new JFileChooser();
-            int chooseResult = fc.showDialog(null, "Bitte Datei auswählen");
-            if (chooseResult == JFileChooser.APPROVE_OPTION) {
-                f = fc.getSelectedFile();
-                filename = f.getName();
-            }
-
-            if (f != null) {
-                Scanner scan = new Scanner(f);
-                while (scan.hasNextLine()) {
-                    help = scan.nextLine();
-
-                    if (containsString(help, name)) {
-                        name = help;
-                    } else if (containsString(help, pic)) {
-                        pic = help;
-                    } else if (containsString(help, koordinaten)) {
-                        koordinaten = help;
-                    }
-                }
-            }*/
         File f = null;
         String help = null;
         String name = "name";
         String pic = "src";
         String koordinaten = "coordinates";
         String filename = null;
-        String[][] KmlKoordinaten = new String[70][4];
+        String[][] KmlKoordinaten = new String[1000][4];
         String ListOfCoordinates = null;
         String komma = ",";
         int temp = -1;
         int i = -1;
+        String space = " ";
         String[] strings = null;
+        String[] shortstrings = null;
 
         try {
             JFileChooser fc = new JFileChooser();
@@ -92,43 +65,40 @@ public class Menu{
                     NodeList textFNList = firstNameElement.getChildNodes();
 
                     ListOfCoordinates = textFNList.item(0).getNodeValue();
-                    
-                    //-----------------------------------------------------------------------------
-                    //Strings beinhaltet die gesamten Koordinaten aus der KML Datei 
-                    //Jede zeile des STrings Arrays beinhaltet einen Längen- und Breitengrad
-                    
-                    strings = ListOfCoordinates.split("\n");
-                    for (int x = 0; x < strings.length; x++){
-                        temp = -1;
-                        StringTokenizer st = new StringTokenizer(strings[x], komma);
-                        i++;
-                        while (st.hasMoreTokens()) {
-                        temp++;
-                        help = st.nextToken();
-                        KmlKoordinaten[i][temp] = help;
+                    //System.out.println("LOC " + ListOfCoordinates);
+
+                    if (ListOfCoordinates.contains(space)) {
+                        //System.out.println("Es gibt ein Leerzeichen!!!!!");
+                        shortstrings = ListOfCoordinates.split(" ");
+                        strings = new String[shortstrings.length - 1];
+                        shortstrings[0] = shortstrings[0].trim();
+                        //System.out.println("Strings an der STelle 0: " + shortstrings[0]);
+                        for (int j = 0; j < shortstrings.length - 1; j++) {
+                            //System.out.println("Strings an der STelle j: " + strings[j]);
+                            strings[j] = shortstrings[j].replaceAll(",0", "");
+                            //System.out.println("neu: " +j + " " + strings[j]);
                         }
+                    } else {
+                        //-----------------------------------------------------------------------------
+                        //Strings beinhaltet die gesamten Koordinaten aus der KML Datei 
+                        //Jede zeile des STrings Arrays beinhaltet einen Längen- und Breitengrad
+                        shortstrings = ListOfCoordinates.split("\n");
+                        strings = new String[shortstrings.length - 1];
+                        for (int y = 0; y < shortstrings.length - 1; ++y){
+                            strings[y] = shortstrings[y+1]; 
+                        }
+                       /*for (int j = 0; j < strings.length; j++) {
+                            System.out.println("Strings an der STelle j: " + strings[j] + "länge "+ strings.length);
+                        }*/
                     }
-                                        
-                    //Ausgabe KmlKoordinaten
-                    /*for (int z = 0; z < 70; z++){
-                        for (int y = 0; y < 2; y++){
-                            System.out.println("Koordinate - " + z + y + "    " + KmlKoordinaten[z][y]);
-                        }
-                    }*/
-                    //Ausgabe der Strings aus der KML
-                    /*for(int j = 0; j < 62; j++){
-                     System.out.println("Zeile " + j+ ": " + strings[j]);
-                     }*/
-                    
                 }
-            }            
+            }
         } catch (Exception e) {
-            System.out.println("fehler" + e);
+            System.out.println("fehler " + e);
         }
-        return strings; 
+        return strings;
     }
 
-  
     public static String[][] readSUR() throws FileNotFoundException {
         File s = null;
         String txtname = null;
@@ -164,7 +134,7 @@ public class Menu{
                 for (int i = 0; i < intAnzahl; i++) {
                     lon = daten[i][1];
                     lat = daten[i][2];
-                    
+
                     if (helpLon != null && helpLat != null) {
                         //System.out.println("test " + lon + lat);
                         //System.out.println("test " + helpLon + helpLat);
@@ -207,21 +177,19 @@ public class Menu{
         }
     }
 
-    public static void saveKML() {
+    public static void saveKML(String[] koordinaten) {
 
     }
 
     //Methode dient zur Rückgabe der Anzahl von SUR
-    public static int getAnzahlSUR(){
+    public static int getAnzahlSUR() {
         int Anzahl = 0;
-        
+
         Anzahl = NumberSUR;
         //System.out.println("NumberSUR: " + Anzahl);
         return Anzahl;
     }
 
- 
-    
     public String[] getCoordinates() {
         String[] coordinates = new String[2];
 
@@ -230,94 +198,94 @@ public class Menu{
 
         return coordinates;
     }
-    
-    public String getLongitude(){
+
+    public String getLongitude() {
         String lon = daten[0][1];
         return lon;
     }
-    
-    public static String generateHTML(){
-        String Ausgabe = 
-                    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n"
-                    + "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"de\" lang=\"de-de\">\n"
-                    + "    <head>\n"
-                    + "        <title>Map | Testanwendung</title>\n"
-                    + "        <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />\n"
-                    + "        <meta http-equiv=\"content-script-type\" content=\"text/javascript\" />\n"
-                    + "        <meta http-equiv=\"content-style-type\" content=\"text/css\" />\n"
-                    + "        <meta http-equiv=\"content-language\" content=\"de\" />\n"
-                    + "        <link rel=\"stylesheet\" type=\"text/css\" href=\"map.css\"></link>\n"
-                    + "        <!--[if IE]>\n"
-                    + "        <link rel=\"stylesheet\" type=\"text/css\" href=\"ie_map.css\"></link>\n"
-                    + "        <![endif]-->\n"
-                    + "        <script type=\"text/javascript\" src=\"http://www.openlayers.org/api/OpenLayers.js\"></script>\n"
-                    + "        <script type=\"text/javascript\" src=\"http://www.openstreetmap.org/openlayers/OpenStreetMap.js\"></script>\n"
-                    + "        <script type=\"text/javascript\" src=\"tom.js\"></script>\n"
-                    + "        <script type=\"text/javascript\" src=\"test.js\"></script>\n"
-                    + "        <script type=\"text/javascript\" src=\"menu/showCoordinate.js\"></script>\n"
-                    + "        <script type=\"text/javascript\">\n"
-                    + "            //<![CDATA[\n"
-                    + "\n"
-                    + "            var map;\n"
-                    + "            var layer_mapnik;\n"
-                    + "            var layer_tah;\n"
-                    + "            var layer_markers;\n"
-                    + "\n"
-                    + "//            function timedRefresh(timeoutPeriod) {\n"
-                    + "//                setTimeout(\"location.reload(true);\", timeoutPeriod);\n"
-                    + "//            }\n"
-                    + "            function drawmap() {\n"
-                    + "                // Popup und Popuptext mit evtl. Grafik\n"
-                    + "                var popuptext = \"<font color=\\\"black\\\"><b>Woop Karlsruhe</b><p><img src=\\\"dhbw.jpg\\\" width=\\\"180\\\" height=\\\"113\\\"></p></font>\";\n"
-                    + "\n"
-                    + "                OpenLayers.Lang.setCode('de');\n"
-                    + "\n"
-                    + "                // Position und Zoomstufe der Karte\n"
-                    + "                var lon = "+ daten[0][1] + ";\n"
-                    + "                var lat = "+ daten[0][2] + ";\n"
-                    + "                var zoom = 15;\n"
-                    + "                \n"
-                    + "                map = new OpenLayers.Map('map', {\n"
-                    + "                    projection: new OpenLayers.Projection(\"EPSG:900913\"),\n"
-                    + "                    displayProjection: new OpenLayers.Projection(\"EPSG:4326\"),\n"
-                    + "                    controls: [\n"
-                    + "                        new OpenLayers.Control.Navigation(),\n"
-                    + "                        new OpenLayers.Control.LayerSwitcher(),\n"
-                    + "                        new OpenLayers.Control.PanZoomBar()],\n"
-                    + "                    maxExtent:\n"
-                    + "                            new OpenLayers.Bounds(-20037508.34, -20037508.34,\n"
-                    + "                                    20037508.34, 20037508.34),\n"
-                    + "                    numZoomLevels: 18,\n"
-                    + "                    maxResolution: 156543,\n"
-                    + "                    units: 'meters'\n"
-                    + "                });\n"
-                    + "\n"
-                    + "                layer_mapnik = new OpenLayers.Layer.OSM.Mapnik(\"Mapnik\");\n"
-                    + "                layer_markers = new OpenLayers.Layer.Markers(\"Address\", {projection: new OpenLayers.Projection(\"EPSG:4326\"),\n"
-                    + "                    visibility: true, displayInLayerSwitcher: false});\n"
-                    + "\n"
-                    + "                map.addLayers([layer_mapnik, layer_markers]);\n"
-                    + "                jumpTo(lon, lat, zoom);\n"
-                    + "                // Position des Markers\n"
-                    + "                addMarker(layer_markers, lon, lat, popuptext);\n"
-                    + "\n"
-                    + "            }\n"
-                    + "\n"
-                    + "            //]]>\n"
-                    + "        </script>\n"
-                    + "\n"
-                    + "    </head>\n"
-                    + "    <body onload=\"drawmap();\"><!-- Refresh der Seite -->\n"
-                    + "\n"
-                    + "        <div id=\"map\" id=\"box\">\n"
-                    + "        </div>\n"
-                    + "\n"
-                    + "    </body>\n"
-                    + "</html>";
-                
-        System.out.println("Test Koordinaten" + daten[0][1] + "dasten "+ daten[0][2]);
-        
+
+    public static String generateHTML() {
+        String Ausgabe
+                = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n"
+                + "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"de\" lang=\"de-de\">\n"
+                + "    <head>\n"
+                + "        <title>Map | Testanwendung</title>\n"
+                + "        <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />\n"
+                + "        <meta http-equiv=\"content-script-type\" content=\"text/javascript\" />\n"
+                + "        <meta http-equiv=\"content-style-type\" content=\"text/css\" />\n"
+                + "        <meta http-equiv=\"content-language\" content=\"de\" />\n"
+                + "        <link rel=\"stylesheet\" type=\"text/css\" href=\"map.css\"></link>\n"
+                + "        <!--[if IE]>\n"
+                + "        <link rel=\"stylesheet\" type=\"text/css\" href=\"ie_map.css\"></link>\n"
+                + "        <![endif]-->\n"
+                + "        <script type=\"text/javascript\" src=\"http://www.openlayers.org/api/OpenLayers.js\"></script>\n"
+                + "        <script type=\"text/javascript\" src=\"http://www.openstreetmap.org/openlayers/OpenStreetMap.js\"></script>\n"
+                + "        <script type=\"text/javascript\" src=\"tom.js\"></script>\n"
+                + "        <script type=\"text/javascript\" src=\"test.js\"></script>\n"
+                + "        <script type=\"text/javascript\" src=\"menu/showCoordinate.js\"></script>\n"
+                + "        <script type=\"text/javascript\">\n"
+                + "            //<![CDATA[\n"
+                + "\n"
+                + "            var map;\n"
+                + "            var layer_mapnik;\n"
+                + "            var layer_tah;\n"
+                + "            var layer_markers;\n"
+                + "\n"
+                + "//            function timedRefresh(timeoutPeriod) {\n"
+                + "//                setTimeout(\"location.reload(true);\", timeoutPeriod);\n"
+                + "//            }\n"
+                + "            function drawmap() {\n"
+                + "                // Popup und Popuptext mit evtl. Grafik\n"
+                + "                var popuptext = \"<font color=\\\"black\\\"><b>Woop Karlsruhe</b><p><img src=\\\"dhbw.jpg\\\" width=\\\"180\\\" height=\\\"113\\\"></p></font>\";\n"
+                + "\n"
+                + "                OpenLayers.Lang.setCode('de');\n"
+                + "\n"
+                + "                // Position und Zoomstufe der Karte\n"
+                + "                var lon = " + daten[0][1] + ";\n"
+                + "                var lat = " + daten[0][2] + ";\n"
+                + "                var zoom = 15;\n"
+                + "                \n"
+                + "                map = new OpenLayers.Map('map', {\n"
+                + "                    projection: new OpenLayers.Projection(\"EPSG:900913\"),\n"
+                + "                    displayProjection: new OpenLayers.Projection(\"EPSG:4326\"),\n"
+                + "                    controls: [\n"
+                + "                        new OpenLayers.Control.Navigation(),\n"
+                + "                        new OpenLayers.Control.LayerSwitcher(),\n"
+                + "                        new OpenLayers.Control.PanZoomBar()],\n"
+                + "                    maxExtent:\n"
+                + "                            new OpenLayers.Bounds(-20037508.34, -20037508.34,\n"
+                + "                                    20037508.34, 20037508.34),\n"
+                + "                    numZoomLevels: 18,\n"
+                + "                    maxResolution: 156543,\n"
+                + "                    units: 'meters'\n"
+                + "                });\n"
+                + "\n"
+                + "                layer_mapnik = new OpenLayers.Layer.OSM.Mapnik(\"Mapnik\");\n"
+                + "                layer_markers = new OpenLayers.Layer.Markers(\"Address\", {projection: new OpenLayers.Projection(\"EPSG:4326\"),\n"
+                + "                    visibility: true, displayInLayerSwitcher: false});\n"
+                + "\n"
+                + "                map.addLayers([layer_mapnik, layer_markers]);\n"
+                + "                jumpTo(lon, lat, zoom);\n"
+                + "                // Position des Markers\n"
+                + "                addMarker(layer_markers, lon, lat, popuptext);\n"
+                + "\n"
+                + "            }\n"
+                + "\n"
+                + "            //]]>\n"
+                + "        </script>\n"
+                + "\n"
+                + "    </head>\n"
+                + "    <body onload=\"drawmap();\"><!-- Refresh der Seite -->\n"
+                + "\n"
+                + "        <div id=\"map\" id=\"box\">\n"
+                + "        </div>\n"
+                + "\n"
+                + "    </body>\n"
+                + "</html>";
+
+        System.out.println("Test Koordinaten" + daten[0][1] + "dasten " + daten[0][2]);
+
         return Ausgabe;
-        
+
     }
 }
