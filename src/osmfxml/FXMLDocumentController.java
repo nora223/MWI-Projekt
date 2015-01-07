@@ -64,7 +64,7 @@ public class FXMLDocumentController implements Initializable {
         WebEngine webEngine = WebViewMap.getEngine();
         URL url = getClass().getResource("index.html");
         webEngine.load(url.toExternalForm());
-        
+
     }
 
     @FXML
@@ -121,9 +121,61 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     public void readKML() throws FileNotFoundException {
+        WebEngine webEngineTest = WebViewMap.getEngine();
+        
         try {
             String[] koordinaten = menu.Menu.readKML();
-            String Ausgabe = menu.HTML_text.generatekmlHTML(koordinaten);
+            int counter = koordinaten.length;
+            System.out.println("Länge Koordinaten: " + koordinaten.length);
+            for (int j = 0; j < koordinaten.length; j++){
+             System.out.println("Inhalt: " + koordinaten[j]);
+            }
+            int zaehler = 0;
+            //erste Koordinate = Längengrad und zweite Koordinate = Breitengrad
+            String[] AllLon = new String[100]; //alle Längengrad Angaben
+            String[] AllLat = new String[100];  //alle Breitengrad Angaben
+            String firstLon = null; //Längengrad
+            String firstLat = null; //Breitengrad
+
+            for (int i = 1; i < koordinaten.length; i++) {
+                //Zeile 0 des Array koordinaten ist immer leer
+                //System.out.println("zeile " + i + ":" + koordinaten[i]);
+                if (i == 1) {
+                    //In der schleife werden die ersten koordinaten abgespeichert in firstLon und Lat um die Karte zu zentrieren
+                    //und in AllLon und -Lat 
+                    String[] firstLine = koordinaten[i].split(",");
+                    //System.out.println(firstLine[0] +"    " + firstLine[1]);
+                    firstLon = firstLine[0];
+                    firstLat = firstLine[1];
+                    AllLon[i] = firstLon;
+                    AllLat[i] = firstLat;
+                }
+                String[] helpLine = koordinaten[i].split(",");
+            //System.out.println(helpLine[0] + "     " + helpLine[1]);
+
+                zaehler++;
+                AllLon[i] = helpLine[0];
+                AllLat[i] = helpLine[1];
+                System.out.println("Längengrad: " + AllLon[i] + " Breitengrad: " + AllLat[i]);
+            }
+            
+            webEngineTest.executeScript("createArrayLonLat(" + (counter - 1) + ")");
+            webEngineTest.executeScript("getfirstCoordinate(" + firstLon + "," + firstLat + ")");
+            String helpLongtitude;
+            String helpLatitude;
+            Object temp;
+            //String[] lon = new String[counter];
+            //String[] lat = new String[counter];
+            for (int count = 1; count < (counter); count++) {
+                helpLongtitude = AllLon[count];
+                helpLatitude = AllLat[count];
+                System.out.println("test" + helpLatitude);
+                temp = webEngineTest.executeScript("setLonLatArrays(" + helpLongtitude + "," + helpLatitude + "," + count + ")");
+                
+            }
+            webEngineTest.executeScript("pintarZonas()");
+
+            /*String Ausgabe = menu.HTML_text.generatekmlHTML(koordinaten);
             String dateiName = "src\\osmfxml\\KmlAusgabe.html";
             FileOutputStream schreibeStrom = new FileOutputStream(dateiName);
             for (int i = 0; i < Ausgabe.length(); i++) {
@@ -131,10 +183,10 @@ public class FXMLDocumentController implements Initializable {
             }
             schreibeStrom.close();
             System.out.println("Datei ist geschrieben!");
-            WebEngine webEngine = WebViewMap.getEngine();
+
             URL url = getClass().getResource("KmlAusgabe.html");
-//webEngine.executeScript("document.setMapTypeSatellit");
-            webEngine.load(url.toExternalForm());
+
+            webEngineTest.load(url.toExternalForm());*/
         } catch (Exception e) {
             javax.swing.JOptionPane.showMessageDialog(null, "Datei könnte nicht gelesen werden. " + e);
         }
@@ -162,7 +214,7 @@ public class FXMLDocumentController implements Initializable {
             System.out.println("Datei ist geschrieben!");
             WebEngine webEngine = WebViewMap.getEngine();
             URL url = getClass().getResource("SURAusgabe.html");
-//webEngine.executeScript("document.setMapTypeSatellit");
+            //webEngine.executeScript("document.setMapTypeSatellit");
             webEngine.load(url.toExternalForm());
         } catch (Exception e) {
             javax.swing.JOptionPane.showMessageDialog(null, "Datei könnte nicht gelesen werden. " + e);
@@ -193,19 +245,19 @@ public class FXMLDocumentController implements Initializable {
     }
     @FXML
     ImageView imageViewSelectColor;
-//Gibt die Farbwerte auf der Konsole für jeden Pixel aus, VORSICHT!!! Dauert lang
+    //Gibt die Farbwerte auf der Konsole für jeden Pixel aus, VORSICHT!!! Dauert lang
 
     @FXML
     public void selectColor() {
         Image image;
         image = WebViewMap.snapshot(null, null);
         imageViewSelectColor.setImage(image);
-// Obtain PixelReader
+        // Obtain PixelReader
         PixelReader pixelReader = image.getPixelReader();
         System.out.println("Image Width: " + image.getWidth());
         System.out.println("Image Height: " + image.getHeight());
         System.out.println("Pixel Format: " + pixelReader.getPixelFormat());
-// Determine the color of each pixel in the image
+        // Determine the color of each pixel in the image
         for (int readY = 0; readY < image.getHeight(); readY++) {
             for (int readX = 0; readX < image.getWidth(); readX++) {
                 Color color = pixelReader.getColor(readX, readY);
@@ -226,12 +278,12 @@ public class FXMLDocumentController implements Initializable {
     public Image changeColor() throws IOException {
         Image image;
         image = WebViewMap.snapshot(null, null);
-// Obtain PixelReader
+        // Obtain PixelReader
         PixelReader pixelReader = image.getPixelReader();
         System.out.println("Image Width: " + image.getWidth());
         System.out.println("Image Height: " + image.getHeight());
         System.out.println("Pixel Format: " + pixelReader.getPixelFormat());
-// Create WritableImage
+        // Create WritableImage
         WritableImage wImage = new WritableImage(
                 (int) image.getWidth(),
                 (int) image.getHeight());
@@ -239,14 +291,14 @@ public class FXMLDocumentController implements Initializable {
         for (int readY = 0; readY < image.getHeight(); readY++) {
             for (int readX = 0; readX < image.getWidth(); readX++) {
                 Color color = pixelReader.getColor(readX, readY);
-                
+
                 Color red = Color.RED;
                 //System.out.println("Color red: "+red.toString());
                 Color transparent = Color.TRANSPARENT;
                 if (color.toString().equals("0xc0b0aeff")
                         || color.toString().equals("0xbeadadff")
                         || color.toString().equals("0xc1b0afff")
-                        ||color.toString().equals("0xd5d0c8ff")
+                        || color.toString().equals("0xd5d0c8ff")
                         || color.toString().equals("0xc1b0adff")) {
                     pixelWriter.setColor(readX, readY, red);
                     //System.out.println("Rot");
@@ -269,7 +321,7 @@ public class FXMLDocumentController implements Initializable {
             for (int x = 0; x < wImage.getWidth(); x++) {
                 Color color = wPixelReader.getColor(x, y);
                 //System.out.println("Color Pixel:"+ color.toString());
-                
+
                 if (color.toString().equals(Color.RED.toString())) {
                     helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0] - y), 2) + Math.pow(Math.abs(zentralPixel[1] - x), 2));
                     //System.out.println("Berechnung Distance");
@@ -280,16 +332,14 @@ public class FXMLDocumentController implements Initializable {
                     }
                 }
             }
-            
-//WebEngine webEngine = webViewShowChangeColor.getEngine();
-//URL url = getClass().getResource("showChangeColor.html");
-//webEngine.load(url.toExternalForm());
+
+            //WebEngine webEngine = webViewShowChangeColor.getEngine();
+            //URL url = getClass().getResource("showChangeColor.html");
+            //webEngine.load(url.toExternalForm());
         }
-        
-        
-        
-         System.out.println(nearestPixel[0]+" "+nearestPixel[1]);
-         /*int lengthX;
+
+        System.out.println(nearestPixel[0] + " " + nearestPixel[1]);
+        /*int lengthX;
          int lengthY;
          double lengthXY;
          int getY;
@@ -349,8 +399,6 @@ public class FXMLDocumentController implements Initializable {
          }
          }*/
 
-     
-
         int startX = nearestPixel[0];
         int startY = nearestPixel[1];
         int zählerMinus = 1;
@@ -362,13 +410,12 @@ public class FXMLDocumentController implements Initializable {
         int checkGreyX = 0;
         int checkGreyY = 0;
         int feld = 0;
-
         int zähler = 0;
         Color blue = Color.BLUE;
         int[][] pixelArray = new int[1000][2];
-        
+
         int pixelCounter = 0;
-        
+
         //while schleife die solange offen bleibt, bis der boolean redpixel auf false ist, dieser wird false, wenn kein RAndpixel mehr gefunden wird
         while (redpixel) {
             //zähler für momentane prüfung, damit while schleife abbricht, da code für blau nicht gefunden
@@ -389,14 +436,13 @@ public class FXMLDocumentController implements Initializable {
                     //neuer Randpunkt wird als neuer Startpunkt gewählt
                     checkX = checkX + 1;
                     checkY = checkY + 1;
-                    pixelArray[pixelCounter][0]=checkX;
-                    pixelArray[pixelCounter][1]=checkY;
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
                     pixelCounter = pixelCounter + 1;
-                    
 
                 }
             }
-                //diese Schleifen wieder holen sich 8 mal wo immer ein Pixel weiter gegangen wird //Start punkt für den Rundgang um den Pixel ist der 3 Uhr Pixel
+            //diese Schleifen wieder holen sich 8 mal wo immer ein Pixel weiter gegangen wird //Start punkt für den Rundgang um den Pixel ist der 3 Uhr Pixel
             if (!(wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0x0000ffff"))) {
                 if (wPixelReader.getColor(checkX, checkY + 1).toString().equals("0xff0000ff")) {
 
@@ -407,8 +453,8 @@ public class FXMLDocumentController implements Initializable {
                     pixelWriter.setColor(checkX, checkY + 1, blue);
 
                     checkY = checkY + 1;
-                    pixelArray[pixelCounter][0]=checkX;
-                    pixelArray[pixelCounter][1]=checkY;
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
                     pixelCounter = pixelCounter + 1;
 
                 }
@@ -422,9 +468,9 @@ public class FXMLDocumentController implements Initializable {
                     pixelWriter.setColor(checkX - 1, checkY + 1, blue);
                     checkX = checkX - 1;
                     checkY = checkY + 1;
-                    
-                    pixelArray[pixelCounter][0]=checkX;
-                    pixelArray[pixelCounter][1]=checkY;
+
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
                     pixelCounter = pixelCounter + 1;
                 }
             }
@@ -437,9 +483,9 @@ public class FXMLDocumentController implements Initializable {
 
                     pixelWriter.setColor(checkX - 1, checkY, blue);
                     checkX = checkX - 1;
-                    
-                    pixelArray[pixelCounter][0]=checkX;
-                    pixelArray[pixelCounter][1]=checkY;
+
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
                     pixelCounter = pixelCounter + 1;
 
                 }
@@ -454,9 +500,9 @@ public class FXMLDocumentController implements Initializable {
                     pixelWriter.setColor(checkX - 1, checkY - 1, blue);
                     checkX = checkX - 1;
                     checkY = checkY - 1;
-                    
-                    pixelArray[pixelCounter][0]=checkX;
-                    pixelArray[pixelCounter][1]=checkY;
+
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
                     pixelCounter = pixelCounter + 1;
                 }
             }
@@ -470,9 +516,9 @@ public class FXMLDocumentController implements Initializable {
 
                     pixelWriter.setColor(checkX, checkY - 1, blue);
                     checkY = checkY - 1;
-                    
-                    pixelArray[pixelCounter][0]=checkX;
-                    pixelArray[pixelCounter][1]=checkY;
+
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
                     pixelCounter = pixelCounter + 1;
                 }
 
@@ -488,9 +534,9 @@ public class FXMLDocumentController implements Initializable {
                     pixelWriter.setColor(checkX + 1, checkY - 1, blue);
                     checkX = checkX + 1;
                     checkY = checkY - 1;
-                    
-                    pixelArray[pixelCounter][0]=checkX;
-                    pixelArray[pixelCounter][1]=checkY;
+
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
                     pixelCounter = pixelCounter + 1;
                 }
             }
@@ -504,15 +550,14 @@ public class FXMLDocumentController implements Initializable {
                     pixelWriter.setColor(checkX + 1, checkY, blue);
 
                     checkX = checkX + 1;
-                    
-                    pixelArray[pixelCounter][0]=checkX;
-                    pixelArray[pixelCounter][1]=checkY;
+
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
                     pixelCounter = pixelCounter + 1;
 
                 }
             }
 
-            
             //Wenn eine Runde um das Gebäude geangen wurde sind die hilfsvariablen wieder auf dem Anfangs punkt, hier wird dann die schleife beendet
             if (checkX == nearestPixel[0] && checkY == nearestPixel[1]) {
                 redpixel = false;
@@ -521,19 +566,18 @@ public class FXMLDocumentController implements Initializable {
             if (zähler == 20000) {
                 break;
             }
-            
+
             if (zähler < 2 && redpixel == false) {
                 while (wPixelReader.getColor(checkX, checkY).toString().equals("0xff0000ff")) {
                     checkX++;
                 }
             }
-
         }
-        System.out.println("Farbe Blau:"+blue.toString());
+        System.out.println("Farbe Blau:" + blue.toString());
         imageViewChangeColor.setImage(wImage);
-        
-        for(int i = 0; i<pixelCounter; i++){
-            System.out.println("Pixel"+i+": "+pixelArray[i][0]+"; "+pixelArray[i][1]);
+
+        for (int i = 0; i < pixelCounter; i++) {
+            System.out.println("Pixel" + i + ": " + pixelArray[i][0] + "; " + pixelArray[i][1]);
         }
         //Bestimmt den zentralen Pixel der index.html
         WebEngine webEngineTest = WebViewMap.getEngine();
@@ -545,50 +589,44 @@ public class FXMLDocumentController implements Initializable {
         String[] lat = new String[pixelCounter];
         String lonText = "lon=";
         String empty = "";
-        String help="";
-        String help2="";
+        String help = "";
+        String help2 = "";
         String[][] longlat = new String[pixelCounter][2];
         //gibt die Koordinaten aus
-        for(int count = 0; count<pixelCounter; count++){
+        for (int count = 0; count < pixelCounter; count++) {
             //*********************************************
             //für -10 die Variable aus Höhe/Breite zentralger Pixel Image - Höhe/Breite WebView ersetzen
             //***********************************************
-        int x = pixelArray[count][0]-9;
-        int y = pixelArray[count][1]-10;
-        Object[] coordinate =new Object[pixelCounter];
-        coordinate[count] = webEngineTest.executeScript("getCoordinate("+x+", "+y+")");
-        System.out.println(coordinate[count]);
-        test = coordinate[count].toString();
-        
-        help = test.replaceAll(lonText, empty);
-        help2 = help.replaceAll("lat=", empty);
-        //System.out.println(help2);
-        longlat[count]= help2.split(Pattern.quote(","));
-        System.out.println(longlat[count][0]);
-        System.out.println(longlat[count][1]);
-        lon[count]= longlat[count][0];
-        lat[count]= longlat[count][1];
-        
+            int x = pixelArray[count][0] - 9;
+            int y = pixelArray[count][1] - 10;
+            Object[] coordinate = new Object[pixelCounter];
+            coordinate[count] = webEngineTest.executeScript("getCoordinate(" + x + ", " + y + ")");
+            System.out.println(coordinate[count]);
+            test = coordinate[count].toString();
+
+            help = test.replaceAll(lonText, empty);
+            help2 = help.replaceAll("lat=", empty);
+            //System.out.println(help2);
+            longlat[count] = help2.split(Pattern.quote(","));
+            System.out.println(longlat[count][0]);
+            System.out.println(longlat[count][1]);
+            lon[count] = longlat[count][0];
+            lat[count] = longlat[count][1];
+
         }
-        
-        
-        
-        
-        webEngineTest.executeScript("createArrayLonLat("+pixelCounter+")");
+
+        webEngineTest.executeScript("createArrayLonLat(" + pixelCounter + ")");
         Object helpLongtitude;
         Object helpLatitude;
-        for(int count = 0; count<pixelCounter; count++){
+        for (int count = 0; count < pixelCounter; count++) {
             helpLongtitude = lon[count];
             helpLatitude = lat[count];
-            helpLatitude = webEngineTest.executeScript("setLonLatArrays("+helpLongtitude+","+helpLatitude+","+count+")");
+            helpLatitude = webEngineTest.executeScript("setLonLatArrays(" + helpLongtitude + "," + helpLatitude + "," + count + ")");
             System.out.println(helpLatitude.toString());
-            
+
         }
         webEngineTest.executeScript("pintarZonas()");
-        
-                
-                
-        
+
         return wImage;
     }
     @FXML
@@ -596,200 +634,173 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     public void showChangeColor() throws IOException {
-        
-       
-        
-        Image image;  
+
+        Image image;
         image = WebViewMap.snapshot(null, null);
-        
-        
+
         // Obtain PixelReader
         PixelReader pixelReader = image.getPixelReader();
-        System.out.println("Image Width: "+image.getWidth());
-        System.out.println("Image Height: "+image.getHeight());
-        System.out.println("Pixel Format: "+pixelReader.getPixelFormat());
-        
+        System.out.println("Image Width: " + image.getWidth());
+        System.out.println("Image Height: " + image.getHeight());
+        System.out.println("Pixel Format: " + pixelReader.getPixelFormat());
+
         // Create WritableImage
-         WritableImage wImage = new WritableImage(
-                 (int)image.getWidth(),
-                 (int)image.getHeight());
-         PixelWriter pixelWriter = wImage.getPixelWriter();
-         
-         for(int readY=0;readY<image.getHeight();readY++){
-            for(int readX=0; readX<image.getWidth();readX++){
-                Color color = pixelReader.getColor(readX,readY);
-                
-                Color red = pixelReader.getColor(readX,readY);
+        WritableImage wImage = new WritableImage(
+                (int) image.getWidth(),
+                (int) image.getHeight());
+        PixelWriter pixelWriter = wImage.getPixelWriter();
+
+        for (int readY = 0; readY < image.getHeight(); readY++) {
+            for (int readX = 0; readX < image.getWidth(); readX++) {
+                Color color = pixelReader.getColor(readX, readY);
+
+                Color red = pixelReader.getColor(readX, readY);
                 red = Color.RED;
                 //System.out.println("Farbe Rot:"+red.toString());
-                
+
                 Color transparent = Color.TRANSPARENT;
-                if(color.toString().equals("0xc0b0aeff") || 
-                        color.toString().equals("0xbeadadff")|| 
-                        color.toString().equals("0xc1b0afff")||
-                        color.toString().equals("0xd5d0c8ff")||
-                        color.toString().equals("0xc1b0adff")){
+                if (color.toString().equals("0xc0b0aeff")
+                        || color.toString().equals("0xbeadadff")
+                        || color.toString().equals("0xc1b0afff")
+                        || color.toString().equals("0xd5d0c8ff")
+                        || color.toString().equals("0xc1b0adff")) {
                     pixelWriter.setColor(readX, readY, red);
                     //System.out.println("Red");
-                    
-                }
-                else{
+
+                } else {
                     pixelWriter.setColor(readX, readY, transparent);
                     //System.out.println("Transparent");
                 }
-                
             }
-         }
-        
-        double middleY = wImage.getHeight()/2;
-        double middleX = wImage.getWidth()/2;
+        }
+
+        double middleY = wImage.getHeight() / 2;
+        double middleX = wImage.getWidth() / 2;
         double[] zentralPixel = {middleX, middleY};
-        int[] nearestPixel= {0,0};
+        int[] nearestPixel = {0, 0};
         double distance = 100000;
         double helpDistance;
         double[] helpPixel;
-        
-        
+
         PixelReader wPixelReader = wImage.getPixelReader();
-        for(int y = 0; y<wImage.getHeight();y++){
-            for(int x = 0; x<wImage.getWidth(); x++){
-                Color color = wPixelReader.getColor(x,y);
+        for (int y = 0; y < wImage.getHeight(); y++) {
+            for (int x = 0; x < wImage.getWidth(); x++) {
+                Color color = wPixelReader.getColor(x, y);
                 System.out.println(color.toString());
-                if(color.toString().equals("0xff0000ff")){
-                helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0]-y),2)+ Math.pow(Math.abs(zentralPixel[1]-x),2));
-                System.out.println("Berechnung Distance");
-                if(helpDistance<distance){
-                    distance = helpDistance;
-                    nearestPixel[0] = x;
-                    nearestPixel[1] = y;
-                }
-            }
-        
-            
-        }
-        
-        
-        
-        //WebEngine webEngine = webViewShowChangeColor.getEngine();
-        //URL url = getClass().getResource("showChangeColor.html");
-        //webEngine.load(url.toExternalForm());
-        }
-        System.out.println(nearestPixel[0]+" "+nearestPixel[1]);
-        
-        /*int lengthX;
-        int lengthY;
-        double lengthXY;
-        int getY;
-        int getX;
-        int getNextX;
-        int getNextY;
-        double helpGetNextX;
-        double helpGetNextY;
-        
-        
-        
-        for(getY = 0; getY<wImage.getHeight();getY++){
-            for(getX = 0; getX<wImage.getWidth(); getX++){
-                System.out.println("x="+getX+", y= "+getY);
-             
-                Color color = pixelReader.getColor(getX,getY);
-                System.out.println(color.toString());
-                
-                //Color green = pixelReader.getColor(getX,getY);
-                Color green = Color.GREEN;
-                System.out.println("Zeile360");
-                if(color.toString().equals("0xbeadadff")){
-                    System.out.println("Zeile 362");
-                    lengthX = nearestPixel[0] - getX;
-                    lengthY = nearestPixel[1] - getY;
-                    Color colorNextpixel;
-                    if(lengthX>0 && lengthY>0){
-                        int counter = 0;
-                        if(lengthX>lengthY){
-                            lengthXY = lengthX / lengthY;
-                            for(int i = 1; i<=lengthY; i++){
-                                
-                                helpGetNextX = (i*lengthXY)+getX;
-                                getNextX = (int) Math.round(helpGetNextX);
-                                getNextY = i+getY;
-                                colorNextpixel = pixelReader.getColor(getNextX,getNextY);
-                                
-                                if(!colorNextpixel.toString().equals("0xbeadadff")){
-                                    counter = counter+1;
-                                    if(counter>10){
-                                        
-                                        pixelWriter.setColor(getX, getY, green);
-                                        
-                                    }
-                                    
-                                }
-                                
-                            }
-                                   
-                        }
-                        else{
-                            System.out.println("Zeile 391");
-                            lengthXY = lengthY / lengthX;
-                            for (int i = 1; i <= lengthX; i++){
-                                
-                                helpGetNextY = (i*lengthXY)+getY;
-                                getNextY = (int) Math.round(helpGetNextY);
-                                getNextX = i+getX;
-                                colorNextpixel = pixelReader.getColor(getNextX, getNextY);
-                                
-                                if(!colorNextpixel.toString().equals("0xbeadadff")){
-                                    counter=counter+1;
-                                    
-                                    if(counter>10){
-                                        
-                                        pixelWriter.setColor(getX, getY, green);
-                                        
-                                    }
-                                    
-                                }
-                                
-                                
-                            }
-                        }
+                if (color.toString().equals("0xff0000ff")) {
+                    helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0] - y), 2) + Math.pow(Math.abs(zentralPixel[1] - x), 2));
+                    System.out.println("Berechnung Distance");
+                    if (helpDistance < distance) {
+                        distance = helpDistance;
+                        nearestPixel[0] = x;
+                        nearestPixel[1] = y;
                     }
-                    
-                    
                 }
-                
             }
+
+            //WebEngine webEngine = webViewShowChangeColor.getEngine();
+            //URL url = getClass().getResource("showChangeColor.html");
+            //webEngine.load(url.toExternalForm());
         }
-        
-        
-        */
+        System.out.println(nearestPixel[0] + " " + nearestPixel[1]);
+
+        /*int lengthX;
+         int lengthY;
+         double lengthXY;
+         int getY;
+         int getX;
+         int getNextX;
+         int getNextY;
+         double helpGetNextX;
+         double helpGetNextY;
+
+         for(getY = 0; getY<wImage.getHeight();getY++){
+         for(getX = 0; getX<wImage.getWidth(); getX++){
+         System.out.println("x="+getX+", y= "+getY);
+             
+         Color color = pixelReader.getColor(getX,getY);
+         System.out.println(color.toString());
+                
+         //Color green = pixelReader.getColor(getX,getY);
+         Color green = Color.GREEN;
+         System.out.println("Zeile360");
+         if(color.toString().equals("0xbeadadff")){
+         System.out.println("Zeile 362");
+         lengthX = nearestPixel[0] - getX;
+         lengthY = nearestPixel[1] - getY;
+         Color colorNextpixel;
+         if(lengthX>0 && lengthY>0){
+         int counter = 0;
+         if(lengthX>lengthY){
+         lengthXY = lengthX / lengthY;
+         for(int i = 1; i<=lengthY; i++){
+                                
+         helpGetNextX = (i*lengthXY)+getX;
+         getNextX = (int) Math.round(helpGetNextX);
+         getNextY = i+getY;
+         colorNextpixel = pixelReader.getColor(getNextX,getNextY);
+                                
+         if(!colorNextpixel.toString().equals("0xbeadadff")){
+         counter = counter+1;
+         if(counter>10){
+                                        
+         pixelWriter.setColor(getX, getY, green);
+                                        
+         }
+                                    
+         }
+                                
+         }
+                                   
+         }
+         else{
+         System.out.println("Zeile 391");
+         lengthXY = lengthY / lengthX;
+         for (int i = 1; i <= lengthX; i++){
+                                
+         helpGetNextY = (i*lengthXY)+getY;
+         getNextY = (int) Math.round(helpGetNextY);
+         getNextX = i+getX;
+         colorNextpixel = pixelReader.getColor(getNextX, getNextY);
+                                
+         if(!colorNextpixel.toString().equals("0xbeadadff")){
+         counter=counter+1;
+         if(counter>10){ 
+         pixelWriter.setColor(getX, getY, green);  
+         }  
+         } 
+         }
+         }
+         }   
+         } 
+         }
+         }
+
+         */
         imageViewShowChangeColor.setImage(wImage);
-        
+
         //int pictureCounter = 0;
         //pictureCounter =pictureCounter+1;
-        
         /*BufferedImage image1 = SwingFXUtils.fromFXImage(wImage, null); // Get buffered image.
-        BufferedImage imageRGB = new BufferedImage(image1.getWidth(), image1.getHeight(), BufferedImage.OPAQUE); // Remove alpha-channel from buffered image.
-        Graphics2D graphics = imageRGB.createGraphics();
-        graphics.drawImage(image1, 0, 0, null);
-        ImageIO.write(imageRGB, "png", new File("C:/Users/Tino/Documents/osm/"+pictureCounter+".png"));
-        graphics.dispose(); */
-        
-       
+         BufferedImage imageRGB = new BufferedImage(image1.getWidth(), image1.getHeight(), BufferedImage.OPAQUE); // Remove alpha-channel from buffered image.
+         Graphics2D graphics = imageRGB.createGraphics();
+         graphics.drawImage(image1, 0, 0, null);
+         ImageIO.write(imageRGB, "png", new File("C:/Users/Tino/Documents/osm/"+pictureCounter+".png"));
+         graphics.dispose(); */
     }
-    
+
     @FXML
     TextField lonText;
-    
+
     @FXML
     TextField latText;
-    
-    public void goToCoordinate(){
+
+    public void goToCoordinate() {
         String lon = lonText.textProperty().get();
         String lat = latText.textProperty().get();
         WebEngine webEngineGoToCoordinate = WebViewMap.getEngine();
-        webEngineGoToCoordinate.executeScript("goTo("+lon+","+lat+")");
-        
-        
+        webEngineGoToCoordinate.executeScript("goTo(" + lon + "," + lat + ")");
+
     }
-    
-    
+
 }

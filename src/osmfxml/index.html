@@ -24,7 +24,7 @@
             var layer_markers;
             var getLon = null;
 
-            
+
 //            function timedRefresh(timeoutPeriod) {
 //                setTimeout("location.reload(true);", timeoutPeriod);
 //            }
@@ -122,13 +122,18 @@
                 //zonaBLat[i]=lat;
                 return lonArray;
             }
+            
+            function getfirstCoordinate(lon, lat){
+                CoordinatLon = lon;
+                CooridnatLat = lat;
+            }
+            
             function pintarZonas() {
                 /* var zonaBLng;
                  var zonaBLat;
                  var counter = pixelCounter;
                  var helpLat = 0;
                  var helpLon;
-                 
                  
                  for (var i = 0; i < counter; i++) {
                  //helpLon = lon[i];
@@ -137,21 +142,20 @@
                  //zonaBLat[i] = helpLat;
                  //helpLat = helpLat + 1;
                  }*/
-                //var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602, 8.38495284, 8.38554829, 8.38559657, 8.38500649, 8.38505477, 8.38586479, 8.38556439];
-                //var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842, 49.02636174, 49.02651651, 49.02648133, 49.02670293, 49.0267557, 49.02694212, 49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442, 49.02590798];
-                var zonaBLng = lonArray;
-                var zonaBLat = latArray;
-//lng and lat for both areas
-
-//var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602,8.38495284,8.38554829, 8.38559657,8.38500649, 8.38505477,8.38586479,8.38556439];
-//var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842,49.02636174, 49.02651651, 49.02648133, 49.02670293,49.0267557, 49.02694212,49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442,49.02590798];
-
-//I keep all areas here
-                var vectorZonas = [zonaBLng, zonaBLat];
-
+                var zoneALng = [-3.841867446899414, -3.838176727294922, -3.838348388671875,    -3.843669891357422];
+                var zoneALat = [latArray];
+                var zoneBLng = [lonArray];
+                var zoneBLat = [latArray];
+                
+                //Angabe eines Laengen- und Breitengrades
+                var lonLat = new OpenLayers.LonLat(CoordinatLon, CooridnatLat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+                map.zoomTo(15);
+                map.setCenter(lonLat, 19);
+                
+                var vectorZonas = [zoneALng, zoneALat, zoneBLng, zoneBLat];
 
                 lineLayerZona1 = new OpenLayers.Layer.Vector("zona1");
-                style1 = {strokeColor: '#ffOOO',
+                style1 = {strokeColor: '#ff0000',
                     strokeOpacity: 1,
                     fillColor: '#ff0000',
                     strokeWidth: 2,
@@ -164,7 +168,6 @@
                     fillColor: '#ff0000',
                     strokeWidth: 2,
                     fillOpacity: 0.1
-
                 };
 
                 var vectorStyle = [style1, style2];
@@ -173,8 +176,7 @@
                 pointZona1 = new Array();
                 pointZona2 = new Array();
                 vectorPoint = [pointZona1, pointZona2];
-//Here I keep all points to both areas
-                var vectorCapas = [lineLayerZona1, lineLayerZona2];
+
                 var i = 0;
                 var x = 0;
                 var zonaLat, zonaLng;
@@ -190,11 +192,8 @@
 
                         point[x] = new OpenLayers.Geometry.Point(point[x].lon, point[x].lat);
                     }
-                    //No hace falta añadir un punto de final porque se cierra solo el poligono
                 }
 
-
-                //Añadimos las capas al mapa
                 for (z = 0; z < vectorPoint.length; z++) {
                     linear_ring = new OpenLayers.Geometry.LinearRing(vectorPoint[z]);
                     polygonFeature = new OpenLayers.Feature.Vector(
@@ -205,7 +204,7 @@
 
                 }
 
-
+                
             }
             //]]>
         </script>
