@@ -14,6 +14,7 @@ public class HTML_text {
     public static String generatekmlHTML(String x[]) {
 
         String[] koordinaten = x;
+        int zaehler = 0;
         //erste Koordinate = Längengrad und zweite Koordinate = Breitengrad
         String[] AllLon = new String[100]; //alle Längengrad Angaben
         String[] AllLat = new String[100];  //alle Breitengrad Angaben
@@ -36,12 +37,16 @@ public class HTML_text {
             } 
             
             String[] helpLine = koordinaten[i].split(",");
-            //System.out.println(helpLine[0] + "     " + helpLine[1]);
-            AllLon[i] = helpLine[0];
-            AllLat[i] = helpLine[1];
+            System.out.println(helpLine[0] + "     " + helpLine[1]);
+            
+            zaehler++;
+            AllLon[i] = helpLine[0] + ", ";
+            AllLat[i] = helpLine[1] + ", ";
             //System.out.println("Längengrad: " + AllLon[i] + " Breitengrad: " + AllLat[i]);
             
         }
+      
+        
 
         String Polygon
                 = " <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n"
@@ -60,11 +65,22 @@ public class HTML_text {
                 + "var polygonFeature;\n"
                 + "\n"
                 + "function pintarZonas(){ \n"
-                + "\n"
-                + "var zonaALng = [];\n"
+                + "\n" 
+                + "var zonaALng = [-3.841867446899414, -3.838176727294922, -3.838348388671875,    -3.843669891357422];\n"
                 + "var zonaALat = [];\n"
                 + "var zonaBLng = [];\n"
                 + "var zonaBLat = [];\n"
+                + "\n"
+                + "//for (var i = 0; i <= AllLon.length; i++){"
+                + "//     zonaALat = [AllLon[i], AllLon [i+1]]"
+                + "//}"
+                + "\n"
+                + "     zonaALat = [ AllLat.join() ];"
+                + "\n"
+                + "     zonaBLng = [AllLon.join() ];"
+                + "\n"
+                + "     zonaBLat = [AllLat.join() ];"
+                + "\n"
                 + "\n"
                 + "var vectorZonas = [zonaALng, zonaALat, zonaBLng, zonaBLat];\n"
                 + "\n"
