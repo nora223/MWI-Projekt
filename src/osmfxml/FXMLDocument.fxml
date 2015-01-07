@@ -32,7 +32,6 @@
                       <Menu mnemonicParsing="false" text="File">
                            <items>
                               <MenuItem mnemonicParsing="false" onAction="#readKML" text="kml read" />
-                              <MenuItem mnemonicParsing="false" onAction="#saveKML" text="kml save" />
                               <MenuItem mnemonicParsing="false" onAction="#readSUR" text="SUR read" />
                            </items>
                       </Menu>
