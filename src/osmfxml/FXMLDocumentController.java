@@ -132,8 +132,8 @@ public class FXMLDocumentController implements Initializable {
             }
             int zaehler = 0;
             //erste Koordinate = Längengrad und zweite Koordinate = Breitengrad
-            String[] AllLon = new String[100]; //alle Längengrad Angaben
-            String[] AllLat = new String[100];  //alle Breitengrad Angaben
+            String[] AllLon = new String[counter]; //alle Längengrad Angaben
+            String[] AllLat = new String[counter];  //alle Breitengrad Angaben
             String firstLon = null; //Längengrad
             String firstLat = null; //Breitengrad
 
@@ -166,7 +166,7 @@ public class FXMLDocumentController implements Initializable {
             Object temp;
             //String[] lon = new String[counter];
             //String[] lat = new String[counter];
-            for (int count = 1; count < (counter); count++) {
+            for (int count = 1; count < counter; count++) {
                 helpLongtitude = AllLon[count];
                 helpLatitude = AllLat[count];
                 System.out.println("test" + helpLatitude);

@@ -20,8 +20,8 @@ var zonaALat = [];
 var zonaBLng = [];
 var zonaBLat = [];
 
-//for (var i = 0; i <= AllLon.length; i++){}
-     zonaALat = [AllLat.join() ];
+//for (var i = 0; i <= AllLon.length; i++){//     zonaALat = [AllLon[i], AllLon [i+1]]//}
+     zonaALat = [ AllLat.join() ];
      zonaBLng = [AllLon.join() ];
      zonaBLat = [AllLat.join() ];
 
@@ -66,11 +66,11 @@ for(i = 0; i < vectorZonas.length/2; i ++){
 
         point[x] = new OpenLayers.Geometry.Point(point[x].lon, point[x].lat);   
     }
-    //No hace falta aï¿½adir un punto de final porque se cierra solo el poligono
+    //No hace falta añadir un punto de final porque se cierra solo el poligono
 }
 
 
- //Aï¿½adimos las capas al mapa
+ //Añadimos las capas al mapa
  for(z = 0; z < vectorPoint.length; z++){
     linear_ring = new OpenLayers.Geometry.LinearRing(vectorPoint[z]);
     polygonFeature = new OpenLayers.Feature.Vector(
@@ -104,8 +104,8 @@ function initialize()
     // Here we use a predefined layer that will be kept up to date with URL changes
     layerMapnik = new OpenLayers.Layer.OSM.Mapnik("MapaCiudad");
     map.addLayer(layerMapnik);
-    //Angabe eines Lï¿½ngen- und Breitengrades
-    var lonLat = new OpenLayers.LonLat(5.33765850,50.92961690).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+    //Angabe eines Längen- und Breitengrades
+    var lonLat = new OpenLayers.LonLat(5.34109800,50.93274000).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
     map.zoomTo(15);
     map.setCenter(lonLat, 19);  
 
