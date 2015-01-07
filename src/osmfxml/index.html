@@ -24,6 +24,7 @@
             var layer_markers;
             var getLon = null;
 
+            
 //            function timedRefresh(timeoutPeriod) {
 //                setTimeout("location.reload(true);", timeoutPeriod);
 //            }
@@ -36,14 +37,14 @@
                 // Position und Zoomstufe der Karte
                 var lon = 7.96966776;
                 var lat = 50.56001016;
-                var zoom = 16;
-                
+                var zoom = 18;
+
                 map = new OpenLayers.Map('map', {
                     projection: new OpenLayers.Projection("EPSG:900913"),
                     displayProjection: new OpenLayers.Projection("EPSG:4326"),
                     controls: [
                         new OpenLayers.Control.Navigation(),
-                        ],
+                    ],
                     maxExtent:
                             new OpenLayers.Bounds(-20037508.34, -20037508.34,
                                     20037508.34, 20037508.34),
@@ -78,7 +79,134 @@
 
                 //}
             }
+            function test() {
+                var lon = 7.96966776;
+                var lat = 50.56001016;
+                //var pixel = new map.getPixelFromLonLat(7.96966776, 50.56001016);
+                //var lonlat = map.getLonLatFromViewPortPx(pixel);
 
+                var newPx = map.getLayerPxFromViewPortPx(map.getPixelFromLonLat(new OpenLayers.LonLat(lon, lat).transform(map.displayProjection, map.projection)));
+                //funktionier mit falschen Koordinaten
+                //var pixel = new OpenLayers.Pixel();
+                //var lonlat = map.getLonLatFromPixel(pixel);
+
+
+                return newPx;
+            }
+            function getCoordinate(x, y) {
+                var pixel = new OpenLayers.Pixel(x, y);
+                var coordinate = map.getLonLatFromPixel(pixel);
+                coordinate.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
+                return coordinate;
+
+            }
+            function goTo(newLon, newLat) {
+                lon = newLon;
+                lat = newLat;
+                zoom = 18;
+                jumpTo(lon, lat, zoom);
+            }
+            function createArrayLonLat(pixelCounter) {
+                lonArray = new Array(pixelCounter);
+                latArray = new Array(pixelCounter);
+                //zonaBLng = new Array(pixelCounter);
+                //zonaBLat = new Array(pixelCounter);
+
+            }
+            counter = 0;
+            function setLonLatArrays(lon, lat, i) {
+                counter = i;
+                lonArray[i] = lon;
+                latArray[i] = lat;
+                //zonaBLng[i]=lon;
+                //zonaBLat[i]=lat;
+                return lonArray;
+            }
+            function pintarZonas() {
+                /* var zonaBLng;
+                 var zonaBLat;
+                 var counter = pixelCounter;
+                 var helpLat = 0;
+                 var helpLon;
+                 
+                 
+                 for (var i = 0; i < counter; i++) {
+                 //helpLon = lon[i];
+                 //helpLat = lat[i];
+                 //zonaBLng[i] = helpLon;
+                 //zonaBLat[i] = helpLat;
+                 //helpLat = helpLat + 1;
+                 }*/
+                //var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602, 8.38495284, 8.38554829, 8.38559657, 8.38500649, 8.38505477, 8.38586479, 8.38556439];
+                //var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842, 49.02636174, 49.02651651, 49.02648133, 49.02670293, 49.0267557, 49.02694212, 49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442, 49.02590798];
+                var zonaBLng = lonArray;
+                var zonaBLat = latArray;
+//lng and lat for both areas
+
+//var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602,8.38495284,8.38554829, 8.38559657,8.38500649, 8.38505477,8.38586479,8.38556439];
+//var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842,49.02636174, 49.02651651, 49.02648133, 49.02670293,49.0267557, 49.02694212,49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442,49.02590798];
+
+//I keep all areas here
+                var vectorZonas = [zonaBLng, zonaBLat];
+
+
+                lineLayerZona1 = new OpenLayers.Layer.Vector("zona1");
+                style1 = {strokeColor: '#ffOOO',
+                    strokeOpacity: 1,
+                    fillColor: '#ff0000',
+                    strokeWidth: 2,
+                    fillOpacity: 0.1
+                };
+
+                lineLayerZona2 = new OpenLayers.Layer.Vector("zo na2");
+                style2 = {strokeColor: '#ff0000',
+                    strokeOpacity: 1,
+                    fillColor: '#ff0000',
+                    strokeWidth: 2,
+                    fillOpacity: 0.1
+
+                };
+
+                var vectorStyle = [style1, style2];
+                var vectorLineLayer = [lineLayerZona1, lineLayerZona2];
+
+                pointZona1 = new Array();
+                pointZona2 = new Array();
+                vectorPoint = [pointZona1, pointZona2];
+//Here I keep all points to both areas
+                var vectorCapas = [lineLayerZona1, lineLayerZona2];
+                var i = 0;
+                var x = 0;
+                var zonaLat, zonaLng;
+                var ww = 0;
+                for (i = 0; i < vectorZonas.length / 2; i++) {
+                    zonaLng = vectorZonas[ww];
+                    zonaLat = vectorZonas[ww + 1];
+                    point = vectorPoint[i];
+                    ww = i;
+                    ww += 2;
+                    for (x = 0; x < zonaLng.length; x++) {
+                        point[x] = new OpenLayers.LonLat(zonaLng[x], zonaLat[x]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+
+                        point[x] = new OpenLayers.Geometry.Point(point[x].lon, point[x].lat);
+                    }
+                    //No hace falta añadir un punto de final porque se cierra solo el poligono
+                }
+
+
+                //Añadimos las capas al mapa
+                for (z = 0; z < vectorPoint.length; z++) {
+                    linear_ring = new OpenLayers.Geometry.LinearRing(vectorPoint[z]);
+                    polygonFeature = new OpenLayers.Feature.Vector(
+                            new OpenLayers.Geometry.Polygon([linear_ring]), null, vectorStyle[z]);
+
+                    vectorLineLayer[z].addFeatures([polygonFeature]);
+                    map.addLayer(vectorLineLayer[z]);
+
+                }
+
+
+            }
             //]]>
         </script>
 

@@ -48,6 +48,19 @@
                       </Menu>
                     </menus>
                   </MenuBar>
+                  <TextField fx:id="lonText" layoutX="479.0" layoutY="15.0" />
+                  <TextField fx:id="latText" layoutX="479.0" layoutY="45.0" />
+                  <Label layoutX="443.0" layoutY="14.0" text="lon" textFill="#f8f5f5">
+                     <font>
+                        <Font name="System Bold Italic" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="445.0" layoutY="44.0" text="lat" textFill="#f8f3f3">
+                     <font>
+                        <Font name="System Bold Italic" size="18.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="GoToButton" layoutX="639.0" layoutY="45.0" mnemonicParsing="false" onAction="#goToCoordinate" text="GoTo" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
@@ -143,7 +156,7 @@
                                     </Tab>
                                     <Tab onSelectionChanged="#showChangeColor" text="show change Color">
                                        <content>
-                                          <ImageView fx:id="imageViewShowChangeColor" fitHeight="477.0" fitWidth="494.0" pickOnBounds="true" preserveRatio="true" />
+                                          <ImageView fx:id="imageViewShowChangeColor" fitHeight="478.0" fitWidth="495.0" pickOnBounds="true" preserveRatio="true" />
                                        </content>
                                     </Tab>
                                 </tabs>
