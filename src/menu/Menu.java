@@ -1,5 +1,16 @@
 package menu;
 
+
+import de.micromata.opengis.kml.v_2_2_0.Boundary;
+import de.micromata.opengis.kml.v_2_2_0.Coordinate;
+import de.micromata.opengis.kml.v_2_2_0.Kml;
+import de.micromata.opengis.kml.v_2_2_0.LinearRing;
+import de.micromata.opengis.kml.v_2_2_0.Placemark;
+import de.micromata.opengis.kml.v_2_2_0.Polygon;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.applet.*;
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
+import javax.naming.spi.ObjectFactory;
 import javax.swing.JFileChooser;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,6 +29,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+import javax.xml.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+
 
 /**
  *
@@ -26,6 +45,7 @@ public class Menu {
 
     private static String[][] daten = new String[70][4];
     private static int NumberSUR = 0;
+    private static int count = 0; //damit jede abgespeicherte KML-Datei eine neue Bezeichnung erhält
 
     public static String[] readKML() throws FileNotFoundException {
         File f = null;
@@ -84,12 +104,12 @@ public class Menu {
                         //Jede zeile des STrings Arrays beinhaltet einen Längen- und Breitengrad
                         shortstrings = ListOfCoordinates.split("\n");
                         strings = new String[shortstrings.length - 1];
-                        for (int y = 0; y < shortstrings.length - 1; ++y){
-                            strings[y] = shortstrings[y+1]; 
+                        for (int y = 0; y < shortstrings.length - 1; ++y) {
+                            strings[y] = shortstrings[y + 1];
                         }
-                       /*for (int j = 0; j < strings.length; j++) {
-                            System.out.println("Strings an der STelle j: " + strings[j] + "länge "+ strings.length);
-                        }*/
+                        /*for (int j = 0; j < strings.length; j++) {
+                         System.out.println("Strings an der STelle j: " + strings[j] + "länge "+ strings.length);
+                         }*/
                     }
                 }
             }
@@ -97,6 +117,101 @@ public class Menu {
             System.out.println("fehler " + e);
         }
         return strings;
+    }
+
+    public static void readAllSUR() throws FileNotFoundException {
+        String[][] ergSUR = null;
+        int anzahl;
+        String[][] allSUR;
+        String SURName;
+        String[] vorherigeZeile = new String[4];
+        int counterSame = 0;
+        File s = null;
+        String txtname = null;
+        String inhalt = null;
+        int intAnzahlSUR = 0;
+        String anzahlSUR = null;
+        List<String> Koordinaten = new ArrayList<String>();
+        String lon = null; //longitude = Längengrad
+        String lat = null; //latitude = Breitengrad
+        String helpLon = null;
+        String helpLat = null;
+        int count = 0;                           
+
+        try {
+            JFileChooser sc = new JFileChooser();
+            int chooseResult = sc.showDialog(null, "Bitte Datei auswählen");
+            if (chooseResult == JFileChooser.APPROVE_OPTION) {
+                s = sc.getSelectedFile();
+                txtname = s.getName();
+                BufferedReader in = new BufferedReader(new FileReader(s));
+                String zeile = null;
+
+                //in intAnzahlSUR ist die Anzahl an allen SUR's die in dieser Datei sind gespeichert
+                anzahlSUR = in.readLine();
+                intAnzahlSUR = Integer.parseInt(anzahlSUR);
+                NumberSUR = intAnzahlSUR;
+                anzahl = intAnzahlSUR;
+                allSUR = new String[intAnzahlSUR][4];
+
+                for (int j = 0; j < intAnzahlSUR; j++) {
+                    zeile = in.readLine();
+                    String[] zeileSplit = zeile.split(",");
+
+                    for (int y = 0; y < 4; y++) {
+                        if (vorherigeZeile[0] != null) {
+                            if (vorherigeZeile[0].equals(zeileSplit[0])) {
+                                counterSame++;
+                                anzahl--;
+                                String help1 = allSUR[j - counterSame][3];
+                                String help2 = zeileSplit[3];
+                                String help3 = "";
+                                help3 = new StringBuffer(help1).append("; " + help2).toString();
+                                allSUR[j-counterSame][3] = help3;
+                                break;
+                            } else {
+                                counterSame = 0;
+                                allSUR[j][y] = zeileSplit[y];
+                            }
+
+                        } else {
+                            for (int f = 0; f < 4; f++) {
+                            }
+                            allSUR[j][y] = zeileSplit[y];
+                        }
+                    }
+                    //Letzter Eintrag
+                    for (int t = 0; t < 4; t++) {
+                        vorherigeZeile[t] = zeileSplit[t];
+                    }
+                }
+                
+                //ErgebnisSUR speichern ohne null Elemente
+                ergSUR = new String [anzahl][4];
+                int temp = 0;
+                for (int h = 0; h < intAnzahlSUR; h++) {
+                    for (int l = 0; l < 4; l++) {
+                          temp = 0;
+                        if (allSUR[h][l] != null) {                           
+                           temp = 1;
+                           ergSUR[count][l] = allSUR[h][l];
+                        }                        
+                    }
+                    count = count + temp;
+                }
+                
+                //ergSUR ausgeben
+                /*for (int w = 0; w < ergSUR.length; w++ ){
+                    for(int u = 0; u < 4; u++){
+                        System.out.println("ergSUR " + ergSUR[w][u]);
+                    }
+                }*/
+
+            }
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(null, "Datei könnte nicht gelesen werden. " + e);
+        }
+
     }
 
     public static String[][] readSUR() throws FileNotFoundException {
@@ -177,8 +292,48 @@ public class Menu {
         }
     }
 
-    public static void saveKML(String[] koordinaten) {
+    public static void saveKML(String[] koordinaten) throws FileNotFoundException {
+        //String Erzeugung zum Testen von der Methode
+        String[] test;
+        test = new String[5];
+        test[0] = "5.9999999,50.93210560";
+        test[1] = "5.34239840,50.93214990";
+        test[2] = "5.34245170,50.93209770";
+        test[3] = "5.34234260,50.93205340";
+        test[4] = "5.34228930,50.99999990";
+        
+        //KML-Datei erzeugen
+        final Kml kml = new Kml();
+        //da wir oben das normale Document importiert haben, müssen wir hier das micromata Document importieren
+        final de.micromata.opengis.kml.v_2_2_0.Document document = new de.micromata.opengis.kml.v_2_2_0.Document();
+	kml.setFeature(document);
 
+        //Placemark erzeugen mit dem Namen LinearRing.kml
+	final Placemark placemark = new Placemark();
+	document.getFeature().add(placemark);
+	placemark.setName("LinearRing.kml");
+
+        //Polygon erzeugen
+	final Polygon polygon = new Polygon();
+	placemark.setGeometry(polygon);
+	final Boundary boundary = new Boundary();
+	polygon.setOuterBoundaryIs(boundary);
+
+        //Linear Ring erzuegen
+	final LinearRing linearring = new LinearRing();
+	boundary.setLinearRing(linearring);
+
+        //Koordinaten hinzufügen
+        String coordinate = "5.34228930,50.93210560";
+	List<Coordinate> coord = new ArrayList<Coordinate>();
+	linearring.setCoordinates(coord);
+	for (int i = 0; i < test.length; i++){
+            String help = test[i];
+            coord.add(new Coordinate(help));
+        }
+        
+        //Datei speichern
+        kml.marshal(new File(count + "ersteKMLDatei.kml"));
     }
 
     //Methode dient zur Rückgabe der Anzahl von SUR

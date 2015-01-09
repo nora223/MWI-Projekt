@@ -185,6 +185,11 @@ public class FXMLDocumentController implements Initializable {
     }
 
     @FXML
+    public void readAllSUR() throws FileNotFoundException, IOException {
+        menu.Menu.readAllSUR();
+    }
+    
+    @FXML
     public void readSUR() throws FileNotFoundException, IOException {
         try {
             String koordinaten[][] = menu.Menu.readSUR();
