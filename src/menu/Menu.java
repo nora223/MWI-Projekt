@@ -119,7 +119,7 @@ public class Menu {
         return strings;
     }
 
-    public static void readAllSUR() throws FileNotFoundException {
+    public static String[][] readAllSUR() throws FileNotFoundException {
         String[][] ergSUR = null;
         int anzahl;
         String[][] allSUR;
@@ -200,6 +200,8 @@ public class Menu {
                     count = count + temp;
                 }
                 
+                
+                
                 //ergSUR ausgeben
                 /*for (int w = 0; w < ergSUR.length; w++ ){
                     for(int u = 0; u < 4; u++){
@@ -211,6 +213,7 @@ public class Menu {
         } catch (Exception e) {
             javax.swing.JOptionPane.showMessageDialog(null, "Datei könnte nicht gelesen werden. " + e);
         }
+        return ergSUR;
 
     }
 
@@ -293,14 +296,15 @@ public class Menu {
     }
 
     public static void saveKML(String[] koordinaten) throws FileNotFoundException {
+        System.out.println("Datei wird gespeichert");
         //String Erzeugung zum Testen von der Methode
-        String[] test;
+        /*String[] test;
         test = new String[5];
         test[0] = "5.9999999,50.93210560";
         test[1] = "5.34239840,50.93214990";
         test[2] = "5.34245170,50.93209770";
         test[3] = "5.34234260,50.93205340";
-        test[4] = "5.34228930,50.99999990";
+        test[4] = "5.34228930,50.99999990";*/
         
         //KML-Datei erzeugen
         final Kml kml = new Kml();
@@ -324,16 +328,17 @@ public class Menu {
 	boundary.setLinearRing(linearring);
 
         //Koordinaten hinzufügen
-        String coordinate = "5.34228930,50.93210560";
+        //String coordinate = "5.34228930,50.93210560";
 	List<Coordinate> coord = new ArrayList<Coordinate>();
 	linearring.setCoordinates(coord);
-	for (int i = 0; i < test.length; i++){
-            String help = test[i];
+	for (int i = 0; i < koordinaten.length; i++){
+            String help = koordinaten[i];
             coord.add(new Coordinate(help));
         }
         
         //Datei speichern
-        kml.marshal(new File(count + "ersteKMLDatei.kml"));
+        kml.marshal(new File(count + "KMLSave.kml"));
+        System.out.println("Datei wurde erfolgreich gespeichert");
     }
 
     //Methode dient zur Rückgabe der Anzahl von SUR

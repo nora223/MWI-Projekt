@@ -85,10 +85,14 @@
             }
             
             function goTo(newLon, newLat, zoomNew) {
+                var waitforImage=0;
+                
                 lon = newLon;
                 lat = newLat;
                 zoom = zoomNew;
                 jumpTo(lon, lat, zoom);
+           // setTimeout(1000);    
+                retrun;
             }
             function createArrayLonLat(pixelCounter) {
                 lonArray = new Array(pixelCounter);
