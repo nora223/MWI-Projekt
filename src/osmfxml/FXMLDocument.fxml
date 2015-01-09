@@ -33,6 +33,7 @@
                            <items>
                               <MenuItem mnemonicParsing="false" onAction="#readKML" text="kml read" />
                               <MenuItem mnemonicParsing="false" onAction="#readSUR" text="SUR read" />
+                              <MenuItem mnemonicParsing="false" onAction="#readAllSUR" text="All SUR read" />
                            </items>
                       </Menu>
                       <Menu mnemonicParsing="false" text="Edit">
