@@ -83,10 +83,11 @@
                 coordinate.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
                 return coordinate;
             }
-            function goTo(newLon, newLat) {
+            
+            function goTo(newLon, newLat, zoomNew) {
                 lon = newLon;
                 lat = newLat;
-                zoom = 17;
+                zoom = zoomNew;
                 jumpTo(lon, lat, zoom);
             }
             function createArrayLonLat(pixelCounter) {

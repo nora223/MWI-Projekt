@@ -1814,11 +1814,16 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     TextField latText;
 
+    
+    @FXML
+    TextField textFieldZoom;
+    
     public void goToCoordinate() {
         String lon = lonText.textProperty().get();
         String lat = latText.textProperty().get();
+        String zoom = textFieldZoom.textProperty().get();
         WebEngine webEngineGoToCoordinate = WebViewMap.getEngine();
-        webEngineGoToCoordinate.executeScript("goTo(" + lon + "," + lat + ")");
+        webEngineGoToCoordinate.executeScript("goTo(" + lon + "," + lat + ","+zoom+")");
 
     }
 
