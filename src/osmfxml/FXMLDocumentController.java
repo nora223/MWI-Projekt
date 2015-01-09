@@ -271,7 +271,7 @@ public class FXMLDocumentController implements Initializable {
     ImageView imageViewChangeColor;
 
     public void changeColor() throws IOException {
-        findBuilding();
+        findLake();
 
     }
 
@@ -300,13 +300,7 @@ public class FXMLDocumentController implements Initializable {
                 Color color = pixelReader.getColor(readX, readY);
                 Color red = Color.RED;
                 Color transparent = Color.TRANSPARENT;
-                if (color.toString().equals("0xc0b0aeff")
-                        || color.toString().equals("0xbeadadff")
-                        || color.toString().equals("0xd6d1c8ff")
-                        || color.toString().equals("0xd5d1c8ff")
-                        || color.toString().equals("0xc1b0afff")
-                        || color.toString().equals("0xd5d0c8ff")
-                        || color.toString().equals("0xc1b0adff")) {
+                if (color.toString().equals("0xb5d0d0ff")) {
                     pixelWriter.setColor(readX, readY, red);
 
                 } else {
