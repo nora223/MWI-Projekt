@@ -612,9 +612,8 @@ public class FXMLDocumentController implements Initializable {
         webEngineTest.executeScript("pintarZonas()");
 
     }
-    
+
     public void findForestAndGreenField() throws IOException {
-        
 
         //Erstellt ein Image der OSM Map
         Image image;
@@ -639,13 +638,13 @@ public class FXMLDocumentController implements Initializable {
                 Color color = pixelReader.getColor(readX, readY);
                 Color red = Color.RED;
                 Color transparent = Color.TRANSPARENT;
-                if (color.toString().equals("0xc0b0aeff")
-                        || color.toString().equals("0xbeadadff")
-                        || color.toString().equals("0xd6d1c8ff")
-                        || color.toString().equals("0xd5d1c8ff")
-                        || color.toString().equals("0xc1b0afff")
-                        || color.toString().equals("0xd5d0c8ff")
-                        || color.toString().equals("0xc1b0adff")) {
+                if (color.toString().equals("0xceeca8ff")//Wiese
+                        || color.toString().equals("0xcfeca8ff")//Wiese
+                        || color.toString().equals("0xccf6c9ff") //Wiese
+                        || color.toString().equals("0xa0ce85ff")
+                        || color.toString().equals("0xaacaaeff")
+                        || color.toString().equals("0xaacbaeff")) {
+
                     pixelWriter.setColor(readX, readY, red);
 
                 } else {
@@ -956,7 +955,7 @@ public class FXMLDocumentController implements Initializable {
         webEngineTest.executeScript("pintarZonas()");
 
     }
-    
+
     public void findAreaArroundBuilding() throws IOException {
 
         //Erstellt ein Image der OSM Map
@@ -1299,7 +1298,7 @@ public class FXMLDocumentController implements Initializable {
         webEngineTest.executeScript("pintarZonas()");
 
     }
-    
+
     public void findBuilding() throws IOException {
 
         //Erstellt ein Image der OSM Map
@@ -1642,10 +1641,7 @@ public class FXMLDocumentController implements Initializable {
         webEngineTest.executeScript("pintarZonas()");
 
     }
-    
-    
-    
-    
+
     @FXML
     ImageView imageViewShowChangeColor;
 
