@@ -4,6 +4,7 @@ import com.sun.org.apache.bcel.internal.generic.TargetLostException;
 import com.sun.prism.BufferedImageTools;
 import com.sun.webpane.platform.ContextMenu;
 import java.awt.Graphics2D;
+import java.awt.MediaTracker;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.FileNotFoundException;
@@ -63,6 +64,9 @@ public class FXMLDocumentController implements Initializable {
     WebView WebViewSatellit;
     @FXML
     WebView WebViewAlg;
+
+    String zahlKML = "0001";
+    String zahl2;
 
     @FXML
     public void showMap() {
@@ -188,17 +192,38 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
+    String[][] ergSURGlobal;
+
     @FXML
     public void readAllSUR() throws FileNotFoundException, IOException, InterruptedException {
         System.out.println("KML Datei wird eingelesen");
         String[][] ergSUR;
         ergSUR = menu.Menu.readAllSUR();
+        ergSURGlobal = new String[ergSUR.length][4];
+        for (int i = 0; i < ergSUR.length; i++) {
+            for (int j = 0; j < 4; j++) {
+                System.out.println(ergSUR[i][j]);
+                ergSURGlobal[i][j] = ergSUR[i][j];
+            }
+
+        }
 
         int countSURS = ergSUR.length;
         for (int i = 0; i < countSURS; i++) {
             System.out.println("CreatePolygons wird aufgerufen");
+            zahlKML = ergSUR[i][0];
             createPolygons(ergSUR[i]);
+
         }
+
+    }
+
+    public void findNextSUR() throws IOException, InterruptedException {
+        int zahl = Integer.parseInt(zahl2);
+        for (int i = zahl; i < ergSURGlobal.length; i++) {
+            createPolygons(ergSURGlobal[zahl]);
+        }
+
     }
 
     @FXML
@@ -293,410 +318,386 @@ public class FXMLDocumentController implements Initializable {
         if (sur[3].contains("swimming") || sur[3].contains("fishing")) {
             System.out.println("nun wird zu findLake gesprungen");
             findLake(sur);
+            zahl2 = zahlKML;
         }
     }
 
     public void findLake(String[] sur) throws IOException, InterruptedException {
         System.out.println("FindLake wird ausgeführt");
         String latSUR = sur[1];
+        latSUR = latSUR.substring(1);
         String lonSUR = sur[2];
+        lonSUR = lonSUR.substring(1);
         String zoom = "19";
         Object waitForImage;
-        Image image;
+
+        Object rückgabe;
 
         System.out.println("gleich wird der Punkt angezeigt");
-         WebEngine webEngineGoToCoordinate = WebViewMap.getEngine();
-         webEngineGoToCoordinate.executeScript("goTo("+lonSUR+","+latSUR+","+zoom+")");
+        WebEngine webEngineGoToCoordinate = WebViewMap.getEngine();
+        webEngineGoToCoordinate.executeScript("goTo(" + lonSUR + "," + latSUR + "," + zoom + ")");
+        //webEngineGoToCoordinate.loadContent("goTo(" + lonSUR + "," + latSUR + "," + zoom + ")");
 
-       
-
-    class MyStateListener implements ChangeListener<State>
-    {
-        @Override
-        public void changed(ObservableValue<? extends State> paramObservableValue, State from, State to)
-        {
-            if (to == State.SUCCEEDED)
-            {
-                
-// ...
-                // now the page is loaded and you can "work"
-                // with the page!
-                // ...        
-            }       
-        }
     }
-            
-            image  = WebViewMap.snapshot(null, null);
-            
 
-            // erstellt PixelReader
-            PixelReader pixelReader = image.getPixelReader();
+    public void starttofindPolygonLake() throws FileNotFoundException, IOException, InterruptedException {
+        Image image;
+        image = WebViewMap.snapshot(null, null);
 
-            // erstellt WritableImage
-            WritableImage wImage = new WritableImage(
-                    (int) image.getWidth(),
-                    (int) image.getHeight());
+        // erstellt PixelReader
+        PixelReader pixelReader = image.getPixelReader();
 
-            //erstellt einen PixelWriter
-            PixelWriter pixelWriter = wImage.getPixelWriter();
+        // erstellt WritableImage
+        WritableImage wImage = new WritableImage(
+                (int) image.getWidth(),
+                (int) image.getHeight());
+
+        //erstellt einen PixelWriter
+        PixelWriter pixelWriter = wImage.getPixelWriter();
 
         //Schleife die jedes Pixel durchläuft und die Farbe auf Rot für die gewählten Farben setzt
-            //die restlichen Pixel werden auf Transparent gesetzt
-            for (int readY = 0;
-
-            readY< image.getHeight ();
-            readY
-
-            
-                ++) {
+        //die restlichen Pixel werden auf Transparent gesetzt
+        for (int readY = 0;
+                readY < image.getHeight();
+                readY++) {
             for (int readX = 0; readX < image.getWidth(); readX++) {
 
-                    Color color = pixelReader.getColor(readX, readY);
-                    Color red = Color.RED;
-                    Color transparent = Color.TRANSPARENT;
-                    if (color.toString().equals("0xb5d0d0ff")) {
-                        pixelWriter.setColor(readX, readY, red);
+                Color color = pixelReader.getColor(readX, readY);
+                Color red = Color.RED;
+                Color transparent = Color.TRANSPARENT;
+                if (color.toString().equals("0xb5d0d0ff")) {
+                    pixelWriter.setColor(readX, readY, red);
 
-                    } else {
-                        pixelWriter.setColor(readX, readY, transparent);
-                    }
+                } else {
+                    pixelWriter.setColor(readX, readY, transparent);
                 }
             }
-            //sucht und speichert das zentrale Pixel
-            double middleY = wImage.getHeight() / 2;
-            double middleX = wImage.getWidth() / 2;
-            double[] zentralPixel = {middleX, middleY};
+        }
+        //sucht und speichert das zentrale Pixel
+        double middleY = wImage.getHeight() / 2;
+        double middleX = wImage.getWidth() / 2;
+        double[] zentralPixel = {middleX, middleY};
 
-            //variable für das nächstgelegene Pixel mit roter Farbe zum zentralen Pixel
-            int[] nearestPixel = {0, 0};
+        //variable für das nächstgelegene Pixel mit roter Farbe zum zentralen Pixel
+        int[] nearestPixel = {0, 0};
 
-            //Hilfsvariablen
-            double distance = 100000;
-            double helpDistance;
-            double[] helpPixel;
+        //Hilfsvariablen
+        double distance = 100000;
+        double helpDistance;
+        double[] helpPixel;
 
-            //PixelReader für das erzeugte Wirteable Image
-            PixelReader wPixelReader = wImage.getPixelReader();
+        //PixelReader für das erzeugte Wirteable Image
+        PixelReader wPixelReader = wImage.getPixelReader();
 
-            //Schleife zur Bestimmung des nächsten roten Pixel zum zentralen Pixel
-            for (int y = 0;
-
-            y< wImage.getHeight ();
-            y
-
-            
-                ++) {
+        //Schleife zur Bestimmung des nächsten roten Pixel zum zentralen Pixel
+        for (int y = 0; y < wImage.getHeight(); y++) {
             for (int x = 0; x < wImage.getWidth(); x++) {
-                    Color color = wPixelReader.getColor(x, y);
-                    //System.out.println("Color Pixel:"+ color.toString());
+                Color color = wPixelReader.getColor(x, y);
+                //System.out.println("Color Pixel:"+ color.toString());
 
-                    if (color.toString().equals(Color.RED.toString())) {
-                        helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0] - y), 2) + Math.pow(Math.abs(zentralPixel[1] - x), 2));
-                        System.out.println("Berechnung Distance");
-                        if (helpDistance < distance) {
-                            distance = helpDistance;
-                            nearestPixel[0] = x;
-                            nearestPixel[1] = y;
-                        }
+                if (color.toString().equals(Color.RED.toString())) {
+                    helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0] - y), 2) + Math.pow(Math.abs(zentralPixel[1] - x), 2));
+                    System.out.println("Berechnung Distance");
+                    if (helpDistance < distance) {
+                        distance = helpDistance;
+                        nearestPixel[0] = x;
+                        nearestPixel[1] = y;
                     }
                 }
-
             }
 
-            //setzt hilfsvariable auf den nächsten Punkt
-            int checkX = nearestPixel[0];
-            int checkY = nearestPixel[1];
+        }
 
-            //Hilfsvariablen
-            int helpX = 0;
-            int helpY = 0;
-            boolean redpixel = true;
-            int feld = 0;
-            int zähler = 0;
-            Color blue = Color.BLUE;
-            int pixelCounter = 0;
+        //setzt hilfsvariable auf den nächsten Punkt
+        int checkX = nearestPixel[0];
+        int checkY = nearestPixel[1];
 
-            //Array zum speichern der gefilterten Randpixel
-            int[][] pixelArray = new int[10000][2];
+        //Hilfsvariablen
+        int helpX = 0;
+        int helpY = 0;
+        boolean redpixel = true;
+        int feld = 0;
+        int zähler = 0;
+        Color blue = Color.BLUE;
+        int pixelCounter = 0;
 
-            //while schleife die solange offen bleibt, bis der boolean redpixel auf false ist, dieser wird false, wenn kein RAndpixel mehr gefunden wird
-            while (redpixel
+        //Array zum speichern der gefilterten Randpixel
+        int[][] pixelArray = new int[10000][2];
 
-            
-                ) {
+        //while schleife die solange offen bleibt, bis der boolean redpixel auf false ist, dieser wird false, wenn kein RAndpixel mehr gefunden wird
+        while (redpixel) {
             //zähler für momentane prüfung, damit while schleife abbricht, da code für blau nicht gefunden
             zähler++;
-                //setze redpixel auf false damit nur weiter durch dei schleife gelaufen wird wenn in einer if schleife gegangen wird
-                redpixel = false;
-                //erste if schleife prüft, ob der nächste pixel rot oder blau ist (blau noch nciht implementiert da farbcode nicht vorhanden, momentaner farbcode leider nicht richtig)
-                if (!(wPixelReader.getColor(checkX + 1, checkY).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX + 1, checkY).toString().equals("0x0000ffff"))) {
-                    //Prüfung ob danach ein Roter Pixel kommt, weil dann ist dieser Pixel ein RandPixel
-                    if (wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0xff0000ff")) {
-                        //wie ebenbeschrieben wird boolean auf true gesetzt
-                        redpixel = true;
-                        feld = 1;
-                        //Randpixel wird blau gemacht
-                        pixelWriter.setColor(checkX + 1, checkY + 1, blue);
-                        //neuer Randpunkt wird als neuer Startpunkt gewählt
-                        checkX = checkX + 1;
-                        checkY = checkY + 1;
-                        //Randpixel wird gespeichert
-                        pixelArray[pixelCounter][0] = checkX;
-                        pixelArray[pixelCounter][1] = checkY;
-
-                        pixelCounter = pixelCounter + 1;
-
-                    }
-                }
-                //diese Schleifen wieder holen sich 8 mal wo immer ein Pixel weiter gegangen wird //Start punkt für den Rundgang um den Pixel ist der 3 Uhr Pixel
-                if (!(wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0x0000ffff"))) {
-                    if (wPixelReader.getColor(checkX, checkY + 1).toString().equals("0xff0000ff")) {
-
-                        redpixel = true;
-                        feld = 2;
-                        pixelWriter.setColor(checkX, checkY + 1, blue);
-                        checkY = checkY + 1;
-                        pixelArray[pixelCounter][0] = checkX;
-                        pixelArray[pixelCounter][1] = checkY;
-                        pixelCounter = pixelCounter + 1;
-
-                    }
-                }
-                if (!(wPixelReader.getColor(checkX, checkY + 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX, checkY + 1).toString().equals("0x0000ffff"))) {
-                    if (wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0xff0000ff")) {
-
-                        redpixel = true;
-                        feld = 3;
-                        pixelWriter.setColor(checkX - 1, checkY + 1, blue);
-                        checkX = checkX - 1;
-                        checkY = checkY + 1;
-                        pixelArray[pixelCounter][0] = checkX;
-                        pixelArray[pixelCounter][1] = checkY;
-                        pixelCounter = pixelCounter + 1;
-
-                    }
-                }
-                if (!(wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0x0000ffff"))) {
-                    if (wPixelReader.getColor(checkX - 1, checkY).toString().equals("0xff0000ff")) {
-
-                        redpixel = true;
-                        feld = 4;
-                        pixelWriter.setColor(checkX - 1, checkY, blue);
-                        checkX = checkX - 1;
-                        pixelArray[pixelCounter][0] = checkX;
-                        pixelArray[pixelCounter][1] = checkY;
-                        pixelCounter = pixelCounter + 1;
-
-                    }
-                }
-                if (!(wPixelReader.getColor(checkX - 1, checkY).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY).toString().equals("0x0000ffff"))) {
-                    if (wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xff0000ff")) {
-
-                        redpixel = true;
-                        feld = 5;
-                        pixelWriter.setColor(checkX - 1, checkY - 1, blue);
-                        checkX = checkX - 1;
-                        checkY = checkY - 1;
-                        pixelArray[pixelCounter][0] = checkX;
-                        pixelArray[pixelCounter][1] = checkY;
-                        pixelCounter = pixelCounter + 1;
-
-                    }
-                }
-
-                if (!(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff"))) {
-                    if (wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) {
-
-                        redpixel = true;
-                        feld = 6;
-                        pixelWriter.setColor(checkX, checkY - 1, blue);
-                        checkY = checkY - 1;
-                        pixelArray[pixelCounter][0] = checkX;
-                        pixelArray[pixelCounter][1] = checkY;
-                        pixelCounter = pixelCounter + 1;
-
-                    }
-
-                }
-
-                if (!(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0x0000ffff"))) {
-                    if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xff0000ff")) {
-
-                        redpixel = true;
-                        feld = 7;
-                        pixelWriter.setColor(checkX + 1, checkY - 1, blue);
-                        checkX = checkX + 1;
-                        checkY = checkY - 1;
-                        pixelArray[pixelCounter][0] = checkX;
-                        pixelArray[pixelCounter][1] = checkY;
-                        pixelCounter = pixelCounter + 1;
-
-                    }
-                }
-                if (!(wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0x0000ffff"))) {
-                    if (wPixelReader.getColor(checkX + 1, checkY).toString().equals("0xff0000ff")) {
-
-                        redpixel = true;
-                        feld = 8;
-                        pixelWriter.setColor(checkX + 1, checkY, blue);
-                        checkX = checkX + 1;
-                        pixelArray[pixelCounter][0] = checkX;
-                        pixelArray[pixelCounter][1] = checkY;
-                        pixelCounter = pixelCounter + 1;
-
-                    }
-                }
-
-                //Wenn eine Runde um das Gebäude geangen wurde sind die hilfsvariablen wieder auf dem Anfangs punkt, hier wird dann die schleife beendet
-                if (checkX == nearestPixel[0] && checkY == nearestPixel[1]) {
-                    redpixel = false;
-                }
-            // Zähler damit momentan beendet wird, da farbcode für blau nicht vorhanden, so wird nach 10000 Pixeln abgebrochen
-                //if (zähler == 20000) {
-                //   break;
-                //}
-                //Schleife läuft zum Randpixel falls Koordinate auf Objekt
-                if (zähler < 2 && redpixel == false) {
-                    while (wPixelReader.getColor(checkX, checkY).toString().equals("0xff0000ff")) {
-                        checkX++;
-                    }
-                    checkX = checkX - 1;
+            //setze redpixel auf false damit nur weiter durch dei schleife gelaufen wird wenn in einer if schleife gegangen wird
+            redpixel = false;
+            //erste if schleife prüft, ob der nächste pixel rot oder blau ist (blau noch nciht implementiert da farbcode nicht vorhanden, momentaner farbcode leider nicht richtig)
+            if (!(wPixelReader.getColor(checkX + 1, checkY).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX + 1, checkY).toString().equals("0x0000ffff"))) {
+                //Prüfung ob danach ein Roter Pixel kommt, weil dann ist dieser Pixel ein RandPixel
+                if (wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0xff0000ff")) {
+                    //wie ebenbeschrieben wird boolean auf true gesetzt
                     redpixel = true;
+                    feld = 1;
+                    //Randpixel wird blau gemacht
+                    pixelWriter.setColor(checkX + 1, checkY + 1, blue);
+                    //neuer Randpunkt wird als neuer Startpunkt gewählt
+                    checkX = checkX + 1;
+                    checkY = checkY + 1;
+                    //Randpixel wird gespeichert
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
+
+                    pixelCounter = pixelCounter + 1;
+
                 }
-                //Hilfsvariablen
-                int xhelp = 0;
-                int yhelp = 0;
-                int zähler1 = 0;
+            }
+            //diese Schleifen wieder holen sich 8 mal wo immer ein Pixel weiter gegangen wird //Start punkt für den Rundgang um den Pixel ist der 3 Uhr Pixel
+            if (!(wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX, checkY + 1).toString().equals("0xff0000ff")) {
 
-                //Schleife um einzelne FehlerPixel zu Filtern
-                if (redpixel == false) {
-                    if (wPixelReader.getColor(checkX + 1, checkY).toString().equals("0x0000ffff")) {
-                        zähler1 = zähler1 + 1;
-                        xhelp = xhelp + 1;
-                    }
-                    if (wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0x0000ffff")) {
-                        zähler1 = zähler1 + 1;
-                        xhelp = xhelp + 1;
-                        yhelp = yhelp + 1;
+                    redpixel = true;
+                    feld = 2;
+                    pixelWriter.setColor(checkX, checkY + 1, blue);
+                    checkY = checkY + 1;
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
+                    pixelCounter = pixelCounter + 1;
 
-                    }
-                    if (wPixelReader.getColor(checkX + 0, checkY + 1).toString().equals("0x0000ffff")) {
-                        zähler1 = zähler1 + 1;
-                        yhelp = yhelp + 1;
+                }
+            }
+            if (!(wPixelReader.getColor(checkX, checkY + 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX, checkY + 1).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0xff0000ff")) {
 
-                    }
-                    if (wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0x0000ffff")) {
-                        zähler1 = zähler1 + 1;
-                        xhelp = xhelp - 1;
-                        yhelp = yhelp + 1;
+                    redpixel = true;
+                    feld = 3;
+                    pixelWriter.setColor(checkX - 1, checkY + 1, blue);
+                    checkX = checkX - 1;
+                    checkY = checkY + 1;
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
+                    pixelCounter = pixelCounter + 1;
 
-                    }
-                    if (wPixelReader.getColor(checkX - 1, checkY + 0).toString().equals("0x0000ffff")) {
-                        zähler1 = zähler1 + 1;
-                        xhelp = xhelp - 1;
+                }
+            }
+            if (!(wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX - 1, checkY).toString().equals("0xff0000ff")) {
 
-                    }
-                    if (wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff")) {
-                        zähler1 = zähler1 + 1;
-                        xhelp = xhelp - 1;
-                        yhelp = yhelp - 1;
+                    redpixel = true;
+                    feld = 4;
+                    pixelWriter.setColor(checkX - 1, checkY, blue);
+                    checkX = checkX - 1;
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
+                    pixelCounter = pixelCounter + 1;
 
-                    }
-                    if (wPixelReader.getColor(checkX + 0, checkY - 1).toString().equals("0x0000ffff")) {
-                        zähler1 = zähler1 + 1;
-                        yhelp = yhelp - 1;
+                }
+            }
+            if (!(wPixelReader.getColor(checkX - 1, checkY).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xff0000ff")) {
 
-                    }
-                    if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0x0000ffff")) {
-                        zähler1 = zähler1 + 1;
-                        xhelp = xhelp + 1;
-                        yhelp = yhelp - 1;
-                    }
-                    if (zähler1 == 1) {
-                        pixelWriter.setColor(checkX, checkY, Color.TRANSPARENT);
-                        checkX = checkX + xhelp;
-                        checkY = checkY + yhelp;
-                        redpixel = true;
-                    }
+                    redpixel = true;
+                    feld = 5;
+                    pixelWriter.setColor(checkX - 1, checkY - 1, blue);
+                    checkX = checkX - 1;
+                    checkY = checkY - 1;
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
+                    pixelCounter = pixelCounter + 1;
+
                 }
             }
 
-            //Zeigt das gefilterte Image im rechten Fenster
+            if (!(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) {
 
-            imageViewChangeColor.setImage (wImage);
+                    redpixel = true;
+                    feld = 6;
+                    pixelWriter.setColor(checkX, checkY - 1, blue);
+                    checkY = checkY - 1;
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
+                    pixelCounter = pixelCounter + 1;
 
-            //Bestimmt den zentralen Pixel der index.html
-            WebEngine webEngineTest = WebViewMap.getEngine();
-            Object centerWebView;
-            centerWebView  = webEngineTest.executeScript("test()");
+                }
+
+            }
+
+            if (!(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xff0000ff")) {
+
+                    redpixel = true;
+                    feld = 7;
+                    pixelWriter.setColor(checkX + 1, checkY - 1, blue);
+                    checkX = checkX + 1;
+                    checkY = checkY - 1;
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
+                    pixelCounter = pixelCounter + 1;
+
+                }
+            }
+            if (!(wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0x0000ffff"))) {
+                if (wPixelReader.getColor(checkX + 1, checkY).toString().equals("0xff0000ff")) {
+
+                    redpixel = true;
+                    feld = 8;
+                    pixelWriter.setColor(checkX + 1, checkY, blue);
+                    checkX = checkX + 1;
+                    pixelArray[pixelCounter][0] = checkX;
+                    pixelArray[pixelCounter][1] = checkY;
+                    pixelCounter = pixelCounter + 1;
+
+                }
+            }
+
+            //Wenn eine Runde um das Gebäude geangen wurde sind die hilfsvariablen wieder auf dem Anfangs punkt, hier wird dann die schleife beendet
+            if (checkX == nearestPixel[0] && checkY == nearestPixel[1]) {
+                redpixel = false;
+            }
+            // Zähler damit momentan beendet wird, da farbcode für blau nicht vorhanden, so wird nach 10000 Pixeln abgebrochen
+            //if (zähler == 20000) {
+            //   break;
+            //}
+            //Schleife läuft zum Randpixel falls Koordinate auf Objekt
+            if (zähler < 2 && redpixel == false) {
+                while (wPixelReader.getColor(checkX, checkY).toString().equals("0xff0000ff")) {
+                    checkX++;
+                }
+                checkX = checkX - 1;
+                redpixel = true;
+            }
+            //Hilfsvariablen
+            int xhelp = 0;
+            int yhelp = 0;
+            int zähler1 = 0;
+
+            //Schleife um einzelne FehlerPixel zu Filtern
+            if (redpixel == false) {
+                if (wPixelReader.getColor(checkX + 1, checkY).toString().equals("0x0000ffff")) {
+                    zähler1 = zähler1 + 1;
+                    xhelp = xhelp + 1;
+                }
+                if (wPixelReader.getColor(checkX + 1, checkY + 1).toString().equals("0x0000ffff")) {
+                    zähler1 = zähler1 + 1;
+                    xhelp = xhelp + 1;
+                    yhelp = yhelp + 1;
+
+                }
+                if (wPixelReader.getColor(checkX + 0, checkY + 1).toString().equals("0x0000ffff")) {
+                    zähler1 = zähler1 + 1;
+                    yhelp = yhelp + 1;
+
+                }
+                if (wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0x0000ffff")) {
+                    zähler1 = zähler1 + 1;
+                    xhelp = xhelp - 1;
+                    yhelp = yhelp + 1;
+
+                }
+                if (wPixelReader.getColor(checkX - 1, checkY + 0).toString().equals("0x0000ffff")) {
+                    zähler1 = zähler1 + 1;
+                    xhelp = xhelp - 1;
+
+                }
+                if (wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff")) {
+                    zähler1 = zähler1 + 1;
+                    xhelp = xhelp - 1;
+                    yhelp = yhelp - 1;
+
+                }
+                if (wPixelReader.getColor(checkX + 0, checkY - 1).toString().equals("0x0000ffff")) {
+                    zähler1 = zähler1 + 1;
+                    yhelp = yhelp - 1;
+
+                }
+                if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0x0000ffff")) {
+                    zähler1 = zähler1 + 1;
+                    xhelp = xhelp + 1;
+                    yhelp = yhelp - 1;
+                }
+                if (zähler1 == 1) {
+                    pixelWriter.setColor(checkX, checkY, Color.TRANSPARENT);
+                    checkX = checkX + xhelp;
+                    checkY = checkY + yhelp;
+                    redpixel = true;
+                }
+            }
+        }
+
+        //Zeigt das gefilterte Image im rechten Fenster
+        imageViewChangeColor.setImage(wImage);
+
+        //Bestimmt den zentralen Pixel der index.html
+        WebEngine webEngineTest = WebViewMap.getEngine();
+        Object centerWebView;
+        centerWebView = webEngineTest.executeScript("test()");
         //System.out.println(centerWebView);
 
-            //Hilfsvariablen
-            String test;
-            String[] lon = new String[pixelCounter];
-            String[] lat = new String[pixelCounter];
-            String lonText = "lon=";
-            String empty = "";
-            String help = "";
-            String help2 = "";
-            String[][] longlat = new String[pixelCounter][2];
-            String[] lonLatForSave = new String[pixelCounter];
+        //Hilfsvariablen
+        String test;
+        String[] lon = new String[pixelCounter];
+        String[] lat = new String[pixelCounter];
+        String lonText = "lon=";
+        String empty = "";
+        String help = "";
+        String help2 = "";
+        String[][] longlat = new String[pixelCounter][2];
+        String[] lonLatForSave = new String[pixelCounter];
         //Schleife zur Anpassung der Pixel Aufgrung ungleicher Größe WebView ImageView
-            //Bearbeiten String Koordinaten für einzeichnen Polygon in Map
-            for (int count = 0;
-            count< pixelCounter ;
-            count
-
-            
-                ++) {
+        //Bearbeiten String Koordinaten für einzeichnen Polygon in Map
+        for (int count = 0;
+                count < pixelCounter;
+                count++) {
             //*********************************************
             //für -10 die Variable aus Höhe/Breite zentralger Pixel Image - Höhe/Breite WebView ersetzen
             //***********************************************
             int x = pixelArray[count][0] - 9;
-                int y = pixelArray[count][1] - 10;
-                Object[] coordinate = new Object[pixelCounter];
-                coordinate[count] = webEngineTest.executeScript("getCoordinate(" + x + ", " + y + ")");
-                test = coordinate[count].toString();
-                help = test.replaceAll(lonText, empty);
-                help2 = help.replaceAll("lat=", empty);
-                longlat[count] = help2.split(Pattern.quote(","));
-                lon[count] = longlat[count][0];
-                lat[count] = longlat[count][1];
-                lonLatForSave[count] = lon[count] + "," + lat[count];
-            }
+            int y = pixelArray[count][1] - 10;
+            Object[] coordinate = new Object[pixelCounter];
+            coordinate[count] = webEngineTest.executeScript("getCoordinate(" + x + ", " + y + ")");
+            test = coordinate[count].toString();
+            help = test.replaceAll(lonText, empty);
+            help2 = help.replaceAll("lat=", empty);
+            longlat[count] = help2.split(Pattern.quote(","));
+            lon[count] = longlat[count][0];
+            lat[count] = longlat[count][1];
+            lonLatForSave[count] = lon[count] + "," + lat[count];
+        }
 
-            System.out.println (
+        System.out.println(
+                "SaveKML Methode wird aufgerufen");
 
-            "SaveKML Methode wird aufgerufen");
-            menu.Menu.saveKML (lonLatForSave);
+        String[] test2;
+        test2 = new String[5];
+        test2[0] = "5.9999999,50.93210560";
+        test2[1] = "5.34239840,50.93214990";
+        test2[2] = "5.34245170,50.93209770";
+        test2[3] = "5.34234260,50.93205340";
+        test2[4] = "5.34228930,50.99999990";
 
-            //Erstellt Array's für Längen- und Breiten-Koordinaten in JavaScript (index.html)
-            webEngineTest.executeScript (
-            "createArrayLonLat(" + pixelCounter + ")");
+       // menu.Menu.saveKML(test2);
+        //Erstellt Array's für Längen- und Breiten-Koordinaten in JavaScript (index.html)
+        webEngineTest.executeScript(
+                "createArrayLonLat(" + pixelCounter + ")");
 
         //Hilfsvariablen
         Object helpLongtitude;
-            Object helpLatitude;
+        Object helpLatitude;
 
-            //Speichern der Koordinaten für Polygone in JavaScript(index.html)
-            for (int count = 0;
-            count< pixelCounter ;
-            count
-
-            
-                ++) {
+        //Speichern der Koordinaten für Polygone in JavaScript(index.html)
+        for (int count = 0;
+                count < pixelCounter;
+                count++) {
             helpLongtitude = lon[count];
-                helpLatitude = lat[count];
-                helpLatitude = webEngineTest.executeScript("setLonLatArrays(" + helpLongtitude + "," + helpLatitude + "," + count + ")");
-            }
+            helpLatitude = lat[count];
+            helpLatitude = webEngineTest.executeScript("setLonLatArrays(" + helpLongtitude + "," + helpLatitude + "," + count + ")");
+        }
 
-            //Ausgabe Polygon auf Map
+        //Ausgabe Polygon auf Map
+        webEngineTest.executeScript(
+                "pintarZonas()");
 
-            webEngineTest.executeScript (
-        
-    
-
-    "pintarZonas()");
+        System.out.println(zahlKML);
+        findNextSUR();
 
     }
 

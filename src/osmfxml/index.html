@@ -65,6 +65,9 @@
                 // Position des Markers
                 // addMarker(layer_markers, 8.38573, 49.02640, popuptext);
                 //}
+                while(map.isSealed() == false){
+                    
+                }
             }
             function test() {
                 var lon = 7.96966776;
@@ -84,15 +87,29 @@
                 return coordinate;
             }
             
+        
+            
+            
             function goTo(newLon, newLat, zoomNew) {
-                var waitforImage=0;
+                
                 
                 lon = newLon;
                 lat = newLat;
                 zoom = zoomNew;
                 jumpTo(lon, lat, zoom);
-           // setTimeout(1000);    
-                retrun;
+                
+                
+                
+                
+                while(this.loading == true){
+                    setTimeout(25);
+                }
+                
+                
+               
+                
+           
+                return lon;
             }
             function createArrayLonLat(pixelCounter) {
                 lonArray = new Array(pixelCounter);
