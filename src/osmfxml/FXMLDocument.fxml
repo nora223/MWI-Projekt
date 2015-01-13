@@ -27,7 +27,7 @@
                         <Image url="@../pics/logo.jpg" />
                      </image>
                   </ImageView>
-                  <MenuBar layoutY="57.0" prefHeight="25.0" prefWidth="424.0" style="-fx-background-color: grey;">
+                  <MenuBar layoutY="57.0" prefHeight="25.0" prefWidth="129.0" style="-fx-background-color: grey;">
                     <menus>
                       <Menu mnemonicParsing="false" text="File">
                            <items>
@@ -35,16 +35,6 @@
                               <MenuItem mnemonicParsing="false" onAction="#readSUR" text="SUR read" />
                               <MenuItem mnemonicParsing="false" onAction="#readAllSUR" text="All SUR read" />
                            </items>
-                      </Menu>
-                      <Menu mnemonicParsing="false" text="Edit">
-                        <items>
-                          <MenuItem mnemonicParsing="false" text="Delete" />
-                        </items>
-                      </Menu>
-                      <Menu mnemonicParsing="false" text="Help">
-                        <items>
-                          <MenuItem mnemonicParsing="false" text="About" />
-                        </items>
                       </Menu>
                     </menus>
                   </MenuBar>
@@ -62,7 +52,8 @@
                   </Label>
                   <Button fx:id="GoToButton" layoutX="639.0" layoutY="45.0" mnemonicParsing="false" onAction="#goToCoordinate" text="GoTo" />
                   <TextField fx:id="textFieldZoom" layoutX="639.0" layoutY="15.0" prefHeight="25.0" prefWidth="45.0" />
-                  <Button fx:id="starttofind" layoutX="696.0" layoutY="45.0" mnemonicParsing="false" onAction="#starttofindPolygonLake" text="Lake" />
+                  <Button fx:id="starttofind" layoutX="140.0" layoutY="57.0" mnemonicParsing="false" onAction="#starttofindPolygonLake" text="draw Polygon" />
+                  <Button layoutX="277.0" layoutY="55.0" mnemonicParsing="false" text="next Coordinate" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
@@ -103,7 +94,15 @@
                                 <tabs>
                                     <Tab text="Info">
                                       <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: grey;" />
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: grey;">
+                                             <children>
+                                                <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="58.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../pics/logoDHBW2.jpg" />
+                                                   </image>
+                                                </ImageView>
+                                             </children>
+                                          </AnchorPane>
                                       </content>
                                     </Tab>
                                   <Tab onSelectionChanged="#showImage" text="copy Map">
