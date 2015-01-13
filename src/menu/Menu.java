@@ -45,7 +45,7 @@ public class Menu {
 
     private static String[][] daten = new String[70][4];
     private static int NumberSUR = 0;
-    private static int count = 0; //damit jede abgespeicherte KML-Datei eine neue Bezeichnung erhält
+    private static int countIDKML = 0; //damit jede abgespeicherte KML-Datei eine neue Bezeichnung erhält
 
     public static String[] readKML() throws FileNotFoundException {
         File f = null;
@@ -297,15 +297,7 @@ public class Menu {
 
     public static void saveKML(String[] koordinaten) throws FileNotFoundException {
         System.out.println("Datei wird gespeichert");
-        //String Erzeugung zum Testen von der Methode
-        /*String[] test;
-        test = new String[5];
-        test[0] = "5.9999999,50.93210560";
-        test[1] = "5.34239840,50.93214990";
-        test[2] = "5.34245170,50.93209770";
-        test[3] = "5.34234260,50.93205340";
-        test[4] = "5.34228930,50.99999990";*/
-        
+                
         //KML-Datei erzeugen
         final Kml kml = new Kml();
         //da wir oben das normale Document importiert haben, müssen wir hier das micromata Document importieren
@@ -315,7 +307,6 @@ public class Menu {
         //Placemark erzeugen mit dem Namen LinearRing.kml
 	final Placemark placemark = new Placemark();
 	document.getFeature().add(placemark);
-	placemark.setName("LinearRing.kml");
 
         //Polygon erzeugen
 	final Polygon polygon = new Polygon();
@@ -328,7 +319,6 @@ public class Menu {
 	boundary.setLinearRing(linearring);
 
         //Koordinaten hinzufügen
-        //String coordinate = "5.34228930,50.93210560";
 	List<Coordinate> coord = new ArrayList<Coordinate>();
 	linearring.setCoordinates(coord);
 	for (int i = 0; i < koordinaten.length; i++){
@@ -337,7 +327,8 @@ public class Menu {
         }
         
         //Datei speichern
-        kml.marshal(new File(count + "KMLSave.kml"));
+        kml.marshal(new File(countIDKML + ".computed.kml"));
+        countIDKML++; //countIDKML um eins erhöhen, da eine Datei erzeugt wurde
         System.out.println("Datei wurde erfolgreich gespeichert");
     }
 

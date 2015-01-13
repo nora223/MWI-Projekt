@@ -639,21 +639,12 @@ public class FXMLDocumentController implements Initializable {
             lonLatForSave[count] = lon[count] + "," + lat[count];
         }
 
-        System.out.println(
-                "SaveKML Methode wird aufgerufen");
+        System.out.println("SaveKML Methode wird aufgerufen");
 
-        String[] test2;
-        test2 = new String[5];
-        test2[0] = "5.9999999,50.93210560";
-        test2[1] = "5.34239840,50.93214990";
-        test2[2] = "5.34245170,50.93209770";
-        test2[3] = "5.34234260,50.93205340";
-        test2[4] = "5.34228930,50.99999990";
 
-        // menu.Menu.saveKML(test2);
+        menu.Menu.saveKML(lonLatForSave);
         //Erstellt Array's für Längen- und Breiten-Koordinaten in JavaScript (index.html)
-        webEngineTest.executeScript(
-                "createArrayLonLat(" + pixelCounter + ")");
+        webEngineTest.executeScript("createArrayLonLat(" + pixelCounter + ")");
 
         //Hilfsvariablen
         Object helpLongtitude;
