@@ -91,42 +91,14 @@ public class FXMLDocumentController implements Initializable {
         webEngine.load(url.toExternalForm());
     }
 
-    @FXML
-    public void showAlgMap() {
-        WebEngine webEngine = WebViewAlg.getEngine();
-        URL url = getClass().getResource("algMap.html");
-//webEngine.executeScript("document.setMapTypeSatellit");
-        webEngine.load(url.toExternalForm());
-    }
+    
+   
 
-    @FXML
-    public void showAlg2Map() {
-        WebEngine webEngine = WebViewAlg.getEngine();
-        URL url = getClass().getResource("alg2Map.html");
-//webEngine.executeScript("document.setMapTypeSatellit");
-        webEngine.load(url.toExternalForm());
-    }
+    
 
-    @FXML
-    public void showAlg3Map() {
-        WebEngine webEngine = WebViewAlg.getEngine();
-        URL url = getClass().getResource("alg3Map.html");
-//webEngine.executeScript("document.setMapTypeSatellit");
-        webEngine.load(url.toExternalForm());
-    }
+    
 
-    @FXML
-    public void showAlg4Map() {
-        WebEngine webEngine = WebViewAlg.getEngine();
-        URL url = getClass().getResource("alg4Map.html");
-//webEngine.executeScript("document.setMapTypeSatellit");
-        webEngine.load(url.toExternalForm());
-    }
-
-    @FXML
-    public void alg1copy() {
-        showAlgMap();
-    }
+   
 
     @FXML
     public void readKML() throws FileNotFoundException {
@@ -273,6 +245,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     public void showImage() {
         Image image;
+        
         image = WebViewMap.snapshot(null, null);
         imageView.setImage(image);
     }
