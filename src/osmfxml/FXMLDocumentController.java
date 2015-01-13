@@ -55,7 +55,7 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     Button nextCoordi;
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
@@ -71,7 +71,7 @@ public class FXMLDocumentController implements Initializable {
 
     String zahlKML = "0001";
     String zahl2;
-    int zählen=0;
+    int zählen = 0;
 
     @FXML
     public void showMap() {
@@ -174,15 +174,15 @@ public class FXMLDocumentController implements Initializable {
                 ergSURGlobal[i][j] = ergSUR[i][j];
             }
         }
-        if(zählen>=ergSUR.length){
-            zählen=0;
+        if (zählen >= ergSUR.length) {
+            zählen = 0;
             nextCoordi.setDisable(false);
         }
         int countSURS = ergSUR.length;
         System.out.println("CreatePolygons wird aufgerufen");
         zahlKML = ergSUR[0][0];
 
-        createPolygons(ergSUR[0]);
+        selectTypeByRule(ergSUR[0]);
 
     }
 
@@ -273,50 +273,81 @@ public class FXMLDocumentController implements Initializable {
 
         //findLake(sur);
     }
-  
-    
-    
-    public void nextCoordinate() throws IOException, InterruptedException{
-        
+
+    public void nextCoordinate() throws IOException, InterruptedException {
+
         zählen++;
-        if(zählen>=ergSURGlobal.length){
+        if (zählen >= ergSURGlobal.length) {
             nextCoordi.setDisable(true);
-        }else{
-        System.out.println(zählen);
-        createPolygons(ergSURGlobal[zählen]);
+        } else {
+            System.out.println(zählen);
+            selectTypeByRule(ergSURGlobal[zählen]);
         }
     }
+    String type = "";
 
+    public void selectTypeByRule(String[] sur) throws IOException, InterruptedException {
 
-
-    public void createPolygons(String[] sur) throws IOException, InterruptedException {
-        System.out.println("Create Polygons wird ausgeführt");
         if (sur[3].contains("swimming") || sur[3].contains("fishing")) {
-            System.out.println("nun wird zu findLake gesprungen");
-            findLake(sur);
-            zahl2 = zahlKML;
+            type = "lake";
+
+        } else if (sur[3].contains("dog_waste") || sur[3].contains("littering")) {
+            type = "green";
+        } else if (sur[3].contains("parking") || sur[3].contains("open_fire")) {
+            type = "area";
+        } else {
+            type = "building";
         }
+        goToCoordinateInMap(sur, type);
     }
 
-    public void findLake(String[] sur) throws IOException, InterruptedException {
-        System.out.println("FindLake wird ausgeführt");
+    public void goToCoordinateInMap(String[] sur, String type) throws IOException, InterruptedException {
+        WebEngine webEngineGoToCoordinate = WebViewMap.getEngine();
         String latSUR = sur[1];
         latSUR = latSUR.substring(1);
         String lonSUR = sur[2];
         lonSUR = lonSUR.substring(1);
-        String zoom = "19";
-        Object waitForImage;
+        String zoom = "18";
 
-        Object rückgabe;
+        switch (type) {
+            case "lake":
+                zoom = "16";
+                break;
+            case "green":
+                zoom = "16";
+                break;
+            case "area":
+                zoom = "16";
+                break;
+            case "building":
+                zoom = "18";
+                break;
 
-        System.out.println("gleich wird der Punkt angezeigt");
-        WebEngine webEngineGoToCoordinate = WebViewMap.getEngine();
+        }
+
         webEngineGoToCoordinate.executeScript("goTo(" + lonSUR + "," + latSUR + "," + zoom + ")");
-        //webEngineGoToCoordinate.loadContent("goTo(" + lonSUR + "," + latSUR + "," + zoom + ")");
 
     }
+    @FXML
+    public void selectStategy() throws IOException, FileNotFoundException, InterruptedException {
+        switch (type) {
+            case "lake":
+                findLake();
+                break;
+            case "green":
+                findForestAndGreenField();
+                break;
+            case "area":
+                findAreaArroundBuilding();
+                break;
+            case "building":
+                findBuilding();
+                break;
 
-    public void starttofindPolygonLake() throws FileNotFoundException, IOException, InterruptedException {
+        }
+    }
+
+    public void findLake() throws FileNotFoundException, IOException, InterruptedException {
         Image image;
         image = WebViewMap.snapshot(null, null);
 
@@ -639,9 +670,7 @@ public class FXMLDocumentController implements Initializable {
             lonLatForSave[count] = lon[count] + "," + lat[count];
         }
 
-        System.out.println("SaveKML Methode wird aufgerufen");
-
-
+        //Speichert Polygon als KML
         menu.Menu.saveKML(lonLatForSave);
         //Erstellt Array's für Längen- und Breiten-Koordinaten in JavaScript (index.html)
         webEngineTest.executeScript("createArrayLonLat(" + pixelCounter + ")");
@@ -664,7 +693,6 @@ public class FXMLDocumentController implements Initializable {
                 "pintarZonas()");
 
         System.out.println(ergSURGlobal[zählen][0]);
-      
 
     }
 
@@ -974,7 +1002,7 @@ public class FXMLDocumentController implements Initializable {
         String help = "";
         String help2 = "";
         String[][] longlat = new String[pixelCounter][2];
-
+        String[] lonLatForSave = new String[pixelCounter];
         //Schleife zur Anpassung der Pixel Aufgrung ungleicher Größe WebView ImageView
         //Bearbeiten String Koordinaten für einzeichnen Polygon in Map
         for (int count = 0; count < pixelCounter; count++) {
@@ -991,8 +1019,11 @@ public class FXMLDocumentController implements Initializable {
             longlat[count] = help2.split(Pattern.quote(","));
             lon[count] = longlat[count][0];
             lat[count] = longlat[count][1];
+            lonLatForSave[count] = lon[count] + "," + lat[count];
         }
 
+        //Speichert Polygon als KML
+        menu.Menu.saveKML(lonLatForSave);
         //Erstellt Array's für Längen- und Breiten-Koordinaten in JavaScript (index.html)
         webEngineTest.executeScript("createArrayLonLat(" + pixelCounter + ")");
 
@@ -1312,6 +1343,7 @@ public class FXMLDocumentController implements Initializable {
         String help = "";
         String help2 = "";
         String[][] longlat = new String[pixelCounter][2];
+        String[] lonLatForSave = new String[pixelCounter];
 
         //Schleife zur Anpassung der Pixel Aufgrung ungleicher Größe WebView ImageView
         //Bearbeiten String Koordinaten für einzeichnen Polygon in Map
@@ -1329,11 +1361,13 @@ public class FXMLDocumentController implements Initializable {
             longlat[count] = help2.split(Pattern.quote(","));
             lon[count] = longlat[count][0];
             lat[count] = longlat[count][1];
+            lonLatForSave[count] = lon[count] + "," + lat[count];
+
         }
 
         //Erstellt Array's für Längen- und Breiten-Koordinaten in JavaScript (index.html)
         webEngineTest.executeScript("createArrayLonLat(" + pixelCounter + ")");
-
+        menu.Menu.saveKML(lonLatForSave);
         //Hilfsvariablen
         Object helpLongtitude;
         Object helpLatitude;
@@ -1655,6 +1689,7 @@ public class FXMLDocumentController implements Initializable {
         String help = "";
         String help2 = "";
         String[][] longlat = new String[pixelCounter][2];
+        String[] lonLatForSave = new String[pixelCounter];
 
         //Schleife zur Anpassung der Pixel Aufgrung ungleicher Größe WebView ImageView
         //Bearbeiten String Koordinaten für einzeichnen Polygon in Map
@@ -1672,8 +1707,10 @@ public class FXMLDocumentController implements Initializable {
             longlat[count] = help2.split(Pattern.quote(","));
             lon[count] = longlat[count][0];
             lat[count] = longlat[count][1];
-        }
+            lonLatForSave[count] = lon[count] + "," + lat[count];
 
+        }
+        menu.Menu.saveKML(lonLatForSave);
         //Erstellt Array's für Längen- und Breiten-Koordinaten in JavaScript (index.html)
         webEngineTest.executeScript("createArrayLonLat(" + pixelCounter + ")");
 
