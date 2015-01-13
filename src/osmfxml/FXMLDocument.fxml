@@ -53,7 +53,7 @@
                   <Button fx:id="GoToButton" layoutX="584.0" layoutY="75.0" mnemonicParsing="false" onAction="#goToCoordinate" text="GoTo" />
                   <TextField fx:id="textFieldZoom" layoutX="479.0" layoutY="76.0" prefHeight="25.0" prefWidth="101.0" />
                   <Button fx:id="starttofind" layoutX="148.0" layoutY="69.0" mnemonicParsing="false" onAction="#starttofindPolygonLake" text="draw Polygon" />
-                  <Button layoutX="291.0" layoutY="69.0" mnemonicParsing="false" text="next Coordinate" />
+                  <Button fx:id="nextCoordi" layoutX="291.0" layoutY="69.0" mnemonicParsing="false" onAction="#nextCoordinate" text="next Coordinate" />
                   <Label fx:id="zoom" layoutX="430.0" layoutY="73.0" text="zoom" textFill="#f8f8f8">
                      <font>
                         <Font name="System Bold Italic" size="18.0" />

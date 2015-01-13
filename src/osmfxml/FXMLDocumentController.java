@@ -32,6 +32,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -52,6 +53,9 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Label label;
 
+    @FXML
+    Button nextCoordi;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
@@ -67,6 +71,7 @@ public class FXMLDocumentController implements Initializable {
 
     String zahlKML = "0001";
     String zahl2;
+    int zählen=0;
 
     @FXML
     public void showMap() {
@@ -90,15 +95,6 @@ public class FXMLDocumentController implements Initializable {
 //webEngine.executeScript("document.setMapTypeSatellit");
         webEngine.load(url.toExternalForm());
     }
-
-    
-   
-
-    
-
-    
-
-   
 
     @FXML
     public void readKML() throws FileNotFoundException {
@@ -177,24 +173,16 @@ public class FXMLDocumentController implements Initializable {
                 System.out.println(ergSUR[i][j]);
                 ergSURGlobal[i][j] = ergSUR[i][j];
             }
-
         }
-
+        if(zählen>=ergSUR.length){
+            zählen=0;
+            nextCoordi.setDisable(false);
+        }
         int countSURS = ergSUR.length;
-        for (int i = 0; i < countSURS; i++) {
-            System.out.println("CreatePolygons wird aufgerufen");
-            zahlKML = ergSUR[i][0];
-            createPolygons(ergSUR[i]);
+        System.out.println("CreatePolygons wird aufgerufen");
+        zahlKML = ergSUR[0][0];
 
-        }
-
-    }
-
-    public void findNextSUR() throws IOException, InterruptedException {
-        int zahl = Integer.parseInt(zahl2);
-        for (int i = zahl; i < ergSURGlobal.length; i++) {
-            createPolygons(ergSURGlobal[zahl]);
-        }
+        createPolygons(ergSUR[0]);
 
     }
 
@@ -245,7 +233,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     public void showImage() {
         Image image;
-        
+
         image = WebViewMap.snapshot(null, null);
         imageView.setImage(image);
     }
@@ -285,6 +273,21 @@ public class FXMLDocumentController implements Initializable {
 
         //findLake(sur);
     }
+  
+    
+    
+    public void nextCoordinate() throws IOException, InterruptedException{
+        
+        zählen++;
+        if(zählen>=ergSURGlobal.length){
+            nextCoordi.setDisable(true);
+        }else{
+        System.out.println(zählen);
+        createPolygons(ergSURGlobal[zählen]);
+        }
+    }
+
+
 
     public void createPolygons(String[] sur) throws IOException, InterruptedException {
         System.out.println("Create Polygons wird ausgeführt");
@@ -647,7 +650,7 @@ public class FXMLDocumentController implements Initializable {
         test2[3] = "5.34234260,50.93205340";
         test2[4] = "5.34228930,50.99999990";
 
-       // menu.Menu.saveKML(test2);
+        // menu.Menu.saveKML(test2);
         //Erstellt Array's für Längen- und Breiten-Koordinaten in JavaScript (index.html)
         webEngineTest.executeScript(
                 "createArrayLonLat(" + pixelCounter + ")");
@@ -669,8 +672,8 @@ public class FXMLDocumentController implements Initializable {
         webEngineTest.executeScript(
                 "pintarZonas()");
 
-        System.out.println(zahlKML);
-        findNextSUR();
+        System.out.println(ergSURGlobal[zählen][0]);
+      
 
     }
 
