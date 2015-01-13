@@ -45,7 +45,7 @@ public class Menu {
 
     private static String[][] daten = new String[70][4];
     private static int NumberSUR = 0;
-    private static int countIDKML = 0000; //damit jede abgespeicherte KML-Datei eine neue Bezeichnung erhält
+    private static int countIDKML = 0; //damit jede abgespeicherte KML-Datei eine neue Bezeichnung erhält
 
     public static String[] readKML() throws FileNotFoundException {
         File f = null;
