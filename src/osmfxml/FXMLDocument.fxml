@@ -31,9 +31,9 @@
                     <menus>
                       <Menu mnemonicParsing="false" text="read File">
                            <items>
-                              <MenuItem mnemonicParsing="false" onAction="#readKML" text="kml read" />
-                              <MenuItem mnemonicParsing="false" onAction="#readSUR" text="SUR read" />
-                              <MenuItem mnemonicParsing="false" onAction="#readAllSUR" text="All SUR read" />
+                              <MenuItem mnemonicParsing="false" onAction="#readKML" text="read kml" />
+                              <MenuItem mnemonicParsing="false" onAction="#readSUR" text="read SUR" />
+                              <MenuItem mnemonicParsing="false" onAction="#readAllSUR" text="read SUR's" />
                            </items>
                       </Menu>
                     </menus>
