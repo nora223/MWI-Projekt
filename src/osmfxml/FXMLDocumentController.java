@@ -62,8 +62,7 @@ import jxl.write.WritableWorkbook;
  * @author Tino
  */
 public class FXMLDocumentController implements Initializable {
-    @FXML
-    ImageView imageViewChangeColor;
+    
     
     @FXML
     private Label label;
@@ -725,7 +724,7 @@ public class FXMLDocumentController implements Initializable {
         }
 
         //Zeigt das gefilterte Image im rechten Fenster
-        imageViewChangeColor.setImage(wImage);
+        //imageViewChangeColor.setImage(wImage);
 
         //Bestimmt den zentralen Pixel der index.html
         WebEngine webEngineTest = WebViewMap.getEngine();
@@ -1079,7 +1078,7 @@ public class FXMLDocumentController implements Initializable {
             }
         }
         //Zeigt das gefilterte Image im rechten Fenster
-        imageViewChangeColor.setImage(wImage);
+        //imageViewChangeColor.setImage(wImage);
 
         //Bestimmt den zentralen Pixel der index.html
         WebEngine webEngineTest = WebViewMap.getEngine();
@@ -1420,7 +1419,7 @@ public class FXMLDocumentController implements Initializable {
             }
         }
         //Zeigt das gefilterte Image im rechten Fenster
-        imageViewChangeColor.setImage(wImage);
+        //imageViewChangeColor.setImage(wImage);
 
         //Bestimmt den zentralen Pixel der index.html
         WebEngine webEngineTest = WebViewMap.getEngine();
@@ -1766,7 +1765,7 @@ public class FXMLDocumentController implements Initializable {
             }
         }
         //Zeigt das gefilterte Image im rechten Fenster
-        imageViewChangeColor.setImage(wImage);
+        //imageViewChangeColor.setImage(wImage);
 
         //Bestimmt den zentralen Pixel der index.html
         WebEngine webEngineTest = WebViewMap.getEngine();
