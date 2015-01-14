@@ -69,7 +69,7 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Button fx:id="Refresh" layoutX="656.0" layoutY="74.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
+                  <Button fx:id="Refresh" alignment="BOTTOM_RIGHT" contentDisplay="RIGHT" layoutX="638.0" layoutY="75.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="490.0" prefWidth="998.0">
@@ -170,15 +170,6 @@
                                             </columns>
                                           </TableView>
                                        </content>
-                                    </Tab>
-                                    <Tab fx:id="changeColorID" onSelectionChanged="#changeColor" text="change Color">
-                                      <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                             <children>
-                                                <ImageView fx:id="imageViewChangeColor" fitHeight="477.0" fitWidth="495.0" pickOnBounds="true" preserveRatio="true" />
-                                             </children>
-                                          </AnchorPane>
-                                      </content>
                                     </Tab>
                                     <Tab fx:id="showChangeColorID" onSelectionChanged="#showChangeColor" text="show change Color">
                                        <content>
