@@ -7,21 +7,13 @@ import de.micromata.opengis.kml.v_2_2_0.Kml;
 import de.micromata.opengis.kml.v_2_2_0.LinearRing;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Polygon;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.applet.*;
 import java.io.BufferedReader;
 import java.io.File;
-import static java.io.FileDescriptor.in;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.StringTokenizer;
-import javax.naming.spi.ObjectFactory;
 import javax.swing.JFileChooser;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,11 +21,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
-import javax.xml.*;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 /**
  *
@@ -41,11 +28,12 @@ import javax.xml.bind.Marshaller;
  */
 public class Menu {
 
-    private static String[][] daten = new String[70][4];
-    private static int NumberSUR = 0;
+    private static String[][] daten = new String[70][4]; //hier werden alle Verbote und die Koordinaten abgespeichert
+    private static int NumberSUR = 0; //Anzahl der SUR's
     private static int countIDKML = 0; //damit jede abgespeicherte KML-Datei eine neue Bezeichnung erhält
 
     public static String[] readKML() throws FileNotFoundException {
+        //Variablendeklaration 
         File f = null;
         String help = null;
         String name = "name";
@@ -58,7 +46,8 @@ public class Menu {
         int temp = -1;
         int i = -1;
         String space = " ";
-        String[] strings = null;
+        String[] strings = null; //strings beinhaltet die gesamten Koordinaten aus der KML Datei. 
+                                 //Jede Zeile beinhaltet einen Längen- und Breitengrad
         String[] shortstrings = null;
 
         try {
@@ -75,7 +64,6 @@ public class Menu {
                 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
                 Document doc = docBuilder.parse(new File(filename));
                 doc.getDocumentElement().normalize();
-                //System.out.println ("Root element of the doc is " + doc.getDocumentElement().getNodeName());
                 NodeList Koordinaten = doc.getElementsByTagName("LinearRing");
                 Node FirstKoordinate = Koordinaten.item(0);
                 if (FirstKoordinate.getNodeType() == Node.ELEMENT_NODE) {
@@ -84,29 +72,22 @@ public class Menu {
                     NodeList firstNameList = firstElement.getElementsByTagName("coordinates");
                     Element firstNameElement = (Element) firstNameList.item(0);
                     NodeList textFNList = firstNameElement.getChildNodes();
-
                     ListOfCoordinates = textFNList.item(0).getNodeValue();
-                    //System.out.println("LOC " + ListOfCoordinates);
                     //Splitten der Koordinaten in ein zweidimensionales Array
-                    //Zunächst wird geprüft in welcher Form sich die Koordinaten innerhalb der KML gespeichert sind
-                    if (ListOfCoordinates.contains(space)) {//Bei einzeiliger Koordinaten Auflistung
-                        // Splitten nach Leerzeichen
+                    //Zunächst wird geprüft in welcher Form die Koordinaten in der KML gespeichert sind
+                    if (ListOfCoordinates.contains(space)) { //Bei einzeiliger Koordinaten Auflistung
+                        //Koordinaten nach dem Leerzeichen splitten
                         shortstrings = ListOfCoordinates.split(" ");
                         strings = new String[shortstrings.length - 1];
                         shortstrings[0] = shortstrings[0].trim();
-                        //System.out.println("Strings an der STelle 0: " + shortstrings[0]);
                         for (int j = 0; j < shortstrings.length - 1; j++) {
-                            //System.out.println("Strings an der STelle j: " + strings[j]);
+                            //Höhenangabe bei den Koordinaten entfernen
                             strings[j] = shortstrings[j].replaceAll(",0", "");
-                            //System.out.println("neu: " +j + " " + strings[j]);
                         }
                     } else {
-                        //-----------------------------------------------------------------------------
-                        //Strings beinhaltet die gesamten Koordinaten aus der KML Datei 
-                        //Jede zeile des STrings Arrays beinhaltet einen Längen- und Breitengrad
-                        // Andererseit kommen die Koordinaten auch in der Form vor, das diese untereinander weggeschrieben sind, 
-                        //und sich somit Längen und Breitengrad immer in einer Zeile befinden.
-                        //Split nach Returns
+                        /*Andererseit kommen die Koordinaten auch in der Form vor, dass diese untereinander in der Datei gespeichert sind 
+                        und sich somit Längen und Breitengrad immer in einer Zeile befinden.
+                        Deswegen wird der String nach jedem Return gesplitet*/
                         shortstrings = ListOfCoordinates.split("\n");
                         strings = new String[shortstrings.length - 1];
                         for (int y = 0; y < shortstrings.length - 1; ++y) {
@@ -116,12 +97,13 @@ public class Menu {
                 }
             }
         } catch (Exception e) {
-            System.out.println("fehler " + e);
+            System.out.println("Fehler " + e);
         }
         return strings;
     }
 
     public static String[][] readAllSUR() throws FileNotFoundException {
+        //Variablendeklaration
         String[][] ergSUR = null;
         int anzahl;
         String[][] allSUR;
@@ -149,23 +131,31 @@ public class Menu {
                 txtname = s.getName();
                 BufferedReader in = new BufferedReader(new FileReader(s));
                 String zeile = null;
-
-                //in intAnzahlSUR ist die Anzahl an allen SUR's die in dieser Datei gespeichert sind --> Auslesen der ersten Zeile der .txt Datei
+                //--> Auslesen der ersten Zeile der .txt Datei
                 anzahlSUR = in.readLine();
+                //in intAnzahlSUR wird die Anzahl aller SUR's gespeichert
                 intAnzahlSUR = Integer.parseInt(anzahlSUR);
                 NumberSUR = intAnzahlSUR;
                 anzahl = intAnzahlSUR;
-                //Array das alle Orte aus der SUR beinhaltet, die selben Orte sind in einer Zeile dieses Arrays gespeichert. 
+                //das Array allSUR soll alle Koordinaten der SUR's beinhalten 
+                //--> verschiedene Verbote aber gleiche Koordinaten sind in der gleichen Zeile gespeichert,
+                //hierbei sind alle Verbote in dem letzten Feld der Zeile zu finden
                 allSUR = new String[intAnzahlSUR][4];
 
                 for (int j = 0; j < intAnzahlSUR; j++) {
-                    //Innerhalb dieser beiden Schleifen werden die unterschiedlichen Regeln zu einem Objekt in eine Array Spalte gemeinsam geschrieben
+                    //Innerhalb dieser beiden Schleifen werden die unterschiedlichen Regeln in allSUR gespeichert
                     zeile = in.readLine();
-                    String[] zeileSplit = zeile.split(",");
+                    String[] zeileSplit = zeile.split(","); //Zeile wird nach jedem Komma getrennt und in zeileSplit gespeichert
 
                     for (int y = 0; y < 4; y++) {
+                        //In vorherigeZeile ist die zuvor gespeicherte Zeile gespeichert um zu vergleichen, 
+                        //ob die beiden Koordinaten übereinstimmen.
+                        //Wenn vorherigeZeile null ist kann direkt in den else Teil gesprungen werden, 
+                        //da es sich dann um die erste Zeile handelt 
                         if (vorherigeZeile[0] != null) {
-                            //und innerhalb dieser Schleife in einen String gespeichert.
+                            //Vergleich ob die ID der SUR's gleich sind
+                            //JA: Verbot in der vorherigen Zeile hinzufügen  
+                            //Nein: Koordinaten und Verbot in neue Zeile speichern
                             if (vorherigeZeile[0].equals(zeileSplit[0])) {
                                 counterSame++;
                                 anzahl--;
@@ -174,6 +164,7 @@ public class Menu {
                                 String help3 = "";
                                 help3 = new StringBuffer(help1).append("; " + help2).toString();
                                 allSUR[j-counterSame][3] = help3;
+                                //aus der Schleife herausspringen, da diese SUR vollständig gespeichert ist
                                 break;
                             } else {
                                 counterSame = 0;
@@ -192,7 +183,7 @@ public class Menu {
                     }
                 }
                 
-                //ErgebnisSUR speichern ohne null Elemente
+                //allSUR in ergSUR speicher ohne null Elemente
                 ergSUR = new String [anzahl][4];
                 int temp = 0;
                 for (int h = 0; h < intAnzahlSUR; h++) {
@@ -213,33 +204,14 @@ public class Menu {
 
     }
 
-    /*private static boolean containsString(String s, String subString) {
-        return s.indexOf(subString) > -1 ? true : false;
-    }*/
-
-    public static void cutSnip(String zeile, int i) {
-        //System.out.println(zeile);
-        String komma = ",";
-        StringTokenizer st = new StringTokenizer(zeile, komma);
-        int temp = -1;
-
-        while (st.hasMoreTokens()) {
-            temp++;
-            String help = st.nextToken();
-            daten[i - 1][temp] = help;
-        }
-    }
-
-    public static void saveKML(String[] koordinaten) throws FileNotFoundException {
-        System.out.println("Datei wird gespeichert");
-                
+    public static void saveKML(String[] koordinaten) throws FileNotFoundException {          
         //KML-Datei erzeugen
         final Kml kml = new Kml();
         //da wir oben das normale Document importiert haben, müssen wir hier das micromata Document importieren
         final de.micromata.opengis.kml.v_2_2_0.Document document = new de.micromata.opengis.kml.v_2_2_0.Document();
 	kml.setFeature(document);
 
-        //Placemark erzeugen mit dem Namen LinearRing.kml
+        //Placemark erzeugen
 	final Placemark placemark = new Placemark();
 	document.getFeature().add(placemark);
 
@@ -263,31 +235,7 @@ public class Menu {
         
         //Datei speichern
         kml.marshal(new File(countIDKML + ".computed.kml"));
-        countIDKML++; //countIDKML um eins erhöhen, da eine Datei erzeugt wurde
-        System.out.println("Datei wurde erfolgreich gespeichert");
-    }
-
-    //Methode dient zur Rückgabe der Anzahl von SUR
-    public static int getAnzahlSUR() {
-        int Anzahl = 0;
-
-        Anzahl = NumberSUR;
-        //System.out.println("NumberSUR: " + Anzahl);
-        return Anzahl;
-    }
-
-    public String[] getCoordinates() {
-        String[] coordinates = new String[2];
-
-        coordinates[0] = daten[0][1];
-        coordinates[0] = daten[0][2];
-
-        return coordinates;
-    }
-
-    public String getLongitude() {
-        String lon = daten[0][1];
-        return lon;
+        countIDKML++; //countIDKML um eins erhöhen, da eine neue Datei erzeugt wurde
     }
 
 }
