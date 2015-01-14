@@ -41,6 +41,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -227,6 +228,30 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
+    @FXML
+    Tab copyMapID;
+    @FXML
+    Tab selectColorID;
+    @FXML
+    Tab showChangeColorID;
+    @FXML
+    Tab changeColorID;
+    
+    
+    public void refresh() throws IOException{
+        if(copyMapID.isSelected()==true){
+            showImage();
+        }else if(selectColorID.isSelected()==true){
+            selectColor();
+        }else if(showChangeColorID.isSelected()==true){
+            showChangeColor();
+        }else if(changeColorID.isSelected()==true){
+            changeColor();
+        }else{
+            
+        }
+    }
+    
     //public void saveKML() {
     //    menu.Menu.saveKML();
     //}
@@ -382,7 +407,7 @@ public class FXMLDocumentController implements Initializable {
 
         switch (type) {
             case "lake":
-                zoom = "16";
+                zoom = "18";
                 break;
             case "green":
                 zoom = "16";
