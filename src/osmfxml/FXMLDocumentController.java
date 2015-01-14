@@ -26,15 +26,23 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.File;
 import static java.lang.Thread.sleep;
+import java.util.Locale;
 import java.util.regex.Pattern;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javax.imageio.ImageIO;
 import javafx.scene.image.*;
@@ -43,6 +51,10 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javax.imageio.ImageWriter;
+import jxl.Workbook;
+import jxl.WorkbookSettings;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
 
 /**
  *
@@ -237,34 +249,93 @@ public class FXMLDocumentController implements Initializable {
         image = WebViewMap.snapshot(null, null);
         imageView.setImage(image);
     }
+
+    public class selectColorTable {
+
+        SimpleStringProperty x = new SimpleStringProperty();
+        SimpleStringProperty y = new SimpleStringProperty();
+        
+        public String getX() {
+            return x.get();
+        }
+
+        public String getY() {
+            return y.get();
+        }
+
+    }
+
     @FXML
     ImageView imageViewSelectColor;
     //Gibt die Farbwerte auf der Konsole für jeden Pixel aus, VORSICHT!!! Dauert lang
+    @FXML
+    TableColumn pixelXTable;
 
     @FXML
-    public void selectColor() {
+    TableColumn pixelYTable;
+
+    @FXML
+    TableView<selectColorTable> table;
+
+    @FXML
+    public void selectColor() throws IOException {
+
+        int counter = 0;
+
+        Integer helpReadX;
+        String xString;
+
+        Integer helpReadY;
+        String yString;
+
         Image image;
         image = WebViewMap.snapshot(null, null);
-        imageViewSelectColor.setImage(image);
+
         // Obtain PixelReader
         PixelReader pixelReader = image.getPixelReader();
         System.out.println("Image Width: " + image.getWidth());
         System.out.println("Image Height: " + image.getHeight());
         System.out.println("Pixel Format: " + pixelReader.getPixelFormat());
-        // Determine the color of each pixel in the image
+        ObservableList<selectColorTable> olX = FXCollections.observableArrayList();
+
+        pixelXTable.setCellValueFactory(new PropertyValueFactory<selectColorTable, String>("x"));
+        pixelYTable.setCellValueFactory(new PropertyValueFactory<selectColorTable, String>("y"));
+        
+
+        String helpColorTable;
+        String helpPixelNo;
+        Integer xPixel;
+        Integer yPixel;
+        
+        table.setItems(olX);
+// Determine the color of each pixel in the image
         for (int readY = 0; readY < image.getHeight(); readY++) {
             for (int readX = 0; readX < image.getWidth(); readX++) {
+                selectColorTable sct = new selectColorTable();
                 Color color = pixelReader.getColor(readX, readY);
-                System.out.println(/*"\nPixel color at coordinates ("
-                         + readX + "," + readY + ") "
-                         + */color.toString());
+                /*System.out.println("\nPixel color at coordinates ("
+                 + readX + "," + readY + ") "
+                 + color.toString());*/
                 /*System.out.println("R = " + color.getRed());
                  System.out.println("G = " + color.getGreen());
                  System.out.println("B = " + color.getBlue());
                  System.out.println("Opacity = " + color.getOpacity());
                  System.out.println("Saturation = " + color.getSaturation()); */
+                helpColorTable = color.toString();
+                xPixel = readX;
+                yPixel = readY;
+                helpPixelNo = xPixel.toString()+"; "+yPixel.toString();
+                
+                sct.x.set(helpColorTable);
+                sct.y.set(helpPixelNo);
+                
+                
+                olX.add(sct);
+                
+
             }
         }
+            table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
     @FXML
     ImageView imageViewChangeColor;
@@ -291,7 +362,7 @@ public class FXMLDocumentController implements Initializable {
         if (sur[3].contains("swimming") || sur[3].contains("fishing")) {
             type = "lake";
 
-        } else if (sur[3].contains("dog_waste") || sur[3].contains("littering")) {
+        } else if (sur[3].contains("dog_waste") || sur[3].contains("littering") || sur[3].contains("animal_feeding")) {
             type = "green";
         } else if (sur[3].contains("parking") || sur[3].contains("open_fire")) {
             type = "area";
@@ -328,6 +399,7 @@ public class FXMLDocumentController implements Initializable {
         webEngineGoToCoordinate.executeScript("goTo(" + lonSUR + "," + latSUR + "," + zoom + ")");
 
     }
+
     @FXML
     public void selectStategy() throws IOException, FileNotFoundException, InterruptedException {
         switch (type) {

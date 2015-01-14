@@ -121,7 +121,7 @@
                                                       <Image url="@../pics/informaticup.gif" />
                                                    </image>
                                                 </ImageView>
-                                                <Label layoutX="88.0" layoutY="16.0" text="Informaticup 2015" textFill="#fffdfd">
+                                                <Label layoutX="88.0" layoutY="16.0" text="informatiCup 2015" textFill="#fffdfd">
                                                    <font>
                                                       <Font name="System Bold Italic" size="36.0" />
                                                    </font>
@@ -162,7 +162,12 @@
                                   </Tab>
                                     <Tab onSelectionChanged="#selectColor" text="select Color">
                                        <content>
-                                          <ImageView fx:id="imageViewSelectColor" fitHeight="480.0" fitWidth="496.0" pickOnBounds="true" preserveRatio="true" />
+                                          <TableView fx:id="table" prefHeight="200.0" prefWidth="200.0">
+                                            <columns>
+                                              <TableColumn fx:id="pixelXTable" prefWidth="91.0" text="Color (argb)" />
+                                              <TableColumn fx:id="pixelYTable" prefWidth="96.0" text="Pixel x; Pixel y" />
+                                            </columns>
+                                          </TableView>
                                        </content>
                                     </Tab>
                                     <Tab onSelectionChanged="#changeColor" text="change Color">
