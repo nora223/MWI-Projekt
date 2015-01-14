@@ -16,23 +16,22 @@
         <script type="text/javascript" src="test.js"></script>
         <script type="text/javascript" src="menu/showCoordinate.js"></script>
         <script type="text/javascript">
-            //<![CDATA[
+            //Variablendeklaration
             var map;
             var layer_mapnik;
             var layer_tah;
             var layer_markers;
             var getLon = null;
-            // function timedRefresh(timeoutPeriod) {
-            // setTimeout("location.reload(true);", timeoutPeriod);
-            // }
+            
+            //Funktion zum zeichnen der OSM-Karte
             function drawmap() {
-                // Popup und Popuptext mit evtl. Grafik
-                //var popuptext = "<font color=\"black\"><b>DHBW Karlsruhe<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
+                //Spracheinstellungen
                 OpenLayers.Lang.setCode('de');
                 // Position und Zoomstufe der Karte
                 var lon = 7.96966776;
                 var lat = 50.56001016;
                 var zoom = 18;
+                //Initialisierung der Karte
                 map = new OpenLayers.Map('map', {
                     projection: new OpenLayers.Projection("EPSG:900913"),
                     displayProjection: new OpenLayers.Projection("EPSG:4326"),
@@ -46,29 +45,22 @@
                     maxResolution: 156543,
                     units: 'meters'
                 });
+                
+                //Erstellen verschiedener Layer in der Karte
                 layer_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
                 layer_markers = new OpenLayers.Layer.Markers("Address", {projection: new OpenLayers.Projection("EPSG:4326"),
                     visibility: true, displayInLayerSwitcher: false});
-                //getLon = getLongitude();
-                //getLat = coordinates[1];
-                //coordinates[1] = showcoordinate.getLatitude();
-                //if (getLon != null) {
-                //popuptext = getLon + "<font color=\"black\"><b>WOOOP WOOP<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
+                
+                //Hinzufügen von Layer zur Karte
                 map.addLayers([layer_mapnik, layer_markers]);
+                //Springen zum Anfangspunkt auf Karte
                 jumpTo(lon, lat, zoom);
                 // Position des Markers
                 addMarker(layer_markers, 8.38573, 49.02640, popuptext);
-                //} else {
-                // popuptext = "<font color=\"black\"><b>Test<br>Erzbergerstra&szlig;e 121<br>76133 Karlsruhe</b><p><img src=\"dhbw.jpg\" width=\"180\" height=\"113\"></p></font>";
-                // map.addLayers([layer_mapnik, layer_markers]);
-                // jumpTo(lon, lat, zoom);
-                // Position des Markers
-                // addMarker(layer_markers, 8.38573, 49.02640, popuptext);
-                //}
-                while(map.isSealed() == false){
-                    
-                }
+                
             }
+            
+            //Umrechnung von Pixel in Koordinate
             function test() {
                 var lon = 7.96966776;
                 var lat = 50.56001016;
@@ -80,6 +72,8 @@
                 //var lonlat = map.getLonLatFromPixel(pixel);
                 return newPx;
             }
+            
+            //Umrechnen von variablen Pixeln in Koordinaten
             function getCoordinate(x, y) {
                 var pixel = new OpenLayers.Pixel(x, y);
                 var coordinate = map.getLonLatFromPixel(pixel);
@@ -87,9 +81,7 @@
                 return coordinate;
             }
             
-        
-            
-            
+            //Funktion um an bestimmten Punkt der Karte zu springen
             function goTo(newLon, newLat, zoomNew) {
                 
                 
@@ -100,43 +92,33 @@
                                           
                 return lon;
             }
+            
+            //Funktion um ein neues Array zu erstellen
             function createArrayLonLat(pixelCounter) {
                 lonArray = new Array(pixelCounter);
                 latArray = new Array(pixelCounter);
-                //zonaBLng = new Array(pixelCounter);
-                //zonaBLat = new Array(pixelCounter);
             }
+            
+            //counter wird auf 0 gesetzt
             counter = 0;
+            
+            //Funktion um Array zu befüllen
             function setLonLatArrays(lon, lat, i) {
                 counter = i;
                 lonArray[i] = lon;
                 latArray[i] = lat;
-                //zonaBLng[i]=lon;
-                //zonaBLat[i]=lat;
                 return lonArray;
             }
+            
+            //Funktion um ein Polygon auf die Karte zu zeichnen
             function pintarZonas() {
-                /* var zonaBLng;
-                 var zonaBLat;
-                 var counter = pixelCounter;
-                 var helpLat = 0;
-                 var helpLon;
-                 for (var i = 0; i < counter; i++) {
-                 //helpLon = lon[i];
-                 //helpLat = lat[i];
-                 //zonaBLng[i] = helpLon;
-                 //zonaBLat[i] = helpLat;
-                 //helpLat = helpLat + 1;
-                 }*/
-                //var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602, 8.38495284, 8.38554829, 8.38559657, 8.38500649, 8.38505477, 8.38586479, 8.38556439];
-                //var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842, 49.02636174, 49.02651651, 49.02648133, 49.02670293, 49.0267557, 49.02694212, 49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442, 49.02590798];
+                
                 var zonaBLng = lonArray;
                 var zonaBLat = latArray;
-                //lng and lat for both areas
-                //var zonaBLng = [8.38475972, 8.38479728, 8.38540882, 8.38544101, 8.38482946, 8.38487774, 8.38547319, 8.38552147, 8.38492602,8.38495284,8.38554829, 8.38559657,8.38500649, 8.38505477,8.38586479,8.38556439];
-                //var zonaBLat = [49.02597129, 49.02608385, 49.02604516, 49.02629842,49.02636174, 49.02651651, 49.02648133, 49.02670293,49.0267557, 49.02694212,49.02688233, 49.02707227, 49.027118, 49.02737477, 49.02730442,49.02590798];
-                //I keep all areas here
+                
+                //Alle Koordinaten werden zu einem Vektor zusammengefügt
                 var vectorZonas = [zonaBLng, zonaBLat];
+                //neuer Layer wird erstellt auf dem Polygon gezeichnet wird
                 lineLayerZona1 = new OpenLayers.Layer.Vector("zona1");
                 style1 = {strokeColor: '#ff0000',
                     strokeOpacity: 1,
@@ -144,6 +126,7 @@
                     strokeWidth: 2,
                     fillOpacity: 0.1
                 };
+                //neuer Layer wird erstellt auf dem Polygon gezeichnet wird
                 lineLayerZona2 = new OpenLayers.Layer.Vector("zo na2");
                 style2 = {strokeColor: '#ff0000',
                     strokeOpacity: 1,
@@ -151,17 +134,23 @@
                     strokeWidth: 2,
                     fillOpacity: 0.1
                 };
+                
+                //Darstellung des Fektors wird definiert
                 var vectorStyle = [style1, style2];
                 var vectorLineLayer = [lineLayerZona1, lineLayerZona2];
+                //neues Array wird erstellt
                 pointZona1 = new Array();
                 pointZona2 = new Array();
+                //Die verschiedenen Zonen werden zu einem Vektorpunkt zusammengefügt
                 vectorPoint = [pointZona1, pointZona2];
-                //Here I keep all points to both areas
+                //Alle Vektoren werden zusammengefügt
                 var vectorCapas = [lineLayerZona1, lineLayerZona2];
+                //Hilfsvariablen
                 var i = 0;
                 var x = 0;
                 var zonaLat, zonaLng;
                 var ww = 0;
+                //Schleife um Geometrisches Objekt zu erzeugen
                 for (i = 0; i < vectorZonas.length / 2; i++) {
                     zonaLng = vectorZonas[ww];
                     zonaLat = vectorZonas[ww + 1];
@@ -172,9 +161,9 @@
                         point[x] = new OpenLayers.LonLat(zonaLng[x], zonaLat[x]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
                         point[x] = new OpenLayers.Geometry.Point(point[x].lon, point[x].lat);
                     }
-                    //No hace falta añadir un punto de final porque se cierra solo el poligono
+                   
                 }
-                //Añadimos las capas al mapa
+                //Polygon wird eingezeichnet
                 for (z = 0; z < vectorPoint.length; z++) {
                     linear_ring = new OpenLayers.Geometry.LinearRing(vectorPoint[z]);
                     polygonFeature = new OpenLayers.Feature.Vector(
@@ -184,7 +173,7 @@
                 }
             }
 
-            //]]>
+          
         </script>
     </head>
     <body onload="drawmap();"><!-- Refresh der Seite -->
