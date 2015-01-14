@@ -35,11 +35,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-
-
 /**
  *
- * @author CaReich
+ * @author CaReich & MaLeupolz
  */
 public class Menu {
 
@@ -64,6 +62,7 @@ public class Menu {
         String[] shortstrings = null;
 
         try {
+            //POP-UP Fenster zur Auswahl der zu lesenden Datei
             JFileChooser fc = new JFileChooser();
             int chooseResult = fc.showDialog(null, "Bitte Datei auswählen");
             if (chooseResult == JFileChooser.APPROVE_OPTION) {
@@ -71,6 +70,7 @@ public class Menu {
                 filename = f.getPath();
             }
             if (f != null) {
+                //Auslesen der Koordinaten des Polygons aus der KML-Datei
                 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
                 Document doc = docBuilder.parse(new File(filename));
@@ -80,15 +80,17 @@ public class Menu {
                 Node FirstKoordinate = Koordinaten.item(0);
                 if (FirstKoordinate.getNodeType() == Node.ELEMENT_NODE) {
                     Element firstElement = (Element) FirstKoordinate;
+                    //Explizit wird hier das KML Element coordinates aus der kml-Datei gezogen um die darin enthaltenen Koordinaten zu selektieren
                     NodeList firstNameList = firstElement.getElementsByTagName("coordinates");
                     Element firstNameElement = (Element) firstNameList.item(0);
                     NodeList textFNList = firstNameElement.getChildNodes();
 
                     ListOfCoordinates = textFNList.item(0).getNodeValue();
                     //System.out.println("LOC " + ListOfCoordinates);
-
-                    if (ListOfCoordinates.contains(space)) {
-                        //System.out.println("Es gibt ein Leerzeichen!!!!!");
+                    //Splitten der Koordinaten in ein zweidimensionales Array
+                    //Zunächst wird geprüft in welcher Form sich die Koordinaten innerhalb der KML gespeichert sind
+                    if (ListOfCoordinates.contains(space)) {//Bei einzeiliger Koordinaten Auflistung
+                        // Splitten nach Leerzeichen
                         shortstrings = ListOfCoordinates.split(" ");
                         strings = new String[shortstrings.length - 1];
                         shortstrings[0] = shortstrings[0].trim();
@@ -102,14 +104,14 @@ public class Menu {
                         //-----------------------------------------------------------------------------
                         //Strings beinhaltet die gesamten Koordinaten aus der KML Datei 
                         //Jede zeile des STrings Arrays beinhaltet einen Längen- und Breitengrad
+                        // Andererseit kommen die Koordinaten auch in der Form vor, das diese untereinander weggeschrieben sind, 
+                        //und sich somit Längen und Breitengrad immer in einer Zeile befinden.
+                        //Split nach Returns
                         shortstrings = ListOfCoordinates.split("\n");
                         strings = new String[shortstrings.length - 1];
                         for (int y = 0; y < shortstrings.length - 1; ++y) {
                             strings[y] = shortstrings[y + 1];
                         }
-                        /*for (int j = 0; j < strings.length; j++) {
-                         System.out.println("Strings an der STelle j: " + strings[j] + "länge "+ strings.length);
-                         }*/
                     }
                 }
             }
@@ -139,6 +141,7 @@ public class Menu {
         int count = 0;                           
 
         try {
+            //POP-UP zur Auswahl der einzulesenden Datei
             JFileChooser sc = new JFileChooser();
             int chooseResult = sc.showDialog(null, "Bitte Datei auswählen");
             if (chooseResult == JFileChooser.APPROVE_OPTION) {
@@ -147,19 +150,22 @@ public class Menu {
                 BufferedReader in = new BufferedReader(new FileReader(s));
                 String zeile = null;
 
-                //in intAnzahlSUR ist die Anzahl an allen SUR's die in dieser Datei sind gespeichert
+                //in intAnzahlSUR ist die Anzahl an allen SUR's die in dieser Datei gespeichert sind --> Auslesen der ersten Zeile der .txt Datei
                 anzahlSUR = in.readLine();
                 intAnzahlSUR = Integer.parseInt(anzahlSUR);
                 NumberSUR = intAnzahlSUR;
                 anzahl = intAnzahlSUR;
+                //Array das alle Orte aus der SUR beinhaltet, die selben Orte sind in einer Zeile dieses Arrays gespeichert. 
                 allSUR = new String[intAnzahlSUR][4];
 
                 for (int j = 0; j < intAnzahlSUR; j++) {
+                    //Innerhalb dieser beiden Schleifen werden die unterschiedlichen Regeln zu einem Objekt in eine Array Spalte gemeinsam geschrieben
                     zeile = in.readLine();
                     String[] zeileSplit = zeile.split(",");
 
                     for (int y = 0; y < 4; y++) {
                         if (vorherigeZeile[0] != null) {
+                            //und innerhalb dieser Schleife in einen String gespeichert.
                             if (vorherigeZeile[0].equals(zeileSplit[0])) {
                                 counterSame++;
                                 anzahl--;
@@ -199,16 +205,6 @@ public class Menu {
                     }
                     count = count + temp;
                 }
-                
-                
-                
-                //ergSUR ausgeben
-                /*for (int w = 0; w < ergSUR.length; w++ ){
-                    for(int u = 0; u < 4; u++){
-                        System.out.println("ergSUR " + ergSUR[w][u]);
-                    }
-                }*/
-
             }
         } catch (Exception e) {
             javax.swing.JOptionPane.showMessageDialog(null, "Datei könnte nicht gelesen werden. " + e);
@@ -217,70 +213,9 @@ public class Menu {
 
     }
 
-    public static String[][] readSUR() throws FileNotFoundException {
-        File s = null;
-        String txtname = null;
-        String inhalt = null;
-        int intAnzahl = 0;
-        String anzahlSUR = null;
-        List<String> Koordinaten = new ArrayList<String>();
-        String lon = null; //longitude = Längengrad
-        String lat = null; //latitude = Breitengrad
-        String helpLon = null;
-        String helpLat = null;
-
-        try {
-            JFileChooser sc = new JFileChooser();
-            int chooseResult = sc.showDialog(null, "Bitte Datei auswählen");
-            if (chooseResult == JFileChooser.APPROVE_OPTION) {
-                s = sc.getSelectedFile();
-                txtname = s.getName();
-                //System.out.println(txtname); Ausgabe des Textnamens/s beinhaltet stattdessen den kompletten Dateipfad
-                BufferedReader in = new BufferedReader(new FileReader(s));
-                String zeile = null;
-                for (int i = 1; i <= 1; i++) {
-                    anzahlSUR = in.readLine();
-                    intAnzahl = Integer.parseInt(anzahlSUR);
-                    NumberSUR = intAnzahl;
-                    System.out.println(intAnzahl);
-                }
-                for (int j = 1; j <= intAnzahl; j++) {
-                    zeile = in.readLine();
-                    cutSnip(zeile, j);
-                }
-                //Überprüfung ob alle Koordinaten in den Feldern gleich sind
-                for (int i = 0; i < intAnzahl; i++) {
-                    lon = daten[i][1];
-                    lat = daten[i][2];
-
-                    if (helpLon != null && helpLat != null) {
-                        //System.out.println("test " + lon + lat);
-                        //System.out.println("test " + helpLon + helpLat);
-
-                        if (lon.equals(helpLon) && lat.equals(helpLat)) {
-                            //System.out.println("läuft er rein?");
-                            helpLon = lon;
-                            helpLat = lat;
-                            continue;
-                        } else {
-                            javax.swing.JOptionPane.showMessageDialog(null, "Die angegebenen Koordinaten sind inkompatibel!");
-                            break;
-                        }
-                    } else {
-                        helpLon = lon;
-                        helpLat = lat;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            javax.swing.JOptionPane.showMessageDialog(null, "Datei könnte nicht gelesen werden. " + e);
-        }
-        return daten;
-    }
-
-    private static boolean containsString(String s, String subString) {
+    /*private static boolean containsString(String s, String subString) {
         return s.indexOf(subString) > -1 ? true : false;
-    }
+    }*/
 
     public static void cutSnip(String zeile, int i) {
         //System.out.println(zeile);
@@ -355,88 +290,4 @@ public class Menu {
         return lon;
     }
 
-    public static String generateHTML() {
-        String Ausgabe
-                = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n"
-                + "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"de\" lang=\"de-de\">\n"
-                + "    <head>\n"
-                + "        <title>Map | Testanwendung</title>\n"
-                + "        <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />\n"
-                + "        <meta http-equiv=\"content-script-type\" content=\"text/javascript\" />\n"
-                + "        <meta http-equiv=\"content-style-type\" content=\"text/css\" />\n"
-                + "        <meta http-equiv=\"content-language\" content=\"de\" />\n"
-                + "        <link rel=\"stylesheet\" type=\"text/css\" href=\"map.css\"></link>\n"
-                + "        <!--[if IE]>\n"
-                + "        <link rel=\"stylesheet\" type=\"text/css\" href=\"ie_map.css\"></link>\n"
-                + "        <![endif]-->\n"
-                + "        <script type=\"text/javascript\" src=\"http://www.openlayers.org/api/OpenLayers.js\"></script>\n"
-                + "        <script type=\"text/javascript\" src=\"http://www.openstreetmap.org/openlayers/OpenStreetMap.js\"></script>\n"
-                + "        <script type=\"text/javascript\" src=\"tom.js\"></script>\n"
-                + "        <script type=\"text/javascript\" src=\"test.js\"></script>\n"
-                + "        <script type=\"text/javascript\" src=\"menu/showCoordinate.js\"></script>\n"
-                + "        <script type=\"text/javascript\">\n"
-                + "            //<![CDATA[\n"
-                + "\n"
-                + "            var map;\n"
-                + "            var layer_mapnik;\n"
-                + "            var layer_tah;\n"
-                + "            var layer_markers;\n"
-                + "\n"
-                + "//            function timedRefresh(timeoutPeriod) {\n"
-                + "//                setTimeout(\"location.reload(true);\", timeoutPeriod);\n"
-                + "//            }\n"
-                + "            function drawmap() {\n"
-                + "                // Popup und Popuptext mit evtl. Grafik\n"
-                + "                var popuptext = \"<font color=\\\"black\\\"><b>Woop Karlsruhe</b><p><img src=\\\"dhbw.jpg\\\" width=\\\"180\\\" height=\\\"113\\\"></p></font>\";\n"
-                + "\n"
-                + "                OpenLayers.Lang.setCode('de');\n"
-                + "\n"
-                + "                // Position und Zoomstufe der Karte\n"
-                + "                var lon = " + daten[0][1] + ";\n"
-                + "                var lat = " + daten[0][2] + ";\n"
-                + "                var zoom = 15;\n"
-                + "                \n"
-                + "                map = new OpenLayers.Map('map', {\n"
-                + "                    projection: new OpenLayers.Projection(\"EPSG:900913\"),\n"
-                + "                    displayProjection: new OpenLayers.Projection(\"EPSG:4326\"),\n"
-                + "                    controls: [\n"
-                + "                        new OpenLayers.Control.Navigation(),\n"
-                + "                        new OpenLayers.Control.LayerSwitcher(),\n"
-                + "                        new OpenLayers.Control.PanZoomBar()],\n"
-                + "                    maxExtent:\n"
-                + "                            new OpenLayers.Bounds(-20037508.34, -20037508.34,\n"
-                + "                                    20037508.34, 20037508.34),\n"
-                + "                    numZoomLevels: 18,\n"
-                + "                    maxResolution: 156543,\n"
-                + "                    units: 'meters'\n"
-                + "                });\n"
-                + "\n"
-                + "                layer_mapnik = new OpenLayers.Layer.OSM.Mapnik(\"Mapnik\");\n"
-                + "                layer_markers = new OpenLayers.Layer.Markers(\"Address\", {projection: new OpenLayers.Projection(\"EPSG:4326\"),\n"
-                + "                    visibility: true, displayInLayerSwitcher: false});\n"
-                + "\n"
-                + "                map.addLayers([layer_mapnik, layer_markers]);\n"
-                + "                jumpTo(lon, lat, zoom);\n"
-                + "                // Position des Markers\n"
-                + "                addMarker(layer_markers, lon, lat, popuptext);\n"
-                + "\n"
-                + "            }\n"
-                + "\n"
-                + "            //]]>\n"
-                + "        </script>\n"
-                + "\n"
-                + "    </head>\n"
-                + "    <body onload=\"drawmap();\"><!-- Refresh der Seite -->\n"
-                + "\n"
-                + "        <div id=\"map\" id=\"box\">\n"
-                + "        </div>\n"
-                + "\n"
-                + "    </body>\n"
-                + "</html>";
-
-        System.out.println("Test Koordinaten" + daten[0][1] + "dasten " + daten[0][2]);
-
-        return Ausgabe;
-
-    }
 }
