@@ -1,68 +1,38 @@
 package osmfxml;
 
-import com.sun.org.apache.bcel.internal.generic.TargetLostException;
-import com.sun.prism.BufferedImageTools;
-import com.sun.webpane.platform.ContextMenu;
-import java.awt.Graphics2D;
-import java.awt.MediaTracker;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.File;
-import static java.lang.Thread.sleep;
-import java.util.Locale;
 import java.util.regex.Pattern;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Worker;
-import javafx.concurrent.Worker.State;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javax.imageio.ImageIO;
 import javafx.scene.image.*;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javax.imageio.ImageWriter;
-import jxl.Workbook;
-import jxl.WorkbookSettings;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
 
 /**
  *
  * @author Tino
  */
 public class FXMLDocumentController implements Initializable {
-    
     
     @FXML
     private Label label;
@@ -115,58 +85,47 @@ public class FXMLDocumentController implements Initializable {
         WebEngine webEngineTest = WebViewMap.getEngine();
 
         try {
+            //Aufruf der Methode readKml und abspeichern der Ergebnisse in den String koordinaten
             String[] koordinaten = menu.Menu.readKML();
             int counter = koordinaten.length;
-            System.out.println("Counter " + counter);
-            //System.out.println("Länge Koordinaten: " + koordinaten.length);
-            //for (int j = 0; j < koordinaten.length; j++){
-            //    System.out.println("Inhalt: " + koordinaten[j]);
-            //}
             //erste Koordinate = Längengrad und zweite Koordinate = Breitengrad
             String[] AllLon = new String[counter]; //alle Längengrad Angaben
             String[] AllLat = new String[counter];  //alle Breitengrad Angaben
             String firstLon = null; //Längengrad
             String firstLat = null; //Breitengrad
-
+            
+            //hier werden aus dem String koordinaten die Längen- und Breitengraden ausgelesen
             for (int i = 0; i < koordinaten.length; i++) {
-                //Zeile 0 des Array koordinaten ist immer leer
-                //System.out.println("zeile " + i + ":" + koordinaten[i]);
                 if (i == 0) {
-                    //In der schleife werden die ersten koordinaten abgespeichert in firstLon und Lat um die Karte zu zentrieren
-                    //und in AllLon und -Lat 
+                    //In der Schleife werden die ersten Koordinaten in firstLon und firstLat
+                    //sowie in AllLon und AllLat gespeichert.
+                    //firstLon und firstLat werden später verwendet um die angezeigte Karte zu zentrieren
                     String[] firstLine = koordinaten[i].split(",");
-                    //System.out.println(firstLine[0] +"    " + firstLine[1]);
                     firstLon = firstLine[0];
                     firstLat = firstLine[1];
                     AllLon[i] = firstLon;
                     AllLat[i] = firstLat;
                 }
                 String[] helpLine = koordinaten[i].split(",");
-                //System.out.println(helpLine[0] + "     " + helpLine[1]);
-
                 AllLon[i] = helpLine[0];
                 AllLat[i] = helpLine[1];
-                //System.out.println("Längengrad: " + AllLon[i] + " Breitengrad: " + AllLat[i]);
             }
 
-            /*AllLon[0] = firstLon;
-             AllLat[0] = firstLat;*/
+            //Ausführen der JS-Methode um dort ein Array der Koordinaten zu erzeugen.
             webEngineTest.executeScript("createArrayLonLat(" + (counter) + ")");
 
             Object helpLongtitude = null;
             Object helpLatitude = null;
             Object temp = null;
-            //String[] lon = new String[counter];
-            //String[] lat = new String[counter];
             for (int count = 0; count < counter; count++) {
                 helpLongtitude = AllLon[count];
                 helpLatitude = AllLat[count];
-                //System.out.println("test" + helpLatitude);
+                //Übergabe der Arrays mit den separten Koordinaten der Längen und Breitengrade
                 temp = webEngineTest.executeScript("setLonLatArrays(" + helpLongtitude + "," + helpLatitude + "," + count + ")");
-                //System.out.println(temp);
             }
-            //System.out.println("Latitude" + temp);
+            //Zentrieren der Karte auf die entsprechende Koordinaten mithilfe der JS Methode
             webEngineTest.executeScript("goTo(" + firstLon + "," + firstLat + ")");
+            //Zeichnen des Polygons auf der Karte mithilfe der JS-Methode
             webEngineTest.executeScript("pintarZonas()");
 
         } catch (Exception e) {
@@ -178,13 +137,11 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     public void readAllSUR() throws FileNotFoundException, IOException, InterruptedException {
-        System.out.println("KML Datei wird eingelesen");
         String[][] ergSUR;
         ergSUR = menu.Menu.readAllSUR();
         ergSURGlobal = new String[ergSUR.length][4];
         for (int i = 0; i < ergSUR.length; i++) {
             for (int j = 0; j < 4; j++) {
-                System.out.println(ergSUR[i][j]);
                 ergSURGlobal[i][j] = ergSUR[i][j];
             }
         }
@@ -193,40 +150,9 @@ public class FXMLDocumentController implements Initializable {
             nextCoordi.setDisable(false);
         }
         int countSURS = ergSUR.length;
-        System.out.println("CreatePolygons wird aufgerufen");
         zahlKML = ergSUR[0][0];
 
         selectTypeByRule(ergSUR[0]);
-
-    }
-
-    @FXML
-    public void readSUR() throws FileNotFoundException, IOException {
-        try {
-            String koordinaten[][] = menu.Menu.readSUR();
-            int z = menu.Menu.getAnzahlSUR();
-            /*for (int i = 0; i < z; i++) {
-             System.out.println("1. Schleife: " + i);
-             for (int j = 0; j <= 3; j++) {
-             System.out.println("Durchlauf " + j);
-             System.out.println(koordinaten[i][j]);
-             }
-             }*/
-            String Ausgabe = menu.Menu.generateHTML();
-            String dateiName = "C:\\Users\\CaReich\\Documents\\NetBeansProjects\\MWI-Projekt\\src\\osmfxml\\SURAusgabe.html";
-            FileOutputStream schreibeStrom = new FileOutputStream(dateiName);
-            for (int i = 0; i < Ausgabe.length(); i++) {
-                schreibeStrom.write((byte) Ausgabe.charAt(i));
-            }
-            schreibeStrom.close();
-            System.out.println("Datei ist geschrieben!");
-            WebEngine webEngine = WebViewMap.getEngine();
-            URL url = getClass().getResource("SURAusgabe.html");
-            //webEngine.executeScript("document.setMapTypeSatellit");
-            webEngine.load(url.toExternalForm());
-        } catch (Exception e) {
-            javax.swing.JOptionPane.showMessageDialog(null, "Datei könnte nicht gelesen werden. " + e);
-        }
     }
 
     @FXML
@@ -246,15 +172,11 @@ public class FXMLDocumentController implements Initializable {
             selectColor();
         }else if(showChangeColorID.isSelected()==true){
             showChangeColor();
-        
         }else{
             
         }
     }
     
-    //public void saveKML() {
-    //    menu.Menu.saveKML();
-    //}
     @FXML
     public void drawPolygon() throws ScriptException, NoSuchMethodException {
         ScriptEngineManager manager = new ScriptEngineManager();
@@ -264,6 +186,7 @@ public class FXMLDocumentController implements Initializable {
         Invocable inv = (Invocable) engine;
         inv.invokeFunction("drawPolygonHTML");
     }
+    
     @FXML
     ImageView imageView;
 
@@ -287,7 +210,6 @@ public class FXMLDocumentController implements Initializable {
         public String getY() {
             return y.get();
         }
-
     }
 
     @FXML
@@ -318,34 +240,22 @@ public class FXMLDocumentController implements Initializable {
 
         // Obtain PixelReader
         PixelReader pixelReader = image.getPixelReader();
-        System.out.println("Image Width: " + image.getWidth());
-        System.out.println("Image Height: " + image.getHeight());
-        System.out.println("Pixel Format: " + pixelReader.getPixelFormat());
         ObservableList<selectColorTable> olX = FXCollections.observableArrayList();
 
         pixelXTable.setCellValueFactory(new PropertyValueFactory<selectColorTable, String>("x"));
         pixelYTable.setCellValueFactory(new PropertyValueFactory<selectColorTable, String>("y"));
         
-
         String helpColorTable;
         String helpPixelNo;
         Integer xPixel;
         Integer yPixel;
         
         table.setItems(olX);
-// Determine the color of each pixel in the image
+        // Determine the color of each pixel in the image
         for (int readY = 0; readY < image.getHeight(); readY++) {
             for (int readX = 0; readX < image.getWidth(); readX++) {
                 selectColorTable sct = new selectColorTable();
                 Color color = pixelReader.getColor(readX, readY);
-                /*System.out.println("\nPixel color at coordinates ("
-                 + readX + "," + readY + ") "
-                 + color.toString());*/
-                /*System.out.println("R = " + color.getRed());
-                 System.out.println("G = " + color.getGreen());
-                 System.out.println("B = " + color.getBlue());
-                 System.out.println("Opacity = " + color.getOpacity());
-                 System.out.println("Saturation = " + color.getSaturation()); */
                 helpColorTable = color.toString();
                 xPixel = readX;
                 yPixel = readY;
@@ -354,10 +264,8 @@ public class FXMLDocumentController implements Initializable {
                 sct.x.set(helpColorTable);
                 sct.y.set(helpPixelNo);
                 
-                
                 olX.add(sct);
                 
-
             }
         }
             table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -372,7 +280,6 @@ public class FXMLDocumentController implements Initializable {
         if (zählen >= ergSURGlobal.length) {
             nextCoordi.setDisable(true);
         } else {
-            System.out.println(zählen);
             selectTypeByRule(ergSURGlobal[zählen]);
         }
     }
@@ -382,7 +289,6 @@ public class FXMLDocumentController implements Initializable {
 
         if (sur[3].contains("swimming") || sur[3].contains("fishing")) {
             type = "lake";
-
         } else if (sur[3].contains("dog_waste") || sur[3].contains("littering") || sur[3].contains("animal_feeding")) {
             type = "green";
         } else if (sur[3].contains("parking") || sur[3].contains("open_fire")) {
@@ -414,11 +320,8 @@ public class FXMLDocumentController implements Initializable {
             case "building":
                 zoom = "18";
                 break;
-
         }
-
         webEngineGoToCoordinate.executeScript("goTo(" + lonSUR + "," + latSUR + "," + zoom + ")");
-
     }
 
     @FXML
@@ -436,7 +339,6 @@ public class FXMLDocumentController implements Initializable {
             case "building":
                 findBuilding();
                 break;
-
         }
     }
 
@@ -493,11 +395,9 @@ public class FXMLDocumentController implements Initializable {
         for (int y = 0; y < wImage.getHeight(); y++) {
             for (int x = 0; x < wImage.getWidth(); x++) {
                 Color color = wPixelReader.getColor(x, y);
-                //System.out.println("Color Pixel:"+ color.toString());
 
                 if (color.toString().equals(Color.RED.toString())) {
                     helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0] - y), 2) + Math.pow(Math.abs(zentralPixel[1] - x), 2));
-                    System.out.println("Berechnung Distance");
                     if (helpDistance < distance) {
                         distance = helpDistance;
                         nearestPixel[0] = x;
@@ -505,7 +405,6 @@ public class FXMLDocumentController implements Initializable {
                     }
                 }
             }
-
         }
 
         //setzt hilfsvariable auf den nächsten Punkt
@@ -605,7 +504,6 @@ public class FXMLDocumentController implements Initializable {
 
                 }
             }
-
             if (!(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff"))) {
                 if (wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) {
 
@@ -618,9 +516,7 @@ public class FXMLDocumentController implements Initializable {
                     pixelCounter = pixelCounter + 1;
 
                 }
-
             }
-
             if (!(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0x0000ffff"))) {
                 if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xff0000ff")) {
 
@@ -648,7 +544,6 @@ public class FXMLDocumentController implements Initializable {
 
                 }
             }
-
             //Wenn eine Runde um das Gebäude geangen wurde sind die hilfsvariablen wieder auf dem Anfangs punkt, hier wird dann die schleife beendet
             if (checkX == nearestPixel[0] && checkY == nearestPixel[1]) {
                 redpixel = false;
@@ -680,34 +575,28 @@ public class FXMLDocumentController implements Initializable {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp + 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 0, checkY + 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY + 0).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
                     yhelp = yhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 0, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     yhelp = yhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
@@ -730,7 +619,6 @@ public class FXMLDocumentController implements Initializable {
         WebEngine webEngineTest = WebViewMap.getEngine();
         Object centerWebView;
         centerWebView = webEngineTest.executeScript("test()");
-        //System.out.println(centerWebView);
 
         //Hilfsvariablen
         String test;
@@ -785,7 +673,6 @@ public class FXMLDocumentController implements Initializable {
         webEngineTest.executeScript(
                 "pintarZonas()");
 
-        System.out.println(ergSURGlobal[zählen][0]);
 
     }
 
@@ -848,11 +735,9 @@ public class FXMLDocumentController implements Initializable {
         for (int y = 0; y < wImage.getHeight(); y++) {
             for (int x = 0; x < wImage.getWidth(); x++) {
                 Color color = wPixelReader.getColor(x, y);
-                //System.out.println("Color Pixel:"+ color.toString());
 
                 if (color.toString().equals(Color.RED.toString())) {
                     helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0] - y), 2) + Math.pow(Math.abs(zentralPixel[1] - x), 2));
-                    //System.out.println("Berechnung Distance");
                     if (helpDistance < distance) {
                         distance = helpDistance;
                         nearestPixel[0] = x;
@@ -860,7 +745,6 @@ public class FXMLDocumentController implements Initializable {
                     }
                 }
             }
-
         }
 
         //setzt hilfsvariable auf den nächsten Punkt
@@ -960,7 +844,6 @@ public class FXMLDocumentController implements Initializable {
 
                 }
             }
-
             if (!(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff"))) {
                 if (wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) {
 
@@ -973,9 +856,7 @@ public class FXMLDocumentController implements Initializable {
                     pixelCounter = pixelCounter + 1;
 
                 }
-
             }
-
             if (!(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0x0000ffff"))) {
                 if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xff0000ff")) {
 
@@ -1003,7 +884,6 @@ public class FXMLDocumentController implements Initializable {
 
                 }
             }
-
             //Wenn eine Runde um das Gebäude geangen wurde sind die hilfsvariablen wieder auf dem Anfangs punkt, hier wird dann die schleife beendet
             if (checkX == nearestPixel[0] && checkY == nearestPixel[1]) {
                 redpixel = false;
@@ -1035,34 +915,28 @@ public class FXMLDocumentController implements Initializable {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp + 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 0, checkY + 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY + 0).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
                     yhelp = yhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 0, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     yhelp = yhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
@@ -1084,7 +958,6 @@ public class FXMLDocumentController implements Initializable {
         WebEngine webEngineTest = WebViewMap.getEngine();
         Object centerWebView;
         centerWebView = webEngineTest.executeScript("test()");
-        //System.out.println(centerWebView);
 
         //Hilfsvariablen
         String test;
@@ -1189,11 +1062,9 @@ public class FXMLDocumentController implements Initializable {
         for (int y = 0; y < wImage.getHeight(); y++) {
             for (int x = 0; x < wImage.getWidth(); x++) {
                 Color color = wPixelReader.getColor(x, y);
-                //System.out.println("Color Pixel:"+ color.toString());
 
                 if (color.toString().equals(Color.RED.toString())) {
                     helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0] - y), 2) + Math.pow(Math.abs(zentralPixel[1] - x), 2));
-                    //System.out.println("Berechnung Distance");
                     if (helpDistance < distance) {
                         distance = helpDistance;
                         nearestPixel[0] = x;
@@ -1201,7 +1072,6 @@ public class FXMLDocumentController implements Initializable {
                     }
                 }
             }
-
         }
 
         //setzt hilfsvariable auf den nächsten Punkt
@@ -1301,7 +1171,6 @@ public class FXMLDocumentController implements Initializable {
 
                 }
             }
-
             if (!(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff"))) {
                 if (wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) {
 
@@ -1314,9 +1183,7 @@ public class FXMLDocumentController implements Initializable {
                     pixelCounter = pixelCounter + 1;
 
                 }
-
             }
-
             if (!(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0x0000ffff"))) {
                 if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xff0000ff")) {
 
@@ -1344,7 +1211,6 @@ public class FXMLDocumentController implements Initializable {
 
                 }
             }
-
             //Wenn eine Runde um das Gebäude geangen wurde sind die hilfsvariablen wieder auf dem Anfangs punkt, hier wird dann die schleife beendet
             if (checkX == nearestPixel[0] && checkY == nearestPixel[1]) {
                 redpixel = false;
@@ -1376,34 +1242,28 @@ public class FXMLDocumentController implements Initializable {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp + 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 0, checkY + 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY + 0).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
                     yhelp = yhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 0, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     yhelp = yhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
@@ -1425,7 +1285,6 @@ public class FXMLDocumentController implements Initializable {
         WebEngine webEngineTest = WebViewMap.getEngine();
         Object centerWebView;
         centerWebView = webEngineTest.executeScript("test()");
-        //System.out.println(centerWebView);
 
         //Hilfsvariablen
         String test;
@@ -1535,11 +1394,9 @@ public class FXMLDocumentController implements Initializable {
         for (int y = 0; y < wImage.getHeight(); y++) {
             for (int x = 0; x < wImage.getWidth(); x++) {
                 Color color = wPixelReader.getColor(x, y);
-                //System.out.println("Color Pixel:"+ color.toString());
 
                 if (color.toString().equals(Color.RED.toString())) {
                     helpDistance = Math.sqrt(Math.pow(Math.abs(zentralPixel[0] - y), 2) + Math.pow(Math.abs(zentralPixel[1] - x), 2));
-                    //System.out.println("Berechnung Distance");
                     if (helpDistance < distance) {
                         distance = helpDistance;
                         nearestPixel[0] = x;
@@ -1547,7 +1404,6 @@ public class FXMLDocumentController implements Initializable {
                     }
                 }
             }
-
         }
 
         //setzt hilfsvariable auf den nächsten Punkt
@@ -1647,7 +1503,6 @@ public class FXMLDocumentController implements Initializable {
 
                 }
             }
-
             if (!(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff"))) {
                 if (wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) {
 
@@ -1660,9 +1515,7 @@ public class FXMLDocumentController implements Initializable {
                     pixelCounter = pixelCounter + 1;
 
                 }
-
             }
-
             if (!(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0x0000ffff"))) {
                 if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xff0000ff")) {
 
@@ -1690,7 +1543,6 @@ public class FXMLDocumentController implements Initializable {
 
                 }
             }
-
             //Wenn eine Runde um das Gebäude geangen wurde sind die hilfsvariablen wieder auf dem Anfangs punkt, hier wird dann die schleife beendet
             if (checkX == nearestPixel[0] && checkY == nearestPixel[1]) {
                 redpixel = false;
@@ -1722,34 +1574,28 @@ public class FXMLDocumentController implements Initializable {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp + 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 0, checkY + 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY + 0).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
                     yhelp = yhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 0, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     yhelp = yhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
@@ -1771,7 +1617,6 @@ public class FXMLDocumentController implements Initializable {
         WebEngine webEngineTest = WebViewMap.getEngine();
         Object centerWebView;
         centerWebView = webEngineTest.executeScript("test()");
-        //System.out.println(centerWebView);
 
         //Hilfsvariablen
         String test;
@@ -1831,7 +1676,6 @@ public class FXMLDocumentController implements Initializable {
         Image image;
         image = WebViewMap.snapshot(null, null);
 
-       
         PixelReader pixelReader = image.getPixelReader();
        
         WritableImage wImage = new WritableImage(
@@ -1889,7 +1733,6 @@ public class FXMLDocumentController implements Initializable {
                     }
                 }
             }
-
         }
          //setzt hilfsvariable auf den nächsten Punkt
         int checkX = nearestPixel[0];
@@ -1988,7 +1831,6 @@ public class FXMLDocumentController implements Initializable {
 
                 }
             }
-
             if (!(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff"))) {
                 if (wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) {
 
@@ -2001,9 +1843,7 @@ public class FXMLDocumentController implements Initializable {
                     pixelCounter = pixelCounter + 1;
 
                 }
-
             }
-
             if (!(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0xff0000ff")) && !(wPixelReader.getColor(checkX, checkY - 1).toString().equals("0x0000ffff"))) {
                 if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0xff0000ff")) {
 
@@ -2031,7 +1871,6 @@ public class FXMLDocumentController implements Initializable {
 
                 }
             }
-
             //Wenn eine Runde um das Gebäude geangen wurde sind die hilfsvariablen wieder auf dem Anfangs punkt, hier wird dann die schleife beendet
             if (checkX == nearestPixel[0] && checkY == nearestPixel[1]) {
                 redpixel = false;
@@ -2063,34 +1902,28 @@ public class FXMLDocumentController implements Initializable {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp + 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 0, checkY + 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY + 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
                     yhelp = yhelp + 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY + 0).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX - 1, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     xhelp = xhelp - 1;
                     yhelp = yhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 0, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
                     yhelp = yhelp - 1;
-
                 }
                 if (wPixelReader.getColor(checkX + 1, checkY - 1).toString().equals("0x0000ffff")) {
                     zähler1 = zähler1 + 1;
@@ -2106,12 +1939,10 @@ public class FXMLDocumentController implements Initializable {
             }
         }
        
-
         //Bestimmt den zentralen Pixel der index.html
         WebEngine webEngineTest = WebViewMap.getEngine();
         Object centerWebView;
         centerWebView = webEngineTest.executeScript("test()");
-        //System.out.println(centerWebView);
 
         //Hilfsvariablen
         String test;
@@ -2183,5 +2014,4 @@ public class FXMLDocumentController implements Initializable {
         webEngineGoToCoordinate.executeScript("goTo(" + lon + "," + lat + "," + zoom + ")");
 
     }
-
 }
