@@ -1852,6 +1852,8 @@ public class FXMLDocumentController implements Initializable {
                         || color.toString().equals("0xd6d1c8ff")
                         || color.toString().equals("0xd5d1c8ff")
                         || color.toString().equals("0xc1b0afff")
+                        || color.toString().equals("0xd8d0c9ff")
+                        || color.toString().equals("0xd9d0c9ff")
                         || color.toString().equals("0xd5d0c8ff")
                         || color.toString().equals("0xc1b0adff")) {
                     pixelWriter.setColor(readX, readY, red);
